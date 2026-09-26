@@ -72,6 +72,7 @@ Context: Questionnaire.item
 Extension: QuestionnaireResponseProblem
 Id: questionnaire-response-problem
 Title: "記入の対象プロブレム"
+Description: "記入の対象プロブレム。"
 Context: QuestionnaireResponse
 * insert FCMeta
 * value[x] only Reference(Condition)

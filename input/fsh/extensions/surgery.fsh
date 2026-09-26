@@ -11,6 +11,7 @@ Context: ServiceRequest
 Extension: SurgeryRoom
 Id: surgery-room
 Title: "手術室"
+Description: "手術室。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(Location)
@@ -26,6 +27,7 @@ Context: ServiceRequest
 Extension: SurgeryPosition
 Id: surgery-position
 Title: "体位"
+Description: "体位。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Coding
@@ -64,6 +66,7 @@ Context: ServiceRequest
 Extension: SurgeryAnesthesiaManagement
 Id: surgery-anesthesia-management
 Title: "麻酔管理"
+Description: "麻酔管理。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Coding
@@ -112,6 +115,7 @@ Context: ServiceRequest
 Extension: SurgeryPreopInstruction
 Id: surgery-preop-instruction
 Title: "術前指示"
+Description: "術前指示。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only string
@@ -119,6 +123,7 @@ Context: ServiceRequest
 Extension: SurgeryPreopInstructionQuestionnaireResponse
 Id: surgery-preop-instruction-questionnaire-response
 Title: "術前指示テンプレートの記入"
+Description: "術前指示テンプレートの記入。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
@@ -135,6 +140,7 @@ Context: ServiceRequest
 Extension: SurgeryMaterialQuantity
 Id: surgery-material-quantity
 Title: "使用材料の数量(手術)"
+Description: "使用材料の数量(手術)。"
 Context: Procedure.usedCode
 * insert FCMeta
 * value[x] only Quantity
@@ -162,6 +168,7 @@ Context: Procedure
 Extension: SurgeryWoundClass
 Id: surgery-wound-class
 Title: "創分類"
+Description: "創分類。"
 Context: Procedure
 * insert FCMeta
 * value[x] only Coding
@@ -170,6 +177,7 @@ Context: Procedure
 Extension: SurgeryCountCheck
 Id: surgery-count-check
 Title: "カウント確認"
+Description: "カウント確認。"
 Context: Procedure
 * insert FCMeta
 * value[x] only Coding

@@ -3,6 +3,7 @@
 Extension: RadExamPurpose
 Id: rad-exam-purpose
 Title: "検査目的(放射線)"
+Description: "検査目的(放射線)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only string
@@ -18,6 +19,7 @@ Context: ServiceRequest
 Extension: RadRemarksQuestionnaireResponse
 Id: rad-remarks-questionnaire-response
 Title: "特別指示テンプレートの記入"
+Description: "特別指示テンプレートの記入。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
@@ -56,6 +58,7 @@ Context: DiagnosticReport
 Extension: RadReportFindingsResponse
 Id: rad-report-findings-response
 Title: "所見テンプレートの記入"
+Description: "所見テンプレートの記入。"
 Context: DiagnosticReport
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
@@ -63,6 +66,7 @@ Context: DiagnosticReport
 Extension: RadReportConclusionResponse
 Id: rad-report-conclusion-response
 Title: "診断テンプレートの記入"
+Description: "診断テンプレートの記入。"
 Context: DiagnosticReport
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)

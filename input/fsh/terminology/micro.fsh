@@ -42,6 +42,7 @@ Description: "採取部位の左右。Specimen.collection.bodySite に採取部�
 ValueSet: MicroLateralityVS
 Id: micro-laterality-vs
 Title: "左右区分(細菌検査) ValueSet"
+Description: "左右区分(細菌検査) ValueSet。"
 * insert AllOf(MicroLateralityCS)
 
 CodeSystem: MicroResultItemCS
@@ -64,11 +65,13 @@ Description: "結果 Observation.code と component.code。culture / smear / spu
 ValueSet: MicroResultItemVS
 Id: micro-result-item-vs
 Title: "細菌検査結果の項目 ValueSet"
+Description: "細菌検査結果の項目 ValueSet。"
 * insert AllOf(MicroResultItemCS)
 
 CodeSystem: MicroCultureResultCS
 Id: micro-culture-result
 Title: "培養結果"
+Description: "培養結果のコード。"
 * insert EnumCS
 * #negative "陰性"
 * #positive "陽性"
@@ -76,11 +79,13 @@ Title: "培養結果"
 ValueSet: MicroCultureResultVS
 Id: micro-culture-result-vs
 Title: "培養結果 ValueSet"
+Description: "培養結果 ValueSet。"
 * insert AllOf(MicroCultureResultCS)
 
 CodeSystem: MicroMillerJonesCS
 Id: micro-miller-jones
 Title: "喀痰 Miller & Jones 分類"
+Description: "喀痰 Miller & Jones 分類のコード。"
 * insert EnumCS
 * #P1 "P1"
 * #P2 "P2"
@@ -91,11 +96,13 @@ Title: "喀痰 Miller & Jones 分類"
 ValueSet: MicroMillerJonesVS
 Id: micro-miller-jones-vs
 Title: "喀痰 Miller & Jones 分類 ValueSet"
+Description: "喀痰 Miller & Jones 分類 ValueSet。"
 * insert AllOf(MicroMillerJonesCS)
 
 CodeSystem: MicroGecklerCS
 Id: micro-geckler
 Title: "喀痰 Geckler 分類"
+Description: "喀痰 Geckler 分類のコード。"
 * insert EnumCS
 * #1 "グループ1"
 * #2 "グループ2"
@@ -107,6 +114,7 @@ Title: "喀痰 Geckler 分類"
 ValueSet: MicroGecklerVS
 Id: micro-geckler-vs
 Title: "喀痰 Geckler 分類 ValueSet"
+Description: "喀痰 Geckler 分類 ValueSet。"
 * insert AllOf(MicroGecklerCS)
 
 CodeSystem: MicroPyuriaMethodCS
@@ -122,11 +130,13 @@ Description: "膿尿 Observation.method。"
 ValueSet: MicroPyuriaMethodVS
 Id: micro-pyuria-method-vs
 Title: "膿尿の判定方法 ValueSet"
+Description: "膿尿の判定方法 ValueSet。"
 * insert AllOf(MicroPyuriaMethodCS)
 
 CodeSystem: MicroPyuriaResultCS
 Id: micro-pyuria-result
 Title: "膿尿の結果"
+Description: "膿尿の結果のコード。"
 * insert EnumCS
 * #none "なし"
 * #intermediate "中間"
@@ -136,11 +146,13 @@ Title: "膿尿の結果"
 ValueSet: MicroPyuriaResultVS
 Id: micro-pyuria-result-vs
 Title: "膿尿の結果 ValueSet"
+Description: "膿尿の結果 ValueSet。"
 * insert AllOf(MicroPyuriaResultCS)
 
 CodeSystem: MicroColonyQuantityTypeCS
 Id: micro-colony-quantity-type
 Title: "菌量の種別(JANIS)"
+Description: "菌量の種別(JANIS)のコード。"
 * insert EnumCS
 * #1 "半定量"
 * #2 "定量"
@@ -149,6 +161,7 @@ Title: "菌量の種別(JANIS)"
 ValueSet: MicroColonyQuantityTypeVS
 Id: micro-colony-quantity-type-vs
 Title: "菌量の種別(JANIS) ValueSet"
+Description: "菌量の種別(JANIS) ValueSet。"
 * insert AllOf(MicroColonyQuantityTypeCS)
 
 CodeSystem: MicroColonyCountCS
@@ -168,11 +181,13 @@ Description: "JANIS の菌量コード(1〜8)をそのまま使う。"
 ValueSet: MicroColonyCountVS
 Id: micro-colony-count-vs
 Title: "菌量(JANIS) ValueSet"
+Description: "菌量(JANIS) ValueSet。"
 * insert AllOf(MicroColonyCountCS)
 
 CodeSystem: MicroCausativeCS
 Id: micro-causative
 Title: "起因菌の判定"
+Description: "起因菌の判定のコード。"
 * insert EnumCS
 * #none "起因菌でない"
 * #present "起因菌"
@@ -181,11 +196,13 @@ Title: "起因菌の判定"
 ValueSet: MicroCausativeVS
 Id: micro-causative-vs
 Title: "起因菌の判定 ValueSet"
+Description: "起因菌の判定 ValueSet。"
 * insert AllOf(MicroCausativeCS)
 
 CodeSystem: MicroSusceptibilityGradeCS
 Id: micro-susceptibility-grade
 Title: "感受性(段階)"
+Description: "感受性(段階)のコード。"
 * insert EnumCS
 * #- "-"
 * #+ "+"
@@ -195,6 +212,7 @@ Title: "感受性(段階)"
 ValueSet: MicroSusceptibilityGradeVS
 Id: micro-susceptibility-grade-vs
 Title: "感受性(段階) ValueSet"
+Description: "感受性(段階) ValueSet。"
 * insert AllOf(MicroSusceptibilityGradeCS)
 
 CodeSystem: JanisAntimicrobialCS

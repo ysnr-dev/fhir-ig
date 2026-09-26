@@ -11,6 +11,7 @@ Description: "輸血オーダー ヘッダ ServiceRequest.code。"
 ValueSet: TransfusionTestTypeVS
 Id: transfusion-test-type-vs
 Title: "輸血前検査の種類 ValueSet"
+Description: "輸血前検査の種類 ValueSet。"
 * insert AllOf(TransfusionTestTypeCS)
 
 CodeSystem: TransfusionProductCS
@@ -32,6 +33,7 @@ Description: "輸血オーダーの transfusion-abo 拡張と血液型 Observati
 ValueSet: TransfusionAboVS
 Id: transfusion-abo-vs
 Title: "ABO 血液型 ValueSet"
+Description: "ABO 血液型 ValueSet。"
 * insert AllOf(TransfusionAboCS)
 
 CodeSystem: TransfusionRhdCS
@@ -45,6 +47,7 @@ Description: "輸血オーダーの transfusion-rhd 拡張と血液型 Observati
 ValueSet: TransfusionRhdVS
 Id: transfusion-rhd-vs
 Title: "RhD 血液型 ValueSet"
+Description: "RhD 血液型 ValueSet。"
 * insert AllOf(TransfusionRhdCS)
 
 CodeSystem: TransfusionObservationCS
@@ -57,11 +60,13 @@ Description: "輸血実施記録にぶら下がる Observation.code。"
 ValueSet: TransfusionObservationVS
 Id: transfusion-observation-vs
 Title: "輸血実施の観察項目 ValueSet"
+Description: "輸血実施の観察項目 ValueSet。"
 * insert AllOf(TransfusionObservationCS)
 
 CodeSystem: TransfusionReactionCS
 Id: transfusion-reaction
 Title: "輸血反応の有無"
+Description: "輸血反応の有無のコード。"
 * insert EnumCS
 * #none "なし"
 * #present "あり"
@@ -69,4 +74,5 @@ Title: "輸血反応の有無"
 ValueSet: TransfusionReactionVS
 Id: transfusion-reaction-vs
 Title: "輸血反応の有無 ValueSet"
+Description: "輸血反応の有無 ValueSet。"
 * insert AllOf(TransfusionReactionCS)

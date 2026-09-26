@@ -98,6 +98,7 @@ Profile: FC_LabExamTask
 Parent: FC_DepartmentTask
 Id: fc-lab-exam-task
 Title: "検体検査 進捗 Task"
+Description: "検体検査 進捗 Task。"
 * code = $task-code#lab-exam "検体検査"
 * status from FCTaskStatusBasicVS (required)
 * focus only Reference(FC_LabOrderHeader)
@@ -124,6 +125,7 @@ Profile: FC_EndoscopyExamTask
 Parent: FC_DepartmentTask
 Id: fc-endoscopy-exam-task
 Title: "内視鏡 進捗 Task"
+Description: "内視鏡 進捗 Task。"
 * code = $task-code#endoscopy-exam "内視鏡"
 * status from FCTaskStatusBasicVS (required)
 * focus only Reference(FC_EndoscopyOrderHeader)
@@ -132,6 +134,7 @@ Profile: FC_PhysioExamTask
 Parent: FC_DepartmentTask
 Id: fc-physio-exam-task
 Title: "生理検査 進捗 Task"
+Description: "生理検査 進捗 Task。"
 * code = $task-code#physio-exam "生理検査"
 * status from FCTaskStatusBasicVS (required)
 * focus only Reference(FC_PhysioOrderHeader)
@@ -158,6 +161,7 @@ Profile: FC_TreatmentTask
 Parent: FC_DepartmentTask
 Id: fc-treatment-task
 Title: "処置 進捗 Task"
+Description: "処置 進捗 Task。"
 * code = $task-code#treatment "処置"
 * status from FCTaskStatusBasicVS (required)
 * focus only Reference(FC_TreatmentOrderHeader)

@@ -27,6 +27,7 @@ Context: Condition
 Extension: EncounterNote
 Id: encounter-note
 Title: "入院の特記事項"
+Description: "入院の特記事項。"
 Context: Encounter
 * insert FCMeta
 * value[x] only string
@@ -51,6 +52,7 @@ Context: Encounter
 Extension: EncounterTransferPlan
 Id: encounter-transfer-plan
 Title: "転棟・転科の予定"
+Description: "転棟・転科の予定。"
 Context: Encounter
 * insert FCMeta
 * extension contains
@@ -68,6 +70,7 @@ Context: Encounter
 Extension: EncounterDischargePlan
 Id: encounter-discharge-plan
 Title: "退院の予定"
+Description: "退院の予定。"
 Context: Encounter
 * insert FCMeta
 * extension contains
@@ -79,6 +82,7 @@ Context: Encounter
 Extension: LocationDisplayOrder
 Id: location-display-order
 Title: "部屋の表示順"
+Description: "部屋の表示順。"
 Context: Location
 * insert FCMeta
 * value[x] only integer
@@ -110,6 +114,7 @@ Context: Schedule
 Extension: ObservationProblem
 Id: observation-problem
 Title: "バイタルの対象プロブレム"
+Description: "バイタルの対象プロブレム。"
 Context: Observation
 * insert FCMeta
 * value[x] only Reference(Condition)

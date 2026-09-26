@@ -12,6 +12,7 @@ Description: "JAHIS 病理診断レポート構造化記述規約 付録 LPATHO0
 ValueSet: JahisPathoExamCategoryVS
 Id: jahis-patho-exam-category-vs
 Title: "病理検査区分(JAHIS LPATHO001) ValueSet"
+Description: "病理検査区分(JAHIS LPATHO001) ValueSet。"
 * insert AllOf(JahisPathoExamCategoryCS)
 
 CodeSystem: JahisPathoSpecimenTypeCS
@@ -26,6 +27,7 @@ Description: "JAHIS 付録 LPATHO002。Specimen.type。"
 ValueSet: JahisPathoSpecimenTypeVS
 Id: jahis-patho-specimen-type-vs
 Title: "病理検体タイプ(JAHIS LPATHO002) ValueSet"
+Description: "病理検体タイプ(JAHIS LPATHO002) ValueSet。"
 * insert AllOf(JahisPathoSpecimenTypeCS)
 
 CodeSystem: JahisPathoOrganCS
@@ -43,6 +45,7 @@ Description: "JAHIS 付録の採取方法コード。院内マスタ master_path
 CodeSystem: PathoLateralityCS
 Id: patho-laterality
 Title: "左右区分(病理)"
+Description: "左右区分(病理)のコード。"
 * insert EnumCS
 * #R "右"
 * #L "左"
@@ -51,6 +54,7 @@ Title: "左右区分(病理)"
 ValueSet: PathoLateralityVS
 Id: patho-laterality-vs
 Title: "左右区分(病理) ValueSet"
+Description: "左右区分(病理) ValueSet。"
 * insert AllOf(PathoLateralityCS)
 
 CodeSystem: PathoCytoJudgementCS
@@ -67,6 +71,7 @@ Description: "領域別の分類(ベセスダ等)は持たず、汎用の 5 段�
 ValueSet: PathoCytoJudgementVS
 Id: patho-cyto-judgement-vs
 Title: "細胞診の判定 ValueSet"
+Description: "細胞診の判定 ValueSet。"
 * insert AllOf(PathoCytoJudgementCS)
 
 CodeSystem: PathoResultItemCS
@@ -79,6 +84,7 @@ Description: "細胞診の診断 Observation.component.code。"
 ValueSet: PathoResultItemVS
 Id: patho-result-item-vs
 Title: "病理レポートの項目 ValueSet"
+Description: "病理レポートの項目 ValueSet。"
 * insert AllOf(PathoResultItemCS)
 
 CodeSystem: PathoReportImageKindCS
@@ -94,4 +100,5 @@ Description: "patho-report-image 拡張の kind。表示はこの順。"
 ValueSet: PathoReportImageKindVS
 Id: patho-report-image-kind-vs
 Title: "病理レポート画像の種類 ValueSet"
+Description: "病理レポート画像の種類 ValueSet。"
 * insert AllOf(PathoReportImageKindCS)

@@ -113,6 +113,7 @@ Profile: FC_MicroResultSpecimen
 Parent: $JP_Specimen_Common
 Id: fc-micro-result-specimen
 Title: "細菌検査結果の検体"
+Description: "細菌検査結果の検体。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * type 1..1
@@ -241,6 +242,7 @@ Profile: FC_RadFindingsObservation
 Parent: Observation
 Id: fc-rad-findings-observation
 Title: "読影 所見"
+Description: "読影 所見。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * category 1..1

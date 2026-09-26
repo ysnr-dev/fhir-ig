@@ -10,11 +10,13 @@ Description: "放射線治療の ServiceRequest.code。"
 ValueSet: RadiotherapyOrderVS
 Id: radiotherapy-order-vs
 Title: "放射線治療オーダーの種類 ValueSet"
+Description: "放射線治療オーダーの種類 ValueSet。"
 * insert AllOf(RadiotherapyOrderCS)
 
 CodeSystem: RadiotherapyIntentCS
 Id: radiotherapy-intent
 Title: "治療目的(放射線治療)"
+Description: "治療目的(放射線治療)のコード。"
 * insert EnumCS
 * #curative "根治"
 * #neoadjuvant "術前"
@@ -25,11 +27,13 @@ Title: "治療目的(放射線治療)"
 ValueSet: RadiotherapyIntentVS
 Id: radiotherapy-intent-vs
 Title: "治療目的(放射線治療) ValueSet"
+Description: "治療目的(放射線治療) ValueSet。"
 * insert AllOf(RadiotherapyIntentCS)
 
 CodeSystem: RadiotherapyConcurrentTherapyCS
 Id: radiotherapy-concurrent-therapy
 Title: "併用療法(放射線治療)"
+Description: "併用療法(放射線治療)のコード。"
 * insert EnumCS
 * #none "なし"
 * #concurrent-chemo "同時化学療法"
@@ -40,6 +44,7 @@ Title: "併用療法(放射線治療)"
 ValueSet: RadiotherapyConcurrentTherapyVS
 Id: radiotherapy-concurrent-therapy-vs
 Title: "併用療法(放射線治療) ValueSet"
+Description: "併用療法(放射線治療) ValueSet。"
 * insert AllOf(RadiotherapyConcurrentTherapyCS)
 
 CodeSystem: RadiotherapyProtocolCS
@@ -57,6 +62,7 @@ Description: "院内マスタ master_radiotherapy_stop_reasons。コース拡張
 CodeSystem: RadiotherapyVolumeTypeCS
 Id: radiotherapy-volume-type
 Title: "標的体積の種類"
+Description: "標的体積の種類のコード。"
 * insert EnumCS
 * #GTV "GTV"
 * #CTV "CTV"
@@ -67,6 +73,7 @@ Title: "標的体積の種類"
 ValueSet: RadiotherapyVolumeTypeVS
 Id: radiotherapy-volume-type-vs
 Title: "標的体積の種類 ValueSet"
+Description: "標的体積の種類 ValueSet。"
 * insert AllOf(RadiotherapyVolumeTypeCS)
 
 CodeSystem: RadiotherapyModalityCS
@@ -98,11 +105,13 @@ Description: "実施記録 Procedure.category の 2 番目の coding。order-typ
 ValueSet: RadiotherapyProcedureVS
 Id: radiotherapy-procedure-vs
 Title: "放射線治療の実施記録の種類 ValueSet"
+Description: "放射線治療の実施記録の種類 ValueSet。"
 * insert AllOf(RadiotherapyProcedureCS)
 
 CodeSystem: RadiotherapyImageGuidanceCS
 Id: radiotherapy-image-guidance
 Title: "位置照合(IGRT)の方法"
+Description: "位置照合(IGRT)の方法のコード。"
 * insert EnumCS
 * #none "なし"
 * #cbct "CBCT"
@@ -114,11 +123,13 @@ Title: "位置照合(IGRT)の方法"
 ValueSet: RadiotherapyImageGuidanceVS
 Id: radiotherapy-image-guidance-vs
 Title: "位置照合(IGRT)の方法 ValueSet"
+Description: "位置照合(IGRT)の方法 ValueSet。"
 * insert AllOf(RadiotherapyImageGuidanceCS)
 
 CodeSystem: RadiotherapyCourseOutcomeCS
 Id: radiotherapy-course-outcome
 Title: "放射線治療コースの転帰"
+Description: "放射線治療コースの転帰のコード。"
 * insert EnumCS
 * #completed "完遂"
 * #discontinued "中止"
@@ -126,4 +137,5 @@ Title: "放射線治療コースの転帰"
 ValueSet: RadiotherapyCourseOutcomeVS
 Id: radiotherapy-course-outcome-vs
 Title: "放射線治療コースの転帰 ValueSet"
+Description: "放射線治療コースの転帰 ValueSet。"
 * insert AllOf(RadiotherapyCourseOutcomeCS)

@@ -3,6 +3,7 @@
 Extension: TransfusionAbo
 Id: transfusion-abo
 Title: "ABO 血液型(輸血オーダー)"
+Description: "ABO 血液型(輸血オーダー)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only CodeableConcept
@@ -11,6 +12,7 @@ Context: ServiceRequest
 Extension: TransfusionRhd
 Id: transfusion-rhd
 Title: "RhD 血液型(輸血オーダー)"
+Description: "RhD 血液型(輸血オーダー)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only CodeableConcept

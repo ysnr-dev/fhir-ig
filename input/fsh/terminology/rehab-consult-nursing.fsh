@@ -14,6 +14,7 @@ Description: "リハビリオーダー ServiceRequest.code。診療報酬の疾�
 ValueSet: RehabDiseaseCategoryVS
 Id: rehab-disease-category-vs
 Title: "リハビリテーションの疾患別区分 ValueSet"
+Description: "リハビリテーションの疾患別区分 ValueSet。"
 * insert AllOf(RehabDiseaseCategoryCS)
 
 CodeSystem: RehabTherapyTypeCS
@@ -28,6 +29,7 @@ Description: "リハビリオーダー ServiceRequest.orderDetail と実施記�
 ValueSet: RehabTherapyTypeVS
 Id: rehab-therapy-type-vs
 Title: "療法種別 ValueSet"
+Description: "療法種別 ValueSet。"
 * insert AllOf(RehabTherapyTypeCS)
 
 CodeSystem: ConsultRequestTypeCS
@@ -43,6 +45,7 @@ Description: "他科依頼 ServiceRequest.code。"
 ValueSet: ConsultRequestTypeVS
 Id: consult-request-type-vs
 Title: "他科依頼の種類 ValueSet"
+Description: "他科依頼の種類 ValueSet。"
 * insert AllOf(ConsultRequestTypeCS)
 
 CodeSystem: ConsultNoteEventCS
@@ -55,6 +58,7 @@ Description: "他科依頼への回答の Composition.event.code。event.detail 
 ValueSet: ConsultNoteEventVS
 Id: consult-note-event-vs
 Title: "診療記録のイベント(他科依頼) ValueSet"
+Description: "診療記録のイベント(他科依頼) ValueSet。"
 * insert AllOf(ConsultNoteEventCS)
 
 CodeSystem: NursingObservationResultCS

@@ -67,6 +67,7 @@ Description: "実施記録の線量 Observation.code。単位は UCUM(ctdivol mG
 ValueSet: RadDoseVS
 Id: rad-dose-vs
 Title: "被ばく線量の項目 ValueSet"
+Description: "被ばく線量の項目 ValueSet。"
 * insert AllOf(RadDoseCS)
 
 CodeSystem: RadReportItemCS
@@ -79,4 +80,5 @@ Description: "読影レポートの所見 Observation.code。"
 ValueSet: RadReportItemVS
 Id: rad-report-item-vs
 Title: "読影レポートの項目 ValueSet"
+Description: "読影レポートの項目 ValueSet。"
 * insert AllOf(RadReportItemCS)

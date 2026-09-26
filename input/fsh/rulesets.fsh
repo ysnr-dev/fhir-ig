@@ -20,4 +20,5 @@ RuleSet: MasterCS
 // 使い方: * insert AllOf(OrderTypeCS)
 RuleSet: AllOf(cs)
 * insert FCMeta
+* ^description = "CodeSystem {cs} のすべてのコード。"
 * include codes from system {cs}

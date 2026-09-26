@@ -10,6 +10,7 @@ Description: "既往歴の Condition に、HL7 の problem-list-item と併せ�
 ValueSet: ConditionCategoryVS
 Id: condition-category-vs
 Title: "病名カテゴリ(既往歴) ValueSet"
+Description: "病名カテゴリ(既往歴) ValueSet。"
 * insert AllOf(ConditionCategoryCS)
 
 CodeSystem: FlagCategoryCS
@@ -25,6 +26,7 @@ Description: "患者の注意情報(Flag)の区分。"
 ValueSet: FlagCategoryVS
 Id: flag-category-vs
 Title: "注意情報の区分 ValueSet"
+Description: "注意情報の区分 ValueSet。"
 * insert AllOf(FlagCategoryCS)
 
 CodeSystem: PatientCautionCS
@@ -49,6 +51,7 @@ Description: "病室 Location.type。"
 ValueSet: RoomClassVS
 Id: room-class-vs
 Title: "病室の種別 ValueSet"
+Description: "病室の種別 ValueSet。"
 * insert AllOf(RoomClassCS)
 
 CodeSystem: PractitionerRoleCS
@@ -89,6 +92,7 @@ Description: "医療従事者の職種(PractitionerRole.code)。HPKI の 27 資�
 ValueSet: PractitionerRoleVS
 Id: practitioner-role-vs
 Title: "職種 ValueSet"
+Description: "職種 ValueSet。"
 * insert AllOf(PractitionerRoleCS)
 
 CodeSystem: EncounterParticipantRoleCS
@@ -101,6 +105,7 @@ Description: "入院 Encounter.participant.type。担当医は HL7 の ATND を�
 ValueSet: EncounterParticipantRoleVS
 Id: encounter-participant-role-vs
 Title: "入院の担当者区分 ValueSet"
+Description: "入院の担当者区分 ValueSet。"
 * insert AllOf(EncounterParticipantRoleCS)
 
 CodeSystem: BloodTypeSourceCS
@@ -115,6 +120,7 @@ Description: "血液型 Observation.method。"
 ValueSet: BloodTypeSourceVS
 Id: blood-type-source-vs
 Title: "血液型の情報源 ValueSet"
+Description: "血液型の情報源 ValueSet。"
 * insert AllOf(BloodTypeSourceCS)
 
 CodeSystem: InfectionTypeCS
@@ -133,11 +139,13 @@ Description: "手入力の感染症 Observation.code。LOINC を 2 つ目の cod
 ValueSet: InfectionTypeVS
 Id: infection-type-vs
 Title: "感染症の種類 ValueSet"
+Description: "感染症の種類 ValueSet。"
 * insert AllOf(InfectionTypeCS)
 
 CodeSystem: InfectionResultCS
 Id: infection-result
 Title: "感染症の結果"
+Description: "感染症の結果のコード。"
 * insert EnumCS
 * #positive "陽性"
 * #negative "陰性"
@@ -145,6 +153,7 @@ Title: "感染症の結果"
 ValueSet: InfectionResultVS
 Id: infection-result-vs
 Title: "感染症の結果 ValueSet"
+Description: "感染症の結果 ValueSet。"
 * insert AllOf(InfectionResultCS)
 
 CodeSystem: InfectionSourceCS
@@ -158,6 +167,7 @@ Description: "手入力の感染症 Observation.method。検査結果由来の�
 ValueSet: InfectionSourceVS
 Id: infection-source-vs
 Title: "感染症の情報源 ValueSet"
+Description: "感染症の情報源 ValueSet。"
 * insert AllOf(InfectionSourceCS)
 
 CodeSystem: ScheduleServiceTypeCS
@@ -174,6 +184,7 @@ Description: "Schedule.serviceType。Appointment には Schedule から複製す
 ValueSet: ScheduleServiceTypeVS
 Id: schedule-service-type-vs
 Title: "予約枠の種類 ValueSet"
+Description: "予約枠の種類 ValueSet。"
 * insert AllOf(ScheduleServiceTypeCS)
 
 CodeSystem: FileCategoryCS

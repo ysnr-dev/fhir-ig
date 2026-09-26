@@ -11,6 +11,7 @@ Context: ServiceRequest
 Extension: RehabOnsetDate
 Id: rehab-onset-date
 Title: "発症日・手術日"
+Description: "発症日・手術日。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only date
@@ -18,6 +19,7 @@ Context: ServiceRequest
 Extension: RehabTargetDisease
 Id: rehab-target-disease
 Title: "対象疾患(リハビリ)"
+Description: "対象疾患(リハビリ)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only string
@@ -25,6 +27,7 @@ Context: ServiceRequest
 Extension: RehabFrequencyPerWeek
 Id: rehab-frequency-per-week
 Title: "週あたりの回数"
+Description: "週あたりの回数。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only integer
@@ -40,6 +43,7 @@ Context: Procedure
 Extension: ConsultPurposeQuestionnaireResponse
 Id: consult-purpose-questionnaire-response
 Title: "依頼目的テンプレートの記入"
+Description: "依頼目的テンプレートの記入。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
@@ -55,6 +59,7 @@ Context: ServiceRequest
 Extension: NursingOrderEnd
 Id: nursing-order-end
 Title: "看護指示の終了日"
+Description: "看護指示の終了日。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only date
@@ -70,6 +75,7 @@ Context: ServiceRequest
 Extension: NutritionGuidanceOrderEnd
 Id: nutrition-guidance-order-end
 Title: "栄養指導の終了日"
+Description: "栄養指導の終了日。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only date
@@ -77,6 +83,7 @@ Context: ServiceRequest
 Extension: NutritionGuidanceTargetDisease
 Id: nutrition-guidance-target-disease
 Title: "対象疾患(栄養指導)"
+Description: "対象疾患(栄養指導)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only string
@@ -84,6 +91,7 @@ Context: ServiceRequest
 Extension: NutritionGuidanceTargetCondition
 Id: nutrition-guidance-target-condition
 Title: "対象の病名(栄養指導)"
+Description: "対象の病名(栄養指導)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(Condition)
@@ -100,6 +108,7 @@ Context: ServiceRequest
 Extension: NutritionGuidancePurposeQuestionnaireResponse
 Id: nutrition-guidance-purpose-questionnaire-response
 Title: "指導目的テンプレートの記入"
+Description: "指導目的テンプレートの記入。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
@@ -107,6 +116,7 @@ Context: ServiceRequest
 Extension: NutritionGuidancePerformedMinutes
 Id: nutrition-guidance-performed-minutes
 Title: "指導時間(分)"
+Description: "指導時間(分)。"
 Context: Procedure
 * insert FCMeta
 * value[x] only integer

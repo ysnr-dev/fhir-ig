@@ -100,6 +100,7 @@ Profile: FC_Ward
 Parent: $JP_Location
 Id: fc-ward
 Title: "病棟"
+Description: "病棟。"
 * insert FCMeta
 * mode = #instance
 * name 1..1 MS

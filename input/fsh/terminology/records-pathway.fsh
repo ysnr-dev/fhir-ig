@@ -10,6 +10,7 @@ Description: "HL7 の observation-category に無いカテゴリ。有害事象 
 ValueSet: ObservationCategoryVS
 Id: observation-category-vs
 Title: "Observation のカテゴリ(独自) ValueSet"
+Description: "Observation のカテゴリ(独自) ValueSet。"
 * insert AllOf(ObservationCategoryCS)
 
 CodeSystem: ObservationItemCS
@@ -34,6 +35,7 @@ Description: "CarePlan.category の先頭、および評価 Observation.category
 ValueSet: CarePlanTypeVS
 Id: care-plan-type-vs
 Title: "CarePlan の種類 ValueSet"
+Description: "CarePlan の種類 ValueSet。"
 * insert AllOf(CarePlanTypeCS)
 
 CodeSystem: PathwayLevelCS
@@ -49,6 +51,7 @@ Description: "クリニカルパスの CarePlan 木の階層(適用 → 病日 �
 ValueSet: PathwayLevelVS
 Id: pathway-level-vs
 Title: "パスの階層 ValueSet"
+Description: "パスの階層 ValueSet。"
 * insert AllOf(PathwayLevelCS)
 
 CodeSystem: PathwayPhaseCS

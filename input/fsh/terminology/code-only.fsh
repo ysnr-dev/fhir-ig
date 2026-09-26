@@ -5,6 +5,7 @@
 CodeSystem: MicroExamPurposeCS
 Id: micro-exam-purpose
 Title: "細菌検査の目的"
+Description: "細菌検査の目的のコード。"
 * insert EnumCS
 * #diagnostic "診断目的"
 * #surveillance "監視培養"
@@ -12,11 +13,13 @@ Title: "細菌検査の目的"
 ValueSet: MicroExamPurposeVS
 Id: micro-exam-purpose-vs
 Title: "細菌検査の目的 ValueSet"
+Description: "細菌検査の目的 ValueSet。"
 * insert AllOf(MicroExamPurposeCS)
 
 CodeSystem: RadiotherapyPhaseStatusCS
 Id: radiotherapy-phase-status
 Title: "放射線治療フェーズの状態"
+Description: "放射線治療フェーズの状態のコード。"
 * insert EnumCS
 * #active "有効"
 * #revoked "取消"
@@ -24,11 +27,13 @@ Title: "放射線治療フェーズの状態"
 ValueSet: RadiotherapyPhaseStatusVS
 Id: radiotherapy-phase-status-vs
 Title: "放射線治療フェーズの状態 ValueSet"
+Description: "放射線治療フェーズの状態 ValueSet。"
 * insert AllOf(RadiotherapyPhaseStatusCS)
 
 CodeSystem: MealTimingCS
 Id: meal-timing
 Title: "食事のタイミング"
+Description: "食事のタイミングのコード。"
 * insert EnumCS
 * #breakfast "朝"
 * #lunch "昼"
@@ -37,11 +42,13 @@ Title: "食事のタイミング"
 ValueSet: MealTimingVS
 Id: meal-timing-vs
 Title: "食事のタイミング ValueSet"
+Description: "食事のタイミング ValueSet。"
 * insert AllOf(MealTimingCS)
 
 CodeSystem: MealFastingReasonCS
 Id: meal-fasting-reason
 Title: "欠食の理由"
+Description: "欠食の理由のコード。"
 * insert EnumCS
 * #npo "絶食"
 * #ope "手術"
@@ -53,11 +60,13 @@ Title: "欠食の理由"
 ValueSet: MealFastingReasonVS
 Id: meal-fasting-reason-vs
 Title: "欠食の理由 ValueSet"
+Description: "欠食の理由 ValueSet。"
 * insert AllOf(MealFastingReasonCS)
 
 CodeSystem: MealOrderLinkKindCS
 Id: meal-order-link-kind
 Title: "食事オーダーのつながりの種類"
+Description: "食事オーダーのつながりの種類のコード。"
 * insert EnumCS
 * #start "開始"
 * #change "変更"
@@ -67,11 +76,13 @@ Title: "食事オーダーのつながりの種類"
 ValueSet: MealOrderLinkKindVS
 Id: meal-order-link-kind-vs
 Title: "食事オーダーのつながりの種類 ValueSet"
+Description: "食事オーダーのつながりの種類 ValueSet。"
 * insert AllOf(MealOrderLinkKindCS)
 
 CodeSystem: MealOrderEndReasonCS
 Id: meal-order-end-reason
 Title: "食事オーダーの終了理由"
+Description: "食事オーダーの終了理由のコード。"
 * insert EnumCS
 * #change "変更"
 * #discharge-plan "退院予定"
@@ -81,11 +92,13 @@ Title: "食事オーダーの終了理由"
 ValueSet: MealOrderEndReasonVS
 Id: meal-order-end-reason-vs
 Title: "食事オーダーの終了理由 ValueSet"
+Description: "食事オーダーの終了理由 ValueSet。"
 * insert AllOf(MealOrderEndReasonCS)
 
 CodeSystem: BroughtMedicationSubstitutionCS
 Id: brought-medication-substitution
 Title: "持参薬の院内採用薬"
+Description: "持参薬の院内採用薬のコード。"
 * insert EnumCS
 * #same "同一薬あり"
 * #alternative "代替薬あり"
@@ -94,11 +107,13 @@ Title: "持参薬の院内採用薬"
 ValueSet: BroughtMedicationSubstitutionVS
 Id: brought-medication-substitution-vs
 Title: "持参薬の院内採用薬 ValueSet"
+Description: "持参薬の院内採用薬 ValueSet。"
 * insert AllOf(BroughtMedicationSubstitutionCS)
 
 CodeSystem: RegimenDiscontinuationReasonCS
 Id: regimen-discontinuation-reason
 Title: "レジメン中止理由"
+Description: "レジメン中止理由のコード。"
 * insert EnumCS
 * #progression "増悪"
 * #adverse-event "有害事象"
@@ -109,11 +124,13 @@ Title: "レジメン中止理由"
 ValueSet: RegimenDiscontinuationReasonVS
 Id: regimen-discontinuation-reason-vs
 Title: "レジメン中止理由 ValueSet"
+Description: "レジメン中止理由 ValueSet。"
 * insert AllOf(RegimenDiscontinuationReasonCS)
 
 CodeSystem: TreatmentContextTypeCS
 Id: treatment-context-type
 Title: "有害事象の治療文脈の種類"
+Description: "有害事象の治療文脈の種類のコード。"
 * insert EnumCS
 * #chemo-regimen "化学療法"
 * #radiotherapy "放射線治療"
@@ -121,11 +138,13 @@ Title: "有害事象の治療文脈の種類"
 ValueSet: TreatmentContextTypeVS
 Id: treatment-context-type-vs
 Title: "有害事象の治療文脈の種類 ValueSet"
+Description: "有害事象の治療文脈の種類 ValueSet。"
 * insert AllOf(TreatmentContextTypeCS)
 
 CodeSystem: QuestionnaireOrganizationFieldCS
 Id: questionnaire-organization-field
 Title: "施設情報の自動入力項目"
+Description: "施設情報の自動入力項目のコード。"
 * insert EnumCS
 * #name "施設名"
 * #institutionNumber "医療機関番号"
@@ -138,11 +157,13 @@ Title: "施設情報の自動入力項目"
 ValueSet: QuestionnaireOrganizationFieldVS
 Id: questionnaire-organization-field-vs
 Title: "施設情報の自動入力項目 ValueSet"
+Description: "施設情報の自動入力項目 ValueSet。"
 * insert AllOf(QuestionnaireOrganizationFieldCS)
 
 CodeSystem: QuestionnairePractitionerFieldCS
 Id: questionnaire-practitioner-field
 Title: "医療従事者情報の自動入力項目"
+Description: "医療従事者情報の自動入力項目のコード。"
 * insert EnumCS
 * #name "氏名"
 * #kana "カナ"
@@ -155,4 +176,5 @@ Title: "医療従事者情報の自動入力項目"
 ValueSet: QuestionnairePractitionerFieldVS
 Id: questionnaire-practitioner-field-vs
 Title: "医療従事者情報の自動入力項目 ValueSet"
+Description: "医療従事者情報の自動入力項目 ValueSet。"
 * insert AllOf(QuestionnairePractitionerFieldCS)

@@ -328,4 +328,5 @@ Description: "SS-MIX2 標準化ストレージ仕様書 コード表 Ver.1.2i「
 ValueSet: Ssmix2DepartmentCodeVS
 Id: ssmix2-department-code-vs
 Title: "SS-MIX2 診療科コード ValueSet"
+Description: "SS-MIX2 診療科コード ValueSet。"
 * insert AllOf(Ssmix2DepartmentCodeCS)

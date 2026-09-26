@@ -3,6 +3,7 @@
 Extension: PathoClinicalInfo
 Id: patho-clinical-info
 Title: "臨床情報(病理)"
+Description: "臨床情報(病理)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only string
@@ -10,6 +11,7 @@ Context: ServiceRequest
 Extension: PathoClinicalInfoQuestionnaireResponse
 Id: patho-clinical-info-questionnaire-response
 Title: "臨床情報テンプレートの記入(病理)"
+Description: "臨床情報テンプレートの記入(病理)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
@@ -17,6 +19,7 @@ Context: ServiceRequest
 Extension: PathoReportDue
 Id: patho-report-due
 Title: "報告希望日"
+Description: "報告希望日。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only date

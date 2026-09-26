@@ -31,6 +31,7 @@ Context: ServiceRequest
 Extension: MealFastingReason
 Id: meal-fasting-reason
 Title: "欠食の理由"
+Description: "欠食の理由。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only code

@@ -15,6 +15,7 @@ Description: "レセプト電算の手術・麻酔手技コード。オーダー
 CodeSystem: SurgeryPositionCS
 Id: surgery-position
 Title: "体位"
+Description: "体位のコード。"
 * insert EnumCS
 * #supine "仰臥位"
 * #lithotomy "砕石位"
@@ -26,6 +27,7 @@ Title: "体位"
 ValueSet: SurgeryPositionVS
 Id: surgery-position-vs
 Title: "体位 ValueSet"
+Description: "体位 ValueSet。"
 * insert AllOf(SurgeryPositionCS)
 
 CodeSystem: SurgeryStaffRoleCS
@@ -43,11 +45,13 @@ Description: "オーダーの surgery-staff 拡張の role、実施記録 Proced
 ValueSet: SurgeryStaffRoleVS
 Id: surgery-staff-role-vs
 Title: "手術スタッフの役割 ValueSet"
+Description: "手術スタッフの役割 ValueSet。"
 * insert AllOf(SurgeryStaffRoleCS)
 
 CodeSystem: SurgeryAnesthesiaMethodCS
 Id: surgery-anesthesia-method
 Title: "麻酔方法"
+Description: "麻酔方法のコード。"
 * insert EnumCS
 * #general-inhalation "全身麻酔(吸入)"
 * #general-tiva "全身麻酔(TIVA)"
@@ -61,11 +65,13 @@ Title: "麻酔方法"
 ValueSet: SurgeryAnesthesiaMethodVS
 Id: surgery-anesthesia-method-vs
 Title: "麻酔方法 ValueSet"
+Description: "麻酔方法 ValueSet。"
 * insert AllOf(SurgeryAnesthesiaMethodCS)
 
 CodeSystem: SurgeryAnesthesiaManagementCS
 Id: surgery-anesthesia-management
 Title: "麻酔管理"
+Description: "麻酔管理のコード。"
 * insert EnumCS
 * #anesthesiologist "麻酔科管理"
 * #surgeon "執刀医管理"
@@ -73,11 +79,13 @@ Title: "麻酔管理"
 ValueSet: SurgeryAnesthesiaManagementVS
 Id: surgery-anesthesia-management-vs
 Title: "麻酔管理 ValueSet"
+Description: "麻酔管理 ValueSet。"
 * insert AllOf(SurgeryAnesthesiaManagementCS)
 
 CodeSystem: SurgeryBloodPreparationCS
 Id: surgery-blood-preparation
 Title: "輸血準備"
+Description: "輸血準備のコード。"
 * insert EnumCS
 * #none "不要"
 * #type-screen "T&S"
@@ -87,6 +95,7 @@ Title: "輸血準備"
 ValueSet: SurgeryBloodPreparationVS
 Id: surgery-blood-preparation-vs
 Title: "輸血準備 ValueSet"
+Description: "輸血準備 ValueSet。"
 * insert AllOf(SurgeryBloodPreparationCS)
 
 CodeSystem: SurgeryEquipmentCS
@@ -107,11 +116,13 @@ Description: "other のときは自由記載を display に入れる。"
 ValueSet: SurgeryEquipmentVS
 Id: surgery-equipment-vs
 Title: "使用機器 ValueSet"
+Description: "使用機器 ValueSet。"
 * insert AllOf(SurgeryEquipmentCS)
 
 CodeSystem: SurgerySpecimenPlanCS
 Id: surgery-specimen-plan
 Title: "検体の予定"
+Description: "検体の予定のコード。"
 * insert EnumCS
 * #frozen-section "術中迅速病理"
 * #permanent "永久標本"
@@ -120,11 +131,13 @@ Title: "検体の予定"
 ValueSet: SurgerySpecimenPlanVS
 Id: surgery-specimen-plan-vs
 Title: "検体の予定 ValueSet"
+Description: "検体の予定 ValueSet。"
 * insert AllOf(SurgerySpecimenPlanCS)
 
 CodeSystem: SurgeryConsentCS
 Id: surgery-consent
 Title: "同意書"
+Description: "同意書のコード。"
 * insert EnumCS
 * #surgery "手術同意書"
 * #anesthesia "麻酔同意書"
@@ -133,11 +146,13 @@ Title: "同意書"
 ValueSet: SurgeryConsentVS
 Id: surgery-consent-vs
 Title: "同意書 ValueSet"
+Description: "同意書 ValueSet。"
 * insert AllOf(SurgeryConsentCS)
 
 CodeSystem: SurgeryApproachCS
 Id: surgery-approach
 Title: "アプローチ"
+Description: "アプローチのコード。"
 * insert EnumCS
 * #open "開放手術"
 * #laparoscopic "腹腔鏡"
@@ -150,11 +165,13 @@ Title: "アプローチ"
 ValueSet: SurgeryApproachVS
 Id: surgery-approach-vs
 Title: "アプローチ ValueSet"
+Description: "アプローチ ValueSet。"
 * insert AllOf(SurgeryApproachCS)
 
 CodeSystem: SurgeryWoundClassCS
 Id: surgery-wound-class
 Title: "創分類"
+Description: "創分類のコード。"
 * insert EnumCS
 * #clean "清潔"
 * #clean-contaminated "準清潔"
@@ -164,11 +181,13 @@ Title: "創分類"
 ValueSet: SurgeryWoundClassVS
 Id: surgery-wound-class-vs
 Title: "創分類 ValueSet"
+Description: "創分類 ValueSet。"
 * insert AllOf(SurgeryWoundClassCS)
 
 CodeSystem: SurgeryCountCheckCS
 Id: surgery-count-check
 Title: "カウント確認"
+Description: "カウント確認のコード。"
 * insert EnumCS
 * #verified "合致"
 * #discrepancy "不一致"
@@ -176,6 +195,7 @@ Title: "カウント確認"
 ValueSet: SurgeryCountCheckVS
 Id: surgery-count-check-vs
 Title: "カウント確認 ValueSet"
+Description: "カウント確認 ValueSet。"
 * insert AllOf(SurgeryCountCheckCS)
 
 CodeSystem: SurgeryOutcomeCS
@@ -190,6 +210,7 @@ Description: "実施記録 Procedure.outcome。"
 ValueSet: SurgeryOutcomeVS
 Id: surgery-outcome-vs
 Title: "手術の転帰 ValueSet"
+Description: "手術の転帰 ValueSet。"
 * insert AllOf(SurgeryOutcomeCS)
 
 CodeSystem: SurgeryObservationCS
@@ -204,6 +225,7 @@ Description: "手術実施記録にぶら下がる Observation.code。値は mL(
 ValueSet: SurgeryObservationVS
 Id: surgery-observation-vs
 Title: "手術中の測定項目 ValueSet"
+Description: "手術中の測定項目 ValueSet。"
 * insert AllOf(SurgeryObservationCS)
 
 CodeSystem: AnesthesiaEventCS
@@ -222,4 +244,5 @@ Description: "麻酔チャートのイベント Observation.code。"
 ValueSet: AnesthesiaEventVS
 Id: anesthesia-event-vs
 Title: "麻酔チャートのイベント ValueSet"
+Description: "麻酔チャートのイベント ValueSet。"
 * insert AllOf(AnesthesiaEventCS)

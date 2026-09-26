@@ -29,6 +29,7 @@ Description: "栄養指導オーダー ServiceRequest.code。"
 ValueSet: NutritionGuidanceFormatVS
 Id: nutrition-guidance-format-vs
 Title: "栄養指導の形式 ValueSet"
+Description: "栄養指導の形式 ValueSet。"
 * insert AllOf(NutritionGuidanceFormatCS)
 
 CodeSystem: NutritionGuidanceSessionTypeCS
@@ -43,4 +44,5 @@ Description: "栄養指導の実施記録 Procedure.code。"
 ValueSet: NutritionGuidanceSessionTypeVS
 Id: nutrition-guidance-session-type-vs
 Title: "栄養指導の実施区分 ValueSet"
+Description: "栄養指導の実施区分 ValueSet。"
 * insert AllOf(NutritionGuidanceSessionTypeCS)

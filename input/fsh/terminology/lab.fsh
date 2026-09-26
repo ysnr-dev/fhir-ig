@@ -47,4 +47,5 @@ Description: "検体検査・細菌検査・病理・放射線の DiagnosticRepo
 ValueSet: LabResultSettingVS
 Id: lab-result-setting-vs
 Title: "検査報告の入院・外来区分 ValueSet"
+Description: "検査報告の入院・外来区分 ValueSet。"
 * insert AllOf(LabResultSettingCS)

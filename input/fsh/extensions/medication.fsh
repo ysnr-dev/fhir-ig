@@ -19,6 +19,7 @@ Context: ServiceRequest
 Extension: InjectionUsageType
 Id: injection-usage-type
 Title: "投与形態(点滴 / ワンショット)"
+Description: "投与形態(点滴 / ワンショット)。"
 Context: MedicationRequest.dosageInstruction
 * insert FCMeta
 * value[x] only CodeableConcept

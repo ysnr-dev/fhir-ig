@@ -28,6 +28,7 @@ Description: "ServiceRequest.category の先頭要素、および実施記録 Pr
 ValueSet: OrderTypeVS
 Id: order-type-vs
 Title: "オーダー種別 ValueSet"
+Description: "オーダー種別 ValueSet。"
 * insert AllOf(OrderTypeCS)
 
 CodeSystem: PrescriptionSettingCS
@@ -41,6 +42,7 @@ Description: "オーダーの入院・外来区分。ServiceRequest.category の
 ValueSet: PrescriptionSettingVS
 Id: prescription-setting-vs
 Title: "入院・外来区分 ValueSet"
+Description: "入院・外来区分 ValueSet。"
 * insert AllOf(PrescriptionSettingCS)
 
 CodeSystem: PrescriptionCategoryCS
@@ -60,6 +62,7 @@ Description: "処方ヘッダ ServiceRequest.category の 3 番目。入院は r
 ValueSet: PrescriptionCategoryVS
 Id: prescription-category-vs
 Title: "処方区分 ValueSet"
+Description: "処方区分 ValueSet。"
 * insert AllOf(PrescriptionCategoryCS)
 
 CodeSystem: TaskCodeCS
@@ -95,6 +98,7 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 ValueSet: TaskCodeVS
 Id: task-code-vs
 Title: "Task 種別 ValueSet"
+Description: "Task 種別 ValueSet。"
 * insert AllOf(TaskCodeCS)
 
 CodeSystem: Jj1017LateralityCS
@@ -109,6 +113,7 @@ Description: "JJ1017 の左右区分。放射線検査では display を院内�
 ValueSet: Jj1017LateralityVS
 Id: jj1017-laterality-vs
 Title: "左右区分(JJ1017) ValueSet"
+Description: "左右区分(JJ1017) ValueSet。"
 * insert AllOf(Jj1017LateralityCS)
 
 CodeSystem: LabItemAbbreviationCS

@@ -31,11 +31,13 @@ Description: "注射オーダー ServiceRequest.category の 3 番目。入院�
 ValueSet: InjectionCategoryVS
 Id: injection-category-vs
 Title: "注射区分 ValueSet"
+Description: "注射区分 ValueSet。"
 * insert AllOf(InjectionCategoryCS)
 
 CodeSystem: InjectionUsageTypeCS
 Id: injection-usage-type
 Title: "注射の投与形態"
+Description: "注射の投与形態のコード。"
 * insert EnumCS
 * #drip "点滴"
 * #one-shot "ワンショット"
@@ -43,6 +45,7 @@ Title: "注射の投与形態"
 ValueSet: InjectionUsageTypeVS
 Id: injection-usage-type-vs
 Title: "注射の投与形態 ValueSet"
+Description: "注射の投与形態 ValueSet。"
 * insert AllOf(InjectionUsageTypeCS)
 
 CodeSystem: InjectionLineCS
@@ -58,6 +61,7 @@ Description: "JP Core の JP_MedicationDosage_Line 拡張の valueCodeableConcep
 ValueSet: InjectionLineVS
 Id: injection-line-vs
 Title: "注射ルート ValueSet"
+Description: "注射ルート ValueSet。"
 * insert AllOf(InjectionLineCS)
 
 CodeSystem: BroughtMedicationDecisionCS
@@ -72,6 +76,7 @@ Description: "持参薬 MedicationStatement.statusReason。continue → status a
 ValueSet: BroughtMedicationDecisionVS
 Id: brought-medication-decision-vs
 Title: "持参薬の判断 ValueSet"
+Description: "持参薬の判断 ValueSet。"
 * insert AllOf(BroughtMedicationDecisionCS)
 
 CodeSystem: RegimenCS
