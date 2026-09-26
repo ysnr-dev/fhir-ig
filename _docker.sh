@@ -7,7 +7,8 @@ cd "$(dirname "$0")"
 ./_installdeps.sh
 
 IMAGE="${IG_PUBLISHER_IMAGE:-hl7fhir/ig-publisher-base:latest}"
-CONTAINER_HOME="$(docker run --rm "$IMAGE" bash -c 'echo $HOME')"
+# イメージの作業ユーザー(publisher)のホーム。イメージを変えたときは IG_CONTAINER_HOME で上書きする。
+CONTAINER_HOME="${IG_CONTAINER_HOME:-/home/publisher}"
 
 docker run --rm ${DOCKER_TTY:--t} \
   -v "$PWD":"$CONTAINER_HOME/ig" \

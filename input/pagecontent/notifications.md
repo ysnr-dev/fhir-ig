@@ -1,1 +1,65 @@
-(執筆中)
+### Task の 2 つの使い方
+
+Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
+
+| 系統 | 共通プロファイル | intent | focus | owner |
+|---|---|---|---|---|
+| 部門進捗 Task | [FC_DepartmentTask](StructureDefinition-fc-department-task.html) | filler-order | ヘッダ ServiceRequest | 無し(看護指示のみ看護師) |
+| 通知 Task | [FC_NotificationTask](StructureDefinition-fc-notification-task.html) | filler-order | 通知の対象(Provenance / Encounter / DiagnosticReport / Observation / ServiceRequest) | 宛先の職員 |
+
+持参薬鑑別([FC_BroughtMedReviewTask](StructureDefinition-fc-brought-med-review-task.html))は intent = order の作業 Task で、どちらにも属しません。
+
+### 部門進捗 Task
+
+| code | 種別 | 状態(code: 表示) |
+|---|---|---|
+| lab-exam | 検体検査 | requested 依頼済 / accepted 受付済 / completed 実施済 / cancelled 中止 |
+| rad-exam | 放射線検査 | 同上 |
+| endoscopy-exam | 内視鏡 | 同上 |
+| physio-exam | 生理検査 | 同上 |
+| patho-exam | 病理検査 | requested 依頼済 / accepted 受付済 / completed 検査済 / cancelled 中止 |
+| treatment | 処置 | requested / accepted / completed / cancelled |
+| surgery | 手術 | requested 申込済 / accepted 受付済 / in-progress 入室中 / completed 実施済 / cancelled 中止 |
+| transfusion | 輸血 | requested 依頼済 / accepted 受付済 / in-progress 出庫済 / completed 実施済 / cancelled 中止 |
+| radiotherapy | 放射線治療 | requested 処方済 / accepted 計画中 / in-progress 治療中 / on-hold 休止 / completed 終了 / cancelled 中止 |
+| rehab | リハビリ | requested 依頼済 / accepted 実施中 / completed 終了 / cancelled 中止 |
+| nutrition-guidance | 栄養指導 | 同上 |
+| consult | 他科依頼 | requested 依頼済 / accepted 対応中 / completed 回答済 / cancelled 取消 |
+| nursing | 看護指示 | requested 指示受け待ち / accepted 指示受け済 / cancelled 中止 |
+| rx-dispense | 調剤 | requested 依頼済 / accepted 受付済 / in-progress 調剤済 / completed 実施済 / cancelled 中止 |
+| injection | 注射 | requested 依頼済 / accepted 受付済 / in-progress 払出済 / completed 実施済 / cancelled 中止 |
+
+- Task が無い = requested。最初の状態変更で作られます(看護指示は登録時)。
+- `executionPeriod`: accepted / in-progress / on-hold で start、completed で end(調剤・注射は end を保つ)。
+- `priority` / `requester` はオーダーから複製。`authoredOn` / `lastModified`。
+- 上流サーバーの Task は inv-1(lastModified ≥ authoredOn)を検証します。
+
+### 通知 Task
+
+通知の種別はアプリのレジストリ(`notificationRegistry.tsx`)に 1 要素ずつ登録され、種別を足すのはレジストリへの追加です。
+
+| code | 種別 | 重要度(priority) | focus | input(type.text) | プロファイル |
+|---|---|---|---|---|---|
+| order-approval | オーダー承認 | info(routine) | Provenance | 活動 / 種別 / 対象オーダー / 開始日 / 依頼 / セット | [FC_OrderApprovalTask](StructureDefinition-fc-order-approval-task.html) |
+| brought-med-identified | 持参薬鑑別済 | info | Encounter | 入院 / 入院日 / 剤数 / 判断待ち | [FC_BroughtMedIdentifiedTask](StructureDefinition-fc-brought-med-identified-task.html) |
+| document-due | 文書作成 | info、期限あり | Encounter | 文書 / 文書名 / 入院 / 退院日 / 期限 | [FC_DocumentDueTask](StructureDefinition-fc-document-due-task.html) |
+| lab-panic | 緊急異常値 | alert(stat) | DiagnosticReport | 検体採取日 + 項目ごとの値 | [FC_LabPanicTask](StructureDefinition-fc-lab-panic-task.html) |
+| result-review | 検査結果確認 | info | DiagnosticReport | 種別 / 対象日 / 内容 | [FC_ResultReviewTask](StructureDefinition-fc-result-review-task.html) |
+| rad-critical-finding | 重要所見 | alert(stat) | DiagnosticReport | 撮影日 / 撮影内容 / 要点 | [FC_RadCriticalFindingTask](StructureDefinition-fc-rad-critical-finding-task.html) |
+| pathway-variance | パスのバリアンス | caution(urgent) | 評価 Observation | 無し | [FC_PathwayVarianceTask](StructureDefinition-fc-pathway-variance-task.html) |
+| radiotherapy-review-due | 放射線治療の診察 | info | ServiceRequest | 治療コース / 前回の診察 | [FC_RadiotherapyReviewDueTask](StructureDefinition-fc-radiotherapy-review-due-task.html) |
+
+- `status`: requested 未対応 / completed 対応済 / cancelled 取消。`owner` = 宛先の職員(宛先が決まらない緊急異常値だけ無し)、`requester` = 発生させた職員、`basedOn` = 関連するオーダー。
+- `restriction.period.end` = 期限。対応済みにすると `executionPeriod` と `note`(authorReference / time / text)が付きます。
+- backend もオーダー承認 Task を backfill します(`notifications.rake`)。
+
+### Provenance
+
+- オーダーの来歴([FC_OrderProvenance](StructureDefinition-fc-order-provenance.html)): オーダーの登録・変更に必ず 1 件。`target` = ヘッダ ServiceRequest(同じ Bundle の MedicationRequest も。明細 ServiceRequest は含めない。パス適用では根の CarePlan)。`activity` = v3-DataOperation(CREATE / UPDATE / CANCEL / REACTIVATE / COMPLETE / SUSPEND / RESUME)。`agent` = author(依頼医)と enterer(ログイン中の職員、onBehalfOf = 依頼医)。enterer ≠ author が代行入力で、承認依頼の通知が依頼医に届き、承認で verifier の agent と signature(Verification Signature、data 無し)が加わります。
+- 結果確認の来歴([FC_ReviewProvenance](StructureDefinition-fc-review-provenance.html)): verifier と signature だけで activity は持ちません。
+- 単一ヘッダの Bundle でも fullUrl が必須です。fullUrl が無いと来歴とパスの参照が付きません。
+
+### 例
+
+- [オーダーの来歴](Provenance-example-order-provenance.html) / [結果確認の来歴](Provenance-example-review-provenance.html)
+- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html)
