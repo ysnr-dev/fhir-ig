@@ -57,19 +57,18 @@ Title: "バイタル(血圧)の例"
 Instance: example-nursing-observation
 InstanceOf: FC_NursingObservation
 Usage: #example
-Title: "看護観察 記録(体温)の例"
+Title: "看護観察 記録の例"
 * status = #final
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"
 * identifier.value = "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"
 * category = $order-type#nursing "看護指示"
-* code.coding[medis] = $medis-nursing-observation#31001368 "体温"
-* code.coding[loinc] = $loinc#8310-5 "Body temperature"
+* code.coding[medis] = $medis-nursing-observation#31000525 "努力呼吸"
 * subject = Reference(Patient/example-patient)
 * encounter = Reference(Encounter/example-encounter)
 * basedOn = Reference(ServiceRequest/example-nursing-order)
 * effectiveDateTime = "2026-04-02T10:00:00+09:00"
 * performer = Reference(Practitioner/example-practitioner)
-* valueQuantity = 36.8 'Cel' "℃"
+* valueCodeableConcept = http://fhir-client.local/CodeSystem/nursing-observation-result#31000525-01 "なし"
 
 Instance: example-meal-intake-observation
 InstanceOf: FC_MealIntakeObservation

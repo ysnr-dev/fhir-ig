@@ -31,7 +31,7 @@ parameters:
   usage-stats-opt-out: true
   i18n-default-lang: ja
   # coding.display の不一致(アプリは HL7 のコードにも日本語 display を付ける)をエラーにしない
-  displayWarnings: true
+  display-warnings: true
   # ePath(クリニカルパス)の拡張は定義を読み込まないので、この domain の未知の拡張を許す
   extension-domain: http://e-path.jp
   # backend が書く拡張のうち、canonical(http://fhir-client.local/StructureDefinition/...)の外にある URL

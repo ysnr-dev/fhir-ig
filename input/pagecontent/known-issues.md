@@ -17,7 +17,7 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | Questionnaire / QuestionnaireResponse のプロファイル | JASPEHR の jaspehr-questionnaire / -questionnaireresponse。JASPEHR パッケージは公開レジストリに無く、jaspehr.jp から取得する。 | 本 IG の依存パッケージとして手動で展開。 |
 | ePath の定義 | クリニカルパスの拡張・CodeSystem・IdSystem は ePath IG の URL を使うが、パッケージ依存にはしていない(JP Core 1.1.2 依存で衝突するため)。 | インスタンスの検証では未知の拡張として警告になる。 |
 | orderDetail と code(prr-1) | 処方・注射のヘッダ ServiceRequest は orderDetail(薬剤行への参照)を持つが code を持たないため、FHIR 基本の不変条件 prr-1(orderDetail SHALL only be present if code is present)に反する。 | 例の検証でエラーになる。code.text(例: 処方 / 注射)を付ければ解消する。 |
-| 麻酔チャートのバイタルに category が無い | LOINC のバイタルコード(8867-4 など)を持つ Observation は FHIR 基本の Vital Signs プロファイルで自動検証され、category = vital-signs が必須になる。麻酔チャートのバイタルは category を持たない。 | 例は EtCO2(19889-5)にして回避している。 |
+| バイタルの LOINC コードを持つ Observation の category | LOINC のバイタルコード(8310-5 / 8867-4 など)を持つ Observation は FHIR 基本の Vital Signs プロファイルで自動検証され、category = vital-signs が必須になる。麻酔チャートのバイタルは category を持たず、看護観察の記録は category[0] = order-type#nursing なので、どちらも準拠しない。 | 例は EtCO2(19889-5)や LOINC 対応の無い観察項目にして回避している。 |
 | JP_Procedure の nurse スライス | JP_Procedure は看護行為の coding の system を medis.or.jp の URL に固定しつつ、ValueSet(JP_ProcedureCodesNurse_VS)は urn:oid:1.2.392.200119.4.701 だけを含むため、どのコードも準拠できない。 | 看護行為の実施記録は base から派生。 |
 | jpfhir-terminology の部分的な CodeSystem | jpfhir-terminology 1.4.0 は J-FAGY(食物 2 件)や MEDIS 看護観察(270 件)などを content = complete で収載しており、アプリが使う実コードが「未知のコード」になる。 | 例は収載されているコードを使う(食事摂取量の 31003419 / 31003420 は例外)。 |
 | 単一ヘッダの Bundle の fullUrl | 単一ヘッダの transaction でも fullUrl が必須。漏れると来歴とパスの参照が付かない。 | |
