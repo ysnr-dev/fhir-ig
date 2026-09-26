@@ -53,11 +53,13 @@ sushi .                    # fsh-generated/ に FHIR JSON を出力
 ホストに Java 17 以上が無くても、IG Publisher 同梱のコンテナでビルドできます。
 
 ```bash
-./_docker.sh               # output/index.html と output/qa.html ができる
+./_docker.sh               # output/index.html と output/qa.html ができる(約 20 分)
 open output/index.html
 ```
 
-`IG_HEAP=6g ./_docker.sh` でヒープを変えられます。Docker Desktop のメモリは 6 GB 以上を割り当ててください。
+バインドマウント上で IG Publisher を動かすと Docker Desktop for Mac では数万ファイルの書き込みが極端に遅い(2 時間以上)ため、
+`_docker.sh` はリポジトリをコンテナ内のディスクにコピーしてビルドし、`output/` だけホストに書き戻します。
+`IG_HEAP=4g ./_docker.sh` でヒープを変えられます(既定 3g。Jekyll と合わせて Docker Desktop のメモリは 6 GB 以上)。
 
 ### IG 全体をビルドする(ホスト)
 
@@ -71,7 +73,9 @@ Java 17 以上・jekyll・sushi がある環境では `./_build.sh` を直接実
    Pull Request ではビルドだけ行い、デプロイしない。
 4. ビルド結果の QA(エラー / 警告数)は Actions の Job Summary に出る。`qa.html` は公開先の `/qa.html`。
 
-ビルドが失敗するのは SUSHI のエラーと IG Publisher の異常終了だけで、IG Publisher の QA 警告では失敗しません。
+ビルドが失敗するのは SUSHI のエラーと IG Publisher の異常終了だけで、IG Publisher の QA のエラー・警告では失敗しません。
+QA に残るエラーは、アプリ側の既知の非準拠(`known-issues.md` に記載: 処方・注射ヘッダの prr-1、jpfhir-terminology に無い MEDIS コード)と、
+院内マスタ由来コードへの narrative リンクだけです。
 
 ## 書き方の規約
 
