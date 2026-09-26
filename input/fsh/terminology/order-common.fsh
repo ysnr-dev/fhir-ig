@@ -1,0 +1,130 @@
+// オーダー全種別で共有する CodeSystem / ValueSet。
+
+CodeSystem: OrderTypeCS
+Id: order-type
+Title: "オーダー種別"
+Description: "ServiceRequest.category の先頭要素、および実施記録 Procedure.category.coding の先頭でオーダー種別を識別する。上流サーバーは category の先頭しか索引しないため、必ず先頭に置く。種別を持たない ServiceRequest は処方(prescription)として読む。"
+* insert EnumCS
+* #lab "検体検査"
+* #micro "細菌検査"
+* #rad "放射線検査"
+* #radiotherapy "放射線治療"
+* #endoscopy "内視鏡"
+* #physio "生理検査"
+* #pathology "病理検査"
+* #surgery "手術"
+* #treatment "処置"
+* #rehab "リハビリ"
+* #consult "他科依頼"
+* #nursing "看護指示"
+* #meal "食事"
+* #transfusion "輸血"
+* #nutrition-guidance "栄養指導"
+* #injection "注射"
+* #chemo-regimen "化学療法"
+* #anesthesia-chart "麻酔チャート"
+* #prescription "処方" "ServiceRequest には付けない。与薬記録の Procedure / MedicationAdministration の振り分けにだけ使う。"
+
+ValueSet: OrderTypeVS
+Id: order-type-vs
+Title: "オーダー種別 ValueSet"
+* insert AllOf(OrderTypeCS)
+
+CodeSystem: PrescriptionSettingCS
+Id: prescription-setting
+Title: "入院・外来区分"
+Description: "オーダーの入院・外来区分。ServiceRequest.category の 2 番目に置く。食事・看護指示は常に inpatient。"
+* insert EnumCS
+* #inpatient "入院"
+* #outpatient "外来"
+
+ValueSet: PrescriptionSettingVS
+Id: prescription-setting-vs
+Title: "入院・外来区分 ValueSet"
+* insert AllOf(PrescriptionSettingCS)
+
+CodeSystem: PrescriptionCategoryCS
+Id: prescription-category
+Title: "処方区分"
+Description: "処方ヘッダ ServiceRequest.category の 3 番目。入院は regular/continuous/temporary/discharge/emergency、外来は external/internal。brought は持参薬を継続するときに作る院内処方。"
+* insert EnumCS
+* #regular "定期"
+* #continuous "継続"
+* #temporary "臨時"
+* #discharge "退院"
+* #emergency "緊急"
+* #external "院外"
+* #internal "院内"
+* #brought "持参"
+
+ValueSet: PrescriptionCategoryVS
+Id: prescription-category-vs
+Title: "処方区分 ValueSet"
+* insert AllOf(PrescriptionCategoryCS)
+
+CodeSystem: TaskCodeCS
+Id: task-code
+Title: "Task 種別"
+Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)と通知 Task(担当者宛の通知)の両方がこの CodeSystem を使う。"
+* insert EnumCS
+* #rx-dispense "調剤"
+* #injection "注射"
+* #lab-exam "検体検査"
+* #rad-exam "放射線検査"
+* #radiotherapy "放射線治療"
+* #endoscopy-exam "内視鏡"
+* #physio-exam "生理検査"
+* #patho-exam "病理検査"
+* #surgery "手術"
+* #treatment "処置"
+* #rehab "リハビリ"
+* #consult "他科依頼"
+* #nursing "看護指示"
+* #transfusion "輸血"
+* #nutrition-guidance "栄養指導"
+* #brought-med-review "持参薬鑑別"
+* #order-approval "オーダー承認"
+* #brought-med-identified "持参薬鑑別済"
+* #document-due "文書作成"
+* #lab-panic "緊急異常値"
+* #result-review "検査結果確認"
+* #rad-critical-finding "重要所見"
+* #pathway-variance "パスのバリアンス"
+* #radiotherapy-review-due "放射線治療の診察"
+
+ValueSet: TaskCodeVS
+Id: task-code-vs
+Title: "Task 種別 ValueSet"
+* insert AllOf(TaskCodeCS)
+
+CodeSystem: Jj1017LateralityCS
+Id: jj1017-laterality
+Title: "左右区分(JJ1017)"
+Description: "JJ1017 の左右区分。放射線検査では display を院内マスタから転記し、放射線治療は「右側/左側/両側」、手術は「右/左/両側」を display に入れる。"
+* insert EnumCS
+* #R "右"
+* #L "左"
+* #B "両側"
+
+ValueSet: Jj1017LateralityVS
+Id: jj1017-laterality-vs
+Title: "左右区分(JJ1017) ValueSet"
+* insert AllOf(Jj1017LateralityCS)
+
+CodeSystem: LabItemAbbreviationCS
+Id: lab-item-abbreviation
+Title: "検査項目略称"
+Description: "code = 略称文字列そのもの(例: WBC, CRP, CT)。検体検査・放射線・内視鏡・生理検査・処置・手術の明細 code.coding と検体検査結果 Observation.code.coding に補助的に付く。コードの集合は院内マスタで決まる。"
+* insert MasterCS
+
+CodeSystem: OrderSetCS
+Id: order-set
+Title: "オーダーセット"
+Description: "code = backend の order_sets.code。オーダーセットから出したオーダーのヘッダに付く order-set 拡張の valueCoding.system。"
+* insert MasterCS
+
+CodeSystem: PathwayCS
+Id: pathway
+Title: "クリニカルパス"
+Description: "code = パスコード。パス適用から出したオーダーのヘッダに付く pathway-order 拡張の valueCoding.system。"
+* insert MasterCS

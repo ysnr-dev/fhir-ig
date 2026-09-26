@@ -1,0 +1,120 @@
+id: ysnr.fhir-client
+canonical: http://fhir-client.local
+name: FhirClientImplementationGuide
+title: "fhir-client 実装ガイド"
+description: >-
+  fhir-client(電子カルテ Web クライアント)が上流 FHIR サーバーに作成する FHIR R4 リソースの仕様。
+  独自 Extension・CodeSystem・識別子体系、JP Core プロファイルの利用方法、リソース間の参照関係を定義する。
+status: draft
+version: 0.1.0
+fhirVersion: 4.0.1
+releaseLabel: ci-build
+copyrightYear: 2026+
+license: CC0-1.0
+publisher:
+  name: ysnr-dev
+  url: https://github.com/ysnr-dev
+jurisdiction: urn:iso:std:iso:3166#JP "Japan"
+
+dependencies:
+  jpfhir.jp.core: 1.2.0
+  jaspehr: 1.0.0
+
+parameters:
+  show-inherited-invariants: false
+  excludexml: true
+  excludettl: true
+  excludemap: true
+  apply-contact: true
+  apply-jurisdiction: true
+  apply-publisher: true
+  apply-version: true
+  usage-stats-opt-out: true
+  i18n-default-lang: ja
+
+pages:
+  index.md:
+    title: はじめに
+  guidance-common.md:
+    title: 共通規約
+  guidance-terminology.md:
+    title: 用語(コードシステム)の方針
+  guidance-identifiers.md:
+    title: 識別子体系
+  orders.md:
+    title: オーダー
+    order-lab.md:
+      title: 検体検査
+    order-micro.md:
+      title: 細菌検査
+    order-rad.md:
+      title: 放射線検査
+    order-radiotherapy.md:
+      title: 放射線治療
+    order-endoscopy-physio.md:
+      title: 内視鏡・生理検査
+    order-pathology.md:
+      title: 病理検査
+    order-surgery.md:
+      title: 手術
+    order-treatment.md:
+      title: 処置
+    order-rehab.md:
+      title: リハビリ
+    order-consult.md:
+      title: 他科依頼
+    order-nursing.md:
+      title: 看護指示
+    order-meal.md:
+      title: 食事
+    order-transfusion.md:
+      title: 輸血
+    order-nutrition-guidance.md:
+      title: 栄養指導
+    order-set-pathway.md:
+      title: オーダーセット・パス適用の印
+  medication.md:
+    title: 薬剤(処方・注射・持参薬・レジメン)
+  results.md:
+    title: 検査結果・報告
+  procedures.md:
+    title: 実施記録(Procedure ハブ)
+  records.md:
+    title: 診療記録・退院時サマリー
+  pathway.md:
+    title: クリニカルパス
+  questionnaire.md:
+    title: Questionnaire / QuestionnaireResponse
+  admin.md:
+    title: 患者・管理リソース
+  scheduling.md:
+    title: 予約(Schedule / Slot / Appointment)
+  notifications.md:
+    title: 通知 Task と Provenance
+  known-issues.md:
+    title: 既知の非準拠・不具合
+  downloads.md:
+    title: ダウンロード
+
+menu:
+  はじめに: index.html
+  規約:
+    共通規約: guidance-common.html
+    用語: guidance-terminology.html
+    識別子: guidance-identifiers.html
+    既知の問題: known-issues.html
+  オーダー: orders.html
+  薬剤: medication.html
+  結果・実施:
+    検査結果・報告: results.html
+    実施記録: procedures.html
+  記録・計画:
+    診療記録: records.html
+    クリニカルパス: pathway.html
+    Questionnaire: questionnaire.html
+  管理:
+    患者・管理: admin.html
+    予約: scheduling.html
+    通知: notifications.html
+  Artifacts: artifacts.html
+  ダウンロード: downloads.html
