@@ -70,10 +70,10 @@ Description: """退院時サマリー。入院(Encounter)ごとに 1 件。
 * section[allergies].entry only Reference(FC_AllergyIntolerance)
 
 Profile: FC_Questionnaire
-Parent: $jaspehr-questionnaire
+Parent: Questionnaire
 Id: fc-questionnaire
 Title: "テンプレート(Questionnaire)"
-Description: """診療記録・オーダー・報告書などで使うテンプレート。JASPEHR の jaspehr-questionnaire から派生する。
+Description: """診療記録・オーダー・報告書などで使うテンプレート。アプリは meta.profile に JASPEHR の jaspehr-questionnaire を付け、上流サーバーは JASPEHR の不変条件で検証する。JASPEHR パッケージは公開レジストリに無く、IG Publisher でのスナップショット生成にも問題があるため、本 IG では base から派生し JASPEHR への準拠は本文で述べる。
 
 - url / version / name / title / status / subjectType = Patient。url は `http://fhir-client.local/Questionnaire/{id}` など。
 - 標準拡張: questionnaire-itemControl、choiceOrientation、hidden、maxOccurs、minValue、maxValue、maxDecimalPlaces、questionnaire-unit(UCUM)、regex、designNote、variable、questionnaire-itemMedia(Binary)。SDC: initialExpression、calculatedExpression、observationExtract、observationExtract-category。
@@ -92,10 +92,10 @@ Description: """診療記録・オーダー・報告書などで使うテンプ�
     QuestionnaireLoginAutofill named loginAutofill 0..1
 
 Profile: FC_QuestionnaireResponse
-Parent: $jaspehr-questionnaireresponse
+Parent: QuestionnaireResponse
 Id: fc-questionnaire-response
 Title: "テンプレートの記入(QuestionnaireResponse)"
-Description: """テンプレートの記入。JASPEHR の jaspehr-questionnaireresponse から派生する。
+Description: """テンプレートの記入。アプリは meta.profile に JASPEHR の jaspehr-questionnaireresponse を付ける(本 IG では base から派生)。
 
 - questionnaire = テンプレートの canonical(url|version)。status: in-progress / completed / amended。authored。
 - contained Practitioner(id = practitioner)を author で参照する。

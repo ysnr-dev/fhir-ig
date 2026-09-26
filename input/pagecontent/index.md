@@ -19,7 +19,7 @@ fhir-client は、FHIR R4 の JSON を直接組み立てて上流の FHIR サー
 | 実装ガイド | バージョン | 用途 |
 |---|---|---|
 | [JP Core](http://jpfhir.jp/fhir/core/) | 1.2.0 | Patient / Practitioner / Organization / Location / Encounter / Condition / AllergyIntolerance / Procedure / Specimen / Observation / DiagnosticReport / Medication* の親プロファイルと、用法・部位などの用語 |
-| [JASPEHR](https://jaspehr.jp/) | 1.0.0 | Questionnaire / QuestionnaireResponse の親プロファイル |
+| [JASPEHR](https://jaspehr.jp/) | 1.0.0 | Questionnaire / QuestionnaireResponse にアプリが付ける meta.profile と上流サーバーの検証規則。パッケージ依存にはせず本文で参照する |
 | [ePath R4](https://e-path.jp/fhir/ePath/) | 1.0.1 | クリニカルパス(CarePlan 木)の拡張と用語。パッケージ依存にはせず URL を参照する |
 
 ### 読み方

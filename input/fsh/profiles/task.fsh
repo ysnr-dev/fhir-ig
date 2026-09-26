@@ -244,9 +244,7 @@ Description: "薬剤部の持参薬鑑別の作業 Task。intent = order。focus
 * for 1..1
 * for only Reference(FC_Patient)
 * owner only Reference(FC_Practitioner)
-* input ^slicing.discriminator[0].type = #value
-* input ^slicing.discriminator[0].path = "type.text"
-* input ^slicing.rules = #open
+* insert TaskInputSlicing
 * input contains
     ward 0..1 and
     admissionDate 0..1
@@ -286,6 +284,10 @@ Description: """担当者宛の通知。
 * authoredOn 1..1
 * description MS
 * restriction.period.end ^short = "期限"
+
+// input を type.text でスライスする(具象プロファイルごとに宣言する。親で宣言して子で contains すると
+// IG Publisher のスナップショット生成が壊れる)。
+RuleSet: TaskInputSlicing
 * input ^slicing.discriminator[0].type = #value
 * input ^slicing.discriminator[0].path = "type.text"
 * input ^slicing.rules = #open
@@ -298,6 +300,7 @@ Description: "代行入力されたオーダーの承認依頼。focus = オー�
 * code = $task-code#order-approval "オーダー承認"
 * focus only Reference(FC_OrderProvenance)
 * basedOn only Reference(ServiceRequest)
+* insert TaskInputSlicing
 * input contains
     activity 0..1 and
     kind 0..* and
@@ -326,6 +329,7 @@ Description: "薬剤部の鑑別が終わったことを担当医に知らせる
 * code = $task-code#brought-med-identified "持参薬鑑別済"
 * focus only Reference(FC_InpatientEncounter)
 * encounter only Reference(FC_InpatientEncounter)
+* insert TaskInputSlicing
 * input contains
     admission 0..1 and
     admissionDate 0..1 and
@@ -348,6 +352,7 @@ Description: "退院時サマリーなどの文書作成の督促。focus と en
 * code = $task-code#document-due "文書作成"
 * focus only Reference(FC_InpatientEncounter)
 * encounter only Reference(FC_InpatientEncounter)
+* insert TaskInputSlicing
 * input contains
     document 1..1 and
     documentName 0..1 and
@@ -373,6 +378,7 @@ Description: "検体検査結果のパニック値。priority = stat。focus = D
 * code = $task-code#lab-panic "緊急異常値"
 * priority = #stat
 * focus only Reference(FC_LabDiagnosticReport)
+* insert TaskInputSlicing
 * input contains collectedDate 0..1
 * input[collectedDate].type.text = "検体採取日"
 * input[collectedDate].value[x] only date
@@ -384,6 +390,7 @@ Title: "検査結果確認 通知"
 Description: "検査結果が届いたことを依頼医に知らせる。preliminary でない報告で作られる。focus = DiagnosticReport。input: 種別(valueString、例 lab)、対象日、内容。確認すると結果確認の Provenance(verifier + signature)が付く。"
 * code = $task-code#result-review "検査結果確認"
 * focus only Reference(DiagnosticReport)
+* insert TaskInputSlicing
 * input contains
     kind 0..1 and
     targetDate 0..1 and
@@ -403,6 +410,7 @@ Description: "読影レポートの重要所見。priority = stat。focus = 読�
 * code = $task-code#rad-critical-finding "重要所見"
 * priority = #stat
 * focus only Reference(FC_RadDiagnosticReport)
+* insert TaskInputSlicing
 * input contains
     examDate 0..1 and
     examContent 0..1 and
@@ -431,6 +439,7 @@ Title: "放射線治療の診察 通知"
 Description: "治療中の週次診察が期限を迎えたことの通知。focus = 放射線治療処方。input: 治療コース / 前回の診察(valueString)。"
 * code = $task-code#radiotherapy-review-due "放射線治療の診察"
 * focus only Reference(FC_RadiotherapyOrder)
+* insert TaskInputSlicing
 * input contains
     course 0..1 and
     lastReview 0..1

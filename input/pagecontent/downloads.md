@@ -15,7 +15,6 @@ FSH のソースと本文は GitHub の [ysnr-dev/fhir-ig](https://github.com/ys
 |---|---|---|
 | jpfhir.jp.core(JP Core) | 1.2.0 | https://jpfhir.jp/fhir/core/1.2.0/package.tgz |
 | jpfhir-terminology | 1.4.0 | https://jpfhir.jp/fhir/core/terminology/jpfhir-terminology.r4-1.4.0.tgz |
-| jaspehr(JASPEHR) | 1.0.0 | https://jaspehr.jp/wp-content/docs/full-ig_v1.0.0/site/package.tgz |
 
 いずれも公開パッケージレジストリには無いため、ビルド前に `_installdeps.sh` で `~/.fhir/packages` に展開します。
 

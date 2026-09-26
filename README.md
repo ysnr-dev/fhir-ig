@@ -34,7 +34,6 @@ fhir-ig/
 |---|---|---|
 | jpfhir.jp.core(JP Core) | 1.2.0 | https://jpfhir.jp/fhir/core/1.2.0/package.tgz |
 | jpfhir-terminology(.r4) | 1.4.0 | https://jpfhir.jp/fhir/core/terminology/jpfhir-terminology.r4-1.4.0.tgz |
-| jaspehr(JASPEHR) | 1.0.0 | https://jaspehr.jp/wp-content/docs/full-ig_v1.0.0/site/package.tgz |
 
 いずれも公開パッケージレジストリ(packages.fhir.org)には無いため、`_installdeps.sh` でダウンロードして
 `~/.fhir/packages/<name>#<version>/package` に展開します(SUSHI と IG Publisher が共用するキャッシュ)。

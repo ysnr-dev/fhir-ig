@@ -149,7 +149,7 @@ Title: "退院時サマリーの例"
 * section[plan].text.status = #additional
 * section[plan].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>外来で経過観察。</p></div>"
 
-Instance: example-questionnaire
+Instance: social-01
 InstanceOf: FC_Questionnaire
 Usage: #example
 Title: "テンプレート(社会歴)の例"

@@ -264,6 +264,14 @@ Description: "放射線検査の実施記録にぶら下がる線量。category 
 
 // ---- 病理 ----
 
+ValueSet: FCPathoReportCategoryVS
+Id: fc-patho-report-category-vs
+Title: "病理報告の区分"
+Description: "v2-0074 の SP(組織診)/ CP(細胞診)"
+* insert FCMeta
+* $v2-0074#SP
+* $v2-0074#CP
+
 Profile: FC_PathoDiagnosticReport
 Parent: $JP_DiagnosticReport_Common
 Id: fc-patho-diagnostic-report
@@ -285,7 +293,7 @@ Description: """病理診断レポート。JAHIS 病理診断レポート構造�
 * category contains
     kind 1..1 and
     setting 1..1
-* category[kind].coding.system = $v2-0074
+* category[kind] from FCPathoReportCategoryVS (required)
 * category[setting] from LabResultSettingVS (required)
 * code = $loinc#11526-1
 * effective[x] only dateTime

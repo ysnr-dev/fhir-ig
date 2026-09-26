@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 公開レジストリに無い依存パッケージ(JP Core 1.2.0 / jpfhir-terminology 1.4.0 / JASPEHR 1.0.0)を
+# 公開レジストリに無い依存パッケージ(JP Core 1.2.0 / jpfhir-terminology 1.4.0)を
 # FHIR パッケージキャッシュ(~/.fhir/packages)に展開する。SUSHI と IG Publisher が同じキャッシュを読む。
 set -euo pipefail
 
@@ -27,24 +27,29 @@ install_pkg() {
   echo "installed: $dir"
 }
 
-# name を書き換える(tgz の package.json の name とキャッシュのフォルダ名を揃えるため)
-rename_pkg() {
+# package.json の name とキャッシュのフォルダ名を揃え、url(IG Publisher が外部リンクに使う)を公開 URL にする。
+# fix_pkg <name> <version> [<url>]
+fix_pkg() {
   local file="$CACHE/$1#$2/package/package.json"
-  python3 - "$file" "$1" <<'PY'
+  python3 - "$file" "$1" "${3:-}" <<'PY'
 import json, sys
-path, name = sys.argv[1], sys.argv[2]
+path, name, url = sys.argv[1], sys.argv[2], sys.argv[3]
 with open(path, encoding="utf-8") as f:
     data = json.load(f)
+changed = False
 if data.get("name") != name:
-    data["name"] = name
+    data["name"] = name; changed = True
+if url and data.get("url") != url:
+    data["url"] = url; changed = True
+if changed:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"renamed: {path} -> {name}")
+    print(f"fixed: {path} (name={name}, url={url or data.get('url')})")
 PY
 }
 
 install_pkg jpfhir.jp.core 1.2.0 https://jpfhir.jp/fhir/core/1.2.0/package.tgz
+fix_pkg jpfhir.jp.core 1.2.0 https://jpfhir.jp/fhir/core/1.2.0
 install_pkg jpfhir-terminology 1.4.0 https://jpfhir.jp/fhir/core/terminology/jpfhir-terminology.r4-1.4.0.tgz
 install_pkg jpfhir-terminology.r4 1.4.0 https://jpfhir.jp/fhir/core/terminology/jpfhir-terminology.r4-1.4.0.tgz
-rename_pkg jpfhir-terminology.r4 1.4.0
-install_pkg jaspehr 1.0.0 "https://jaspehr.jp/wp-content/docs/full-ig_v1.0.0/site/package.tgz"
+fix_pkg jpfhir-terminology.r4 1.4.0

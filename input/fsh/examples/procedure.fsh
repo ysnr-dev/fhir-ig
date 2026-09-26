@@ -22,10 +22,10 @@ InstanceOf: FC_RadDoseObservation
 Usage: #example
 Title: "被ばく線量の例"
 * status = #final
-* code = http://fhir-client.local/CodeSystem/rad-dose#ctdivol "CTDIvol"
+* code = http://fhir-client.local/CodeSystem/rad-dose#fluoroscopy-time "透視時間"
 * subject = Reference(Patient/example-patient)
 * partOf = Reference(Procedure/example-rad-procedure)
-* valueQuantity = 12.5 'mGy' "mGy"
+* valueQuantity = 45 's' "s"
 
 Instance: example-endoscopy-procedure
 InstanceOf: FC_EndoscopyProcedure
@@ -211,7 +211,7 @@ Title: "看護行為 実施記録の例"
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"
 * identifier.value = "9d8c7b6a-5f4e-4d3c-8b2a-1f0e9d8c7b6a"
 * category.coding[orderType] = $order-type#nursing "看護指示"
-* code = $medis-nursing-action#3300000000000001 "清拭"
+* code = $medis-nursing-action#A001B001C008D005 "日常生活ケア・清潔ケア・清拭・全身"
 * subject = Reference(Patient/example-patient)
 * encounter = Reference(Encounter/example-encounter)
 * basedOn = Reference(ServiceRequest/example-nursing-order)
@@ -237,11 +237,11 @@ InstanceOf: FC_AnesthesiaVitalObservation
 Usage: #example
 Title: "麻酔チャートのバイタルの例"
 * status = #final
-* code = $loinc#8867-4 "Heart rate"
+* code = $loinc#19889-5 "Carbon dioxide [Partial pressure] in Exhaled gas --at end expiration"
 * subject = Reference(Patient/example-patient)
 * partOf = Reference(Procedure/example-anesthesia-chart-procedure)
 * effectiveDateTime = "2026-04-08T09:05:00+09:00"
-* valueQuantity = 72 '/min' "/min"
+* valueQuantity = 38 'mm[Hg]' "mmHg"
 
 Instance: example-anesthesia-event-observation
 InstanceOf: FC_AnesthesiaEventObservation

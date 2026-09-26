@@ -41,13 +41,8 @@ Description: """予約と当日受付。
 * serviceType from ScheduleServiceTypeVS (required)
 * specialty from Ssmix2DepartmentCodeVS (required)
 * participant 1..*
-* participant ^slicing.discriminator[0].type = #type
-* participant ^slicing.discriminator[0].path = "actor.resolve()"
-* participant ^slicing.rules = #open
-* participant ^slicing.ordered = true
-* participant contains patient 1..1 MS
-* participant[patient].actor 1..1
-* participant[patient].actor only Reference(FC_Patient)
+* participant ^short = "先頭が患者(必須)、続いて Practitioner / Location"
+* participant.actor 1..1
 * participant.actor only Reference(FC_Patient or FC_Practitioner or FC_Room)
 * slot only Reference(FC_Slot)
 * basedOn only Reference(ServiceRequest)

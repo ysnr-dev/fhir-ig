@@ -62,8 +62,7 @@ Id: fc-pathway-unit-care-plan
 Title: "パスの OAT 単位"
 Description: "OAT(アウトカム・アセスメント・タスク)単位の CarePlan。partOf = [適用, 病日]。category に ePath のアウトカム分類(BOM / Local OutcomeCategoryCS、OutcomeCodeCS)を追加で持つ。goal = アウトカム Goal。identifier = ePath oat-unit-id(.{unitKey}[-{repeatNo}])。評価 Observation が basedOn でこれを指す。"
 * category[level] = http://fhir-client.local/CodeSystem/pathway-level#oat-unit
-* category contains outcomeCategory 0..*
-* category[outcomeCategory] ^short = "ePath のアウトカム分類(BOM / Local OutcomeCategoryCS)"
+* category ^short = "3 番目以降に ePath のアウトカム分類(BOM / Local OutcomeCategoryCS)を持つ"
 * identifier.system = "http://e-path.jp/fhir/ePath/IdSystem/oat-unit-id"
 * partOf 2..2
 * goal only Reference(FC_PathwayOutcomeGoal)

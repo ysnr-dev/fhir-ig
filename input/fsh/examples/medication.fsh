@@ -34,7 +34,7 @@ Title: "処方の薬剤行の例"
 * authoredOn = "2026-04-01T12:00:00+09:00"
 * requester = Reference(Practitioner/example-practitioner)
 * medicationCodeableConcept.coding[receiptCode] = $medicine-code#622000000 "メトホルミン塩酸塩錠250mg"
-* medicationCodeableConcept.coding[yjCode] = $YJ-code#3962002F1029
+* medicationCodeableConcept.coding[yjCode] = $YJ-code#3962002F1080
 * medicationCodeableConcept.text = "メトホルミン塩酸塩錠250mg"
 * dosageInstruction.timing.code.coding[usage] = $medicine-usage#1013044400000000 "1日3回朝昼夕食後"
 * dosageInstruction.timing.code.coding[basicCategory] = $medicine-usage-basic-category#1 "内服"
@@ -85,7 +85,7 @@ Title: "注射の薬剤行の例"
 * authoredOn = "2026-04-01T12:10:00+09:00"
 * requester = Reference(Practitioner/example-practitioner)
 * medicationCodeableConcept.coding[receiptCode] = $medicine-code#620009999 "生理食塩液 500mL"
-* medicationCodeableConcept.coding[yjCode] = $YJ-code#3311401A4064
+* medicationCodeableConcept.coding[yjCode] = $YJ-code#3311401A1011
 * medicationCodeableConcept.text = "生理食塩液 500mL"
 * dosageInstruction.text = "点滴静注 1日1回 10:00 60mL/h"
 * dosageInstruction.extension[usageType].valueCodeableConcept = http://fhir-client.local/CodeSystem/injection-usage-type#drip "点滴"
@@ -106,7 +106,7 @@ Title: "調剤の例"
 * subject = Reference(Patient/example-patient)
 * authorizingPrescription = Reference(MedicationRequest/example-prescription-medication-request)
 * medicationCodeableConcept.coding[0] = $medicine-code#622000000 "メトホルミン塩酸塩錠250mg"
-* medicationCodeableConcept.coding[1] = $YJ-code#3962002F1029
+* medicationCodeableConcept.coding[1] = $YJ-code#3962002F1080
 * medicationCodeableConcept.text = "メトホルミン塩酸塩錠250mg"
 * quantity.value = 42
 * quantity.unit = "錠"
@@ -138,7 +138,7 @@ Title: "薬剤投与(与薬)の例"
 * partOf = Reference(Procedure/example-oral-administration-procedure)
 * request = Reference(MedicationRequest/example-prescription-medication-request)
 * medicationCodeableConcept.coding[0] = $medicine-code#622000000 "メトホルミン塩酸塩錠250mg"
-* medicationCodeableConcept.coding[1] = $YJ-code#3962002F1029
+* medicationCodeableConcept.coding[1] = $YJ-code#3962002F1080
 * medicationCodeableConcept.text = "メトホルミン塩酸塩錠250mg"
 * effectiveDateTime = "2026-04-02T08:05:00+09:00"
 * dosage.dose.value = 1
@@ -164,9 +164,9 @@ Usage: #example
 Title: "持参薬の例(鑑別済・継続)"
 * status = #active
 * category = $medication-statement-category#community
-* medicationCodeableConcept.coding[0] = $medicine-code#620004321 "アムロジピン錠5mg"
-* medicationCodeableConcept.coding[1] = $YJ-code#2171022F2010
-* medicationCodeableConcept.text = "アムロジピン錠5mg"
+* medicationCodeableConcept.coding[0] = $medicine-code#620004321 "アムロジピンベシル酸塩2.5mg錠"
+* medicationCodeableConcept.coding[1] = $YJ-code#2171022F1010
+* medicationCodeableConcept.text = "アムロジピンベシル酸塩2.5mg錠"
 * subject = Reference(Patient/example-patient)
 * context = Reference(Encounter/example-encounter)
 * informationSource = Reference(Practitioner/example-practitioner)

@@ -78,9 +78,9 @@ Title: "予約の例"
 * end = "2026-04-03T09:15:00+09:00"
 * minutesDuration = 15
 * slot = Reference(Slot/example-slot)
-* participant[patient].actor = Reference(Patient/example-patient)
-* participant[patient].required = #required
-* participant[patient].status = #accepted
+* participant[0].actor = Reference(Patient/example-patient)
+* participant[0].required = #required
+* participant[0].status = #accepted
 * participant[+].actor = Reference(Practitioner/example-practitioner)
 * participant[=].required = #required
 * participant[=].status = #accepted
@@ -137,9 +137,9 @@ Title: "保険病名の例"
 * clinicalStatus = $condition-clinical#active "継続"
 * verificationStatus = $condition-ver-status#confirmed
 * category = $condition-category#encounter-diagnosis
-* code.coding[0] = $medis-disease-keyNumber#20064990
-* code.coding[1] = $medis-disease-exCode#8843955
-* code.coding[2] = $mhlw-masterB-disease#8843955
+* code.coding[0] = $medis-disease-keyNumber#20050020
+* code.coding[1] = $medis-disease-exCode#U23V
+* code.coding[2] = $mhlw-masterB-disease#2500015
 * code.coding[3] = $mhlw-ICD10#E119
 * code.text = "2型糖尿病"
 * subject = Reference(Patient/example-patient)
@@ -167,7 +167,8 @@ Title: "アレルギーの例"
 * type = #allergy
 * category = #food
 * criticality = #high
-* code = http://jpfhir.jp/fhir/core/CodeSystem/JP_JfagyFoodAllergen_CS#F0100000 "そば"
+* code = http://jpfhir.jp/fhir/core/CodeSystem/JP_JfagyFoodAllergen_CS#00F "食品"
+* code.text = "そば"
 * patient = Reference(Patient/example-patient)
 * recordedDate = "2026-04-01"
 * reaction.manifestation.text = "蕁麻疹"

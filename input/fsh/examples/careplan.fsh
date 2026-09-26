@@ -54,7 +54,6 @@ Title: "パスの OAT 単位の例"
 * identifier.value = ".u1"
 * category[type] = http://fhir-client.local/CodeSystem/care-plan-type#clinical-pathway "クリニカルパス"
 * category[level] = http://fhir-client.local/CodeSystem/pathway-level#oat-unit "OAT 単位"
-* category[outcomeCategory] = http://e-path.jp/fhir/ePath/CodeSystem/EPathBOMOutcomeCategoryCS#G "全般"
 * subject = Reference(Patient/example-patient)
 * partOf[0] = Reference(CarePlan/example-pathway-apply-care-plan)
 * partOf[1] = Reference(CarePlan/example-pathway-event-care-plan)
@@ -69,6 +68,7 @@ Title: "パスのアセスメント目標の例"
 * identifier.value = ".a1"
 * description.text = "NRS"
 * subject = Reference(Patient/example-patient)
+* target.measure.text = "NRS"
 * target.detailString = "3 以下"
 
 Instance: example-pathway-assessment-care-plan

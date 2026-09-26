@@ -1,6 +1,6 @@
 ### テンプレート(Questionnaire)
 
-診療記録・オーダーの検査目的や特別指示・臨床情報・術前指示・依頼目的・読影レポート・栄養指導記録・パスの評価などで使うテンプレートは **Questionnaire**([FC_Questionnaire](StructureDefinition-fc-questionnaire.html))で、JASPEHR の `jaspehr-questionnaire` プロファイルに準拠します。
+診療記録・オーダーの検査目的や特別指示・臨床情報・術前指示・依頼目的・読影レポート・栄養指導記録・パスの評価などで使うテンプレートは **Questionnaire**([FC_Questionnaire](StructureDefinition-fc-questionnaire.html))です。アプリは `meta.profile` に JASPEHR の `jaspehr-questionnaire` を付け、上流サーバーが JASPEHR の不変条件で検証します(本 IG のプロファイルは base から派生)。
 
 - `url` = `http://fhir-client.local/Questionnaire/{id}`(同梱テンプレート: admission-plan-01、plan-01、consult-purpose-01、consult-purpose-radiotherapy-01、endoscopy-*、family-01、ros-01、social-01、sur-*、rad-ct-01、radiotherapy-review-01、nutrition-guidance-record-01、oral-function-01、perio-summary-01、hbcr-01)。`version` と `url` の組で一意。
 - `subjectType` = Patient。`name` は 15 文字まで。enableWhen は choice の子項目にだけ使えます(上流サーバーが JASPEHR の不変条件を検証)。
@@ -19,7 +19,7 @@
 
 ### 記入(QuestionnaireResponse)
 
-[FC_QuestionnaireResponse](StructureDefinition-fc-questionnaire-response.html)は JASPEHR の `jaspehr-questionnaireresponse` に準拠します。
+[FC_QuestionnaireResponse](StructureDefinition-fc-questionnaire-response.html)は、アプリが `meta.profile` に JASPEHR の `jaspehr-questionnaireresponse` を付けるものです(本 IG のプロファイルは base から派生)。
 
 - `questionnaire` = テンプレートの canonical(`url|version`)。`status`: in-progress / completed / amended。
 - `author` は contained Practitioner(`#practitioner`)。
@@ -32,6 +32,6 @@ QR は診療記録のセクション、オーダーの拡張、読影レポー�
 
 ### 例
 
-- [テンプレート](Questionnaire-example-questionnaire.html)
+- [テンプレート](Questionnaire-social-01.html)
 - [記入](QuestionnaireResponse-example-questionnaire-response.html)
 - [抽出した Observation](Observation-example-extracted-observation.html)

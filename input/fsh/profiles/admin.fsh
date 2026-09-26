@@ -58,11 +58,8 @@ Id: fc-facility
 Title: "施設(自院・連携先)"
 Description: "医療機関。identifier は保険医療機関番号(10 桁)。自院か連携先かは FHIR には持たず、backend の設定(self_organization_id)で決まる。連携先は partOf を持たない施設 Organization のうち自院以外。"
 * insert FCMeta
-* identifier ^slicing.discriminator[0].type = #value
-* identifier ^slicing.discriminator[0].path = "system"
-* identifier ^slicing.rules = #open
-* identifier contains institutionNo 0..1 MS
-* identifier[institutionNo].system = $JP_InsuranceMedicalInstitutionNo
+* identifier[medicalInstitutionCode] MS
+* identifier[medicalInstitutionCode] ^short = "保険医療機関番号(10 桁)"
 * type 1..*
 * type from http://hl7.org/fhir/ValueSet/organization-type (extensible)
 * name 1..1 MS

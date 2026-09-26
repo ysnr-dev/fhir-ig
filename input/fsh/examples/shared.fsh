@@ -4,8 +4,8 @@ Instance: example-organization
 InstanceOf: FC_Facility
 Usage: #example
 Title: "施設(自院)の例"
-* identifier[institutionNo].system = $JP_InsuranceMedicalInstitutionNo
-* identifier[institutionNo].value = "1311234567"
+* identifier[medicalInstitutionCode].system = $JP_InsuranceMedicalInstitutionNo
+* identifier[medicalInstitutionCode].value = "1311234567"
 * active = true
 * type = $organization-type#prov "医療提供施設"
 * name = "テスト病院"
@@ -99,9 +99,9 @@ Title: "プロブレム(病名)の例"
 * clinicalStatus = $condition-clinical#active "継続"
 * verificationStatus = $condition-ver-status#confirmed
 * category = $condition-category#problem-list-item
-* code.coding[0] = $medis-disease-keyNumber#20064990
-* code.coding[1] = $medis-disease-exCode#8843955
-* code.coding[2] = $mhlw-masterB-disease#8843955
+* code.coding[0] = $medis-disease-keyNumber#20050020
+* code.coding[1] = $medis-disease-exCode#U23V
+* code.coding[2] = $mhlw-masterB-disease#2500015
 * code.coding[3] = $mhlw-ICD10#E119
 * code.text = "2型糖尿病"
 * subject = Reference(Patient/example-patient)

@@ -145,9 +145,15 @@ Parent: FC_ProcedureHub
 Id: fc-radiotherapy-fraction-procedure
 Title: "放射線治療 照射記録"
 Description: "1 回の照射。category = [order-type#radiotherapy, radiotherapy-procedure#fraction]。status: preparation(予定)/ completed / not-done(statusReason = 中止理由)/ entered-in-error(取消。削除はしない)。code = 処方の照射技術(radiotherapy-technique)、usedCode = 治療装置。radiotherapy-fraction 拡張にフェーズ・通算回数・IGRT・体積ごとの線量。"
+* category.coding ^slicing.discriminator[0].type = #value
+* category.coding ^slicing.discriminator[0].path = "system"
+* category.coding ^slicing.rules = #open
+* category.coding ^slicing.ordered = true
 * category.coding contains kind 1..1
 * category.coding[orderType] = $order-type#radiotherapy "放射線治療"
-* category.coding[kind] = http://fhir-client.local/CodeSystem/radiotherapy-procedure#fraction "照射"
+* category.coding[kind].system 1..1
+* category.coding[kind].system = "http://fhir-client.local/CodeSystem/radiotherapy-procedure"
+* category.coding[kind].code = #fraction
 * basedOn only Reference(FC_RadiotherapyOrder)
 * code.coding.system = "http://fhir-client.local/CodeSystem/radiotherapy-technique"
 * statusReason.coding.system = "http://fhir-client.local/CodeSystem/radiotherapy-stop-reason"
@@ -159,9 +165,15 @@ Parent: FC_ProcedureHub
 Id: fc-radiotherapy-course-summary-procedure
 Title: "放射線治療 コース要約"
 Description: "コース終了時の要約。category = [order-type#radiotherapy, radiotherapy-procedure#course-summary]。status: completed / stopped。outcome = 転帰(radiotherapy-course-outcome)。radiotherapy-course-summary 拡張に照射回数・線量・中止理由・経過・有害事象・今後の方針。"
+* category.coding ^slicing.discriminator[0].type = #value
+* category.coding ^slicing.discriminator[0].path = "system"
+* category.coding ^slicing.rules = #open
+* category.coding ^slicing.ordered = true
 * category.coding contains kind 1..1
 * category.coding[orderType] = $order-type#radiotherapy "放射線治療"
-* category.coding[kind] = http://fhir-client.local/CodeSystem/radiotherapy-procedure#course-summary "コース要約"
+* category.coding[kind].system 1..1
+* category.coding[kind].system = "http://fhir-client.local/CodeSystem/radiotherapy-procedure"
+* category.coding[kind].code = #course-summary
 * basedOn only Reference(FC_RadiotherapyOrder)
 * outcome from RadiotherapyCourseOutcomeVS (required)
 * extension contains RadiotherapyCourseSummary named courseSummary 1..1 MS
@@ -197,11 +209,22 @@ Description: "注射の実施(ハブ)。category = order-type#injection、code.t
 * performed[x] only Period
 
 Profile: FC_NursingActionProcedure
-Parent: FC_ProcedureHub
+Parent: Procedure
 Id: fc-nursing-action-procedure
 Title: "看護行為 実施記録"
-Description: "看護行為(MEDIS 看護行為マスタ)の指示の実施。category = order-type#nursing、code = 指示の code(master-nursingAction-16digits)。identifier(nursing-perform-entry)で同じラウンドの記録を束ねる。"
+Description: "看護行為(MEDIS 看護行為マスタ)の指示の実施。category = order-type#nursing、code = 指示の code(master-nursingAction-16digits)。identifier(nursing-perform-entry)で同じラウンドの記録を束ねる。アプリは meta.profile に JP_Procedure を付けるが、JP_Procedure の nurse スライスは system を medis.or.jp の URL に固定しつつ ValueSet が urn:oid:1.2.392.200119.4.701 のコードだけを含むため、どのコードも準拠できない。本 IG では base から派生する(既知の非準拠)。"
+* insert FCMeta
+* category 1..1 MS
+* category.coding 1..*
+* category.coding ^slicing.discriminator[0].type = #value
+* category.coding ^slicing.discriminator[0].path = "system"
+* category.coding ^slicing.rules = #open
+* category.coding ^slicing.ordered = true
+* category.coding contains orderType 1..1 MS
+* category.coding[orderType].system = "http://fhir-client.local/CodeSystem/order-type"
 * category.coding[orderType] = $order-type#nursing "看護指示"
+* subject only Reference(FC_Patient)
+* performer.actor only Reference(FC_Practitioner)
 * status = #completed
 * basedOn only Reference(FC_NursingOrder)
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"
