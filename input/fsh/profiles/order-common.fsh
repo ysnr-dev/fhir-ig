@@ -26,35 +26,8 @@ Description: "routine 予定 / urgent 準緊急 / stat 緊急"
 * $request-priority#urgent
 * $request-priority#stat
 
-Profile: FC_OrderHeader
-Parent: ServiceRequest
-Id: fc-order-header
-Title: "オーダーヘッダ(共通)"
-Description: """各部門オーダーのヘッダ ServiceRequest の共通形。
-
-- basedOn を持たない ServiceRequest がヘッダ。明細は basedOn でヘッダを指す。
-- category の先頭がオーダー種別(order-type)。上流サーバーは category の先頭要素しか索引しないため順序を固定する。
-- authoredOn は登録日時(システム時刻、更新しても変えない)。occurrenceDateTime はオーダー開始日(実施予定日)。occurrencePeriod は使わない(上流が索引しない)。
-- requester は依頼医(Practitioner)。依頼科と病棟は拡張で持つ。
-- 対象の問題は reasonReference(Condition)、コメントは note[0].text。"""
-* insert FCMeta
-* ^abstract = true
-* intent = #order
-* category 1..*
-* category ^slicing.discriminator[0].type = #pattern
-* category ^slicing.discriminator[0].path = "$this"
-* category ^slicing.rules = #open
-* category ^slicing.ordered = true
-* category ^slicing.description = "先頭がオーダー種別、2 番目が入院・外来区分"
-* category contains
-    orderType 1..1 MS and
-    setting 0..1 MS
-* category[orderType] from OrderTypeVS (required)
-* category[orderType].coding 1..1
-* category[orderType].coding.system = "http://fhir-client.local/CodeSystem/order-type"
-* category[setting] from PrescriptionSettingVS (required)
-* category[setting].coding 1..1
-* category[setting].coding.system = "http://fhir-client.local/CodeSystem/prescription-setting"
+// ヘッダ ServiceRequest に共通の規則(処方ヘッダ・レジメン適用も使う)。
+RuleSet: OrderHeaderCommonRules
 * subject 1..1
 * subject only Reference(FC_Patient)
 * requester only Reference(FC_Practitioner)
@@ -84,6 +57,37 @@ Description: """各部門オーダーのヘッダ ServiceRequest の共通形。
 * identifier[orderSetInstance] ^short = "オーダーセット適用 1 回ぶんの uuid"
 * identifier[pathwayInstance].system = "http://fhir-client.local/Identifier/pathway-instance"
 * identifier[pathwayInstance] ^short = "パス適用 1 回ぶんの uuid"
+
+Profile: FC_OrderHeader
+Parent: ServiceRequest
+Id: fc-order-header
+Title: "オーダーヘッダ(共通)"
+Description: """各部門オーダーのヘッダ ServiceRequest の共通形。
+
+- basedOn を持たない ServiceRequest がヘッダ。明細は basedOn でヘッダを指す。
+- category の先頭がオーダー種別(order-type)。上流サーバーは category の先頭要素しか索引しないため順序を固定する。
+- authoredOn は登録日時(システム時刻、更新しても変えない)。occurrenceDateTime はオーダー開始日(実施予定日)。occurrencePeriod は使わない(上流が索引しない)。
+- requester は依頼医(Practitioner)。依頼科と病棟は拡張で持つ。
+- 対象の問題は reasonReference(Condition)、コメントは note[0].text。"""
+* insert FCMeta
+* ^abstract = true
+* intent = #order
+* category 1..*
+* category ^slicing.discriminator[0].type = #pattern
+* category ^slicing.discriminator[0].path = "$this"
+* category ^slicing.rules = #open
+* category ^slicing.ordered = true
+* category ^slicing.description = "先頭がオーダー種別、2 番目が入院・外来区分"
+* category contains
+    orderType 1..1 MS and
+    setting 0..1 MS
+* category[orderType] from OrderTypeVS (required)
+* category[orderType].coding 1..1
+* category[orderType].coding.system = "http://fhir-client.local/CodeSystem/order-type"
+* category[setting] from PrescriptionSettingVS (required)
+* category[setting].coding 1..1
+* category[setting].coding.system = "http://fhir-client.local/CodeSystem/prescription-setting"
+* insert OrderHeaderCommonRules
 
 Profile: FC_OrderItem
 Parent: ServiceRequest

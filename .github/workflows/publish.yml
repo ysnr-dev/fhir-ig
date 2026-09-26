@@ -1,0 +1,89 @@
+name: Build and publish IG
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install SUSHI
+        run: npm install -g fsh-sushi
+
+      - name: Install Jekyll
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jekyll
+
+      - name: Cache FHIR packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ hashFiles('_installdeps.sh', 'sushi-config.yaml') }}
+          restore-keys: |
+            fhir-packages-
+
+      - name: Install dependencies not on the package registry (JP Core / jpfhir-terminology / JASPEHR)
+        run: ./_installdeps.sh
+
+      - name: SUSHI (fail fast on FSH errors)
+        run: sushi .
+
+      - name: Download IG Publisher
+        run: ./_updatepublisher.sh
+
+      - name: Build IG
+        env:
+          IG_HEAP: 5g
+        run: ./_build.sh
+
+      - name: QA summary
+        if: always()
+        run: |
+          if [ -f output/qa.json ]; then
+            echo "### IG Publisher QA" >> "$GITHUB_STEP_SUMMARY"
+            echo "- errors: $(jq '.errs' output/qa.json)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- warnings: $(jq '.warnings' output/qa.json)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- hints: $(jq '.hints' output/qa.json)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: output
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4

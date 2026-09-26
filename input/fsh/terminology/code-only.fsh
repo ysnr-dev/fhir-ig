@@ -1,0 +1,158 @@
+// valueCode(system を持たない code 型)で使うコードの一覧。
+// アプリはこれらの値を system 無しの code として書くため、CodeSystem の URI は本 IG での定義・バインド用で、
+// インスタンスの JSON には現れない。
+
+CodeSystem: MicroExamPurposeCS
+Id: micro-exam-purpose
+Title: "細菌検査の目的"
+* insert EnumCS
+* #diagnostic "診断目的"
+* #surveillance "監視培養"
+
+ValueSet: MicroExamPurposeVS
+Id: micro-exam-purpose-vs
+Title: "細菌検査の目的 ValueSet"
+* insert AllOf(MicroExamPurposeCS)
+
+CodeSystem: RadiotherapyPhaseStatusCS
+Id: radiotherapy-phase-status
+Title: "放射線治療フェーズの状態"
+* insert EnumCS
+* #active "有効"
+* #revoked "取消"
+
+ValueSet: RadiotherapyPhaseStatusVS
+Id: radiotherapy-phase-status-vs
+Title: "放射線治療フェーズの状態 ValueSet"
+* insert AllOf(RadiotherapyPhaseStatusCS)
+
+CodeSystem: MealTimingCS
+Id: meal-timing
+Title: "食事のタイミング"
+* insert EnumCS
+* #breakfast "朝"
+* #lunch "昼"
+* #dinner "夕"
+
+ValueSet: MealTimingVS
+Id: meal-timing-vs
+Title: "食事のタイミング ValueSet"
+* insert AllOf(MealTimingCS)
+
+CodeSystem: MealFastingReasonCS
+Id: meal-fasting-reason
+Title: "欠食の理由"
+* insert EnumCS
+* #npo "絶食"
+* #ope "手術"
+* #exam "検査"
+* #leave "外出・外泊"
+* #discharge "退院"
+* #other "その他"
+
+ValueSet: MealFastingReasonVS
+Id: meal-fasting-reason-vs
+Title: "欠食の理由 ValueSet"
+* insert AllOf(MealFastingReasonCS)
+
+CodeSystem: MealOrderLinkKindCS
+Id: meal-order-link-kind
+Title: "食事オーダーのつながりの種類"
+* insert EnumCS
+* #start "開始"
+* #change "変更"
+* #resume "再開"
+* #leave-fasting "外泊欠食"
+
+ValueSet: MealOrderLinkKindVS
+Id: meal-order-link-kind-vs
+Title: "食事オーダーのつながりの種類 ValueSet"
+* insert AllOf(MealOrderLinkKindCS)
+
+CodeSystem: MealOrderEndReasonCS
+Id: meal-order-end-reason
+Title: "食事オーダーの終了理由"
+* insert EnumCS
+* #change "変更"
+* #discharge-plan "退院予定"
+* #discharge "退院"
+* #leave "外泊"
+
+ValueSet: MealOrderEndReasonVS
+Id: meal-order-end-reason-vs
+Title: "食事オーダーの終了理由 ValueSet"
+* insert AllOf(MealOrderEndReasonCS)
+
+CodeSystem: BroughtMedicationSubstitutionCS
+Id: brought-medication-substitution
+Title: "持参薬の院内採用薬"
+* insert EnumCS
+* #same "同一薬あり"
+* #alternative "代替薬あり"
+* #none "代替なし"
+
+ValueSet: BroughtMedicationSubstitutionVS
+Id: brought-medication-substitution-vs
+Title: "持参薬の院内採用薬 ValueSet"
+* insert AllOf(BroughtMedicationSubstitutionCS)
+
+CodeSystem: RegimenDiscontinuationReasonCS
+Id: regimen-discontinuation-reason
+Title: "レジメン中止理由"
+* insert EnumCS
+* #progression "増悪"
+* #adverse-event "有害事象"
+* #patient-request "患者希望"
+* #change "レジメン変更"
+* #other "その他"
+
+ValueSet: RegimenDiscontinuationReasonVS
+Id: regimen-discontinuation-reason-vs
+Title: "レジメン中止理由 ValueSet"
+* insert AllOf(RegimenDiscontinuationReasonCS)
+
+CodeSystem: TreatmentContextTypeCS
+Id: treatment-context-type
+Title: "有害事象の治療文脈の種類"
+* insert EnumCS
+* #chemo-regimen "化学療法"
+* #radiotherapy "放射線治療"
+
+ValueSet: TreatmentContextTypeVS
+Id: treatment-context-type-vs
+Title: "有害事象の治療文脈の種類 ValueSet"
+* insert AllOf(TreatmentContextTypeCS)
+
+CodeSystem: QuestionnaireOrganizationFieldCS
+Id: questionnaire-organization-field
+Title: "施設情報の自動入力項目"
+* insert EnumCS
+* #name "施設名"
+* #institutionNumber "医療機関番号"
+* #addressFull "住所(郵便番号付き)"
+* #address "住所"
+* #postalCode "郵便番号"
+* #phone "電話番号"
+* #fax "FAX 番号"
+
+ValueSet: QuestionnaireOrganizationFieldVS
+Id: questionnaire-organization-field-vs
+Title: "施設情報の自動入力項目 ValueSet"
+* insert AllOf(QuestionnaireOrganizationFieldCS)
+
+CodeSystem: QuestionnairePractitionerFieldCS
+Id: questionnaire-practitioner-field
+Title: "医療従事者情報の自動入力項目"
+* insert EnumCS
+* #name "氏名"
+* #kana "カナ"
+* #medicalRegistrationNumber "医籍登録番号"
+* #role "職種"
+* #organizationName "所属"
+* #phone "電話番号"
+* #email "メール"
+
+ValueSet: QuestionnairePractitionerFieldVS
+Id: questionnaire-practitioner-field-vs
+Title: "医療従事者情報の自動入力項目 ValueSet"
+* insert AllOf(QuestionnairePractitionerFieldCS)
