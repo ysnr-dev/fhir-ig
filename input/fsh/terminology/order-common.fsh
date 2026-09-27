@@ -92,6 +92,8 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #lab-panic "緊急異常値"
 * #result-review "検査結果確認"
 * #rad-critical-finding "重要所見"
+* #physio-critical-finding "重要所見(生理検査)"
+* #endoscopy-critical-finding "重要所見(内視鏡)"
 * #pathway-variance "パスのバリアンス"
 * #radiotherapy-review-due "放射線治療の診察"
 

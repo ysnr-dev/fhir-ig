@@ -7,9 +7,11 @@ ServiceRequest(ヘッダ、FC_EndoscopyOrderHeader / FC_PhysioOrderHeader)
  ├ ServiceRequest(明細、FC_EndoscopyOrderItem / FC_PhysioOrderItem)  basedOn → ヘッダ
  ├ Appointment  basedOn → ヘッダ(同じ transaction)
  ├ Task(endoscopy-exam / physio-exam)  focus → ヘッダ
- └ Procedure(実施記録ハブ、FC_EndoscopyProcedure / FC_PhysioProcedure)  basedOn → ヘッダ
-     ├ Procedure(2 件目以降の手技)  partOf → ハブ
-     └ MedicationAdministration(薬剤)  partOf → ハブ
+ ├ Procedure(実施記録ハブ、FC_EndoscopyProcedure / FC_PhysioProcedure)  basedOn → ヘッダ
+ │   ├ Procedure(2 件目以降の手技)  partOf → ハブ
+ │   └ MedicationAdministration(薬剤)  partOf → ハブ
+ └ DiagnosticReport(所見レポート、FC_EndoscopyDiagnosticReport / FC_PhysioDiagnosticReport)  basedOn → ヘッダ
+     └ result → Observation(所見、FC_EndoscopyFindingsObservation / FC_PhysioFindingsObservation)
 ```
 
 ### オーダー
@@ -28,7 +30,11 @@ ServiceRequest(ヘッダ、FC_EndoscopyOrderHeader / FC_PhysioOrderHeader)
 
 [実施記録](procedures.html) を参照。手技コードは `endoscopy-procedure-code` / `physio-procedure-code`、材料は `medical-material` + `endoscopy-material-quantity` / `physio-material-quantity`。
 
+### 所見レポート
+
+[検査結果・報告](results.html) の生理検査・内視鏡を参照。重要所見(`endoscopy-critical-finding` / `physio-critical-finding`)が付くと依頼医宛の通知 Task が作られます。レポートが付いたオーダーは取消・削除できません。
+
 ### 例
 
-- 内視鏡: [ヘッダ](ServiceRequest-example-endoscopy-order-header.html) / [明細](ServiceRequest-example-endoscopy-order-item.html) / [実施記録](Procedure-example-endoscopy-procedure.html)
-- 生理検査: [ヘッダ](ServiceRequest-example-physio-order-header.html) / [明細](ServiceRequest-example-physio-order-item.html) / [実施記録](Procedure-example-physio-procedure.html)
+- 内視鏡: [ヘッダ](ServiceRequest-example-endoscopy-order-header.html) / [明細](ServiceRequest-example-endoscopy-order-item.html) / [実施記録](Procedure-example-endoscopy-procedure.html) / [所見レポート](DiagnosticReport-example-endoscopy-diagnostic-report.html)
+- 生理検査: [ヘッダ](ServiceRequest-example-physio-order-header.html) / [明細](ServiceRequest-example-physio-order-item.html) / [実施記録](Procedure-example-physio-procedure.html) / [所見レポート](DiagnosticReport-example-physio-diagnostic-report.html)

@@ -152,6 +152,68 @@ Title: "放射線 読影レポートの例"
 * conclusion = "右下葉結節。肺癌の可能性があり精査を推奨。"
 * extension[criticalFinding].valueString = "右下葉に腫瘤影。精査を要する。"
 
+// ---- 生理検査 所見 ----
+
+Instance: example-physio-findings-observation
+InstanceOf: FC_PhysioFindingsObservation
+Usage: #example
+Title: "生理検査 所見の例"
+* status = #final
+* category = $obs-category#procedure
+* code = http://fhir-client.local/CodeSystem/physio-report-item#findings "所見"
+* subject = Reference(Patient/example-patient)
+* valueString = "洞調律、HR 52/分。QTc 520 ms と著明に延長。ST-T 変化なし。"
+
+Instance: example-physio-diagnostic-report
+InstanceOf: FC_PhysioDiagnosticReport
+Usage: #example
+Title: "生理検査 所見レポートの例"
+* status = #final
+* category[orderType] = $order-type#physio "生理検査"
+* category[kind] = $v2-0074#OTH "Other"
+* category[setting] = $lab-result-setting#outpatient "外来"
+* code.coding = http://fhir-client.local/CodeSystem/exam-report#physio "生理検査報告書"
+* code.text = "12 誘導心電図"
+* subject = Reference(Patient/example-patient)
+* issued = "2026-04-01T11:30:00+09:00"
+* performer = Reference(Organization/example-organization)
+* resultsInterpreter = Reference(Practitioner/example-practitioner)
+* basedOn = Reference(ServiceRequest/example-physio-order-header)
+* result = Reference(Observation/example-physio-findings-observation)
+* conclusion = "QT 延長"
+* extension[criticalFinding].valueString = "QTc 520 ms。QT 延長をきたす薬剤の確認を要する。"
+
+// ---- 内視鏡 所見 ----
+
+Instance: example-endoscopy-findings-observation
+InstanceOf: FC_EndoscopyFindingsObservation
+Usage: #example
+Title: "内視鏡 所見の例"
+* status = #final
+* category = $obs-category#procedure
+* code = http://fhir-client.local/CodeSystem/endoscopy-report-item#findings "所見"
+* subject = Reference(Patient/example-patient)
+* valueString = "胃体上部後壁に周堤を伴う 30 mm 大の潰瘍性病変。生検 2 個。食道・十二指腸に異常なし。"
+
+Instance: example-endoscopy-diagnostic-report
+InstanceOf: FC_EndoscopyDiagnosticReport
+Usage: #example
+Title: "内視鏡 所見レポートの例"
+* status = #final
+* category[orderType] = $order-type#endoscopy "内視鏡"
+* category[kind] = $v2-0074#OTH "Other"
+* category[setting] = $lab-result-setting#outpatient "外来"
+* code.coding = $loinc#18751-8 "Endoscopy study"
+* code.text = "上部消化管内視鏡"
+* subject = Reference(Patient/example-patient)
+* issued = "2026-04-10T11:00:00+09:00"
+* performer = Reference(Organization/example-organization)
+* resultsInterpreter = Reference(Practitioner/example-practitioner)
+* basedOn = Reference(ServiceRequest/example-endoscopy-order-header)
+* result = Reference(Observation/example-endoscopy-findings-observation)
+* conclusion = "胃体上部 進行胃癌疑い(3 型)。生検結果待ち。"
+* extension[criticalFinding].valueString = "胃体上部に 3 型進行癌を疑う潰瘍性病変。"
+
 // ---- 病理 ----
 
 Instance: example-patho-result-specimen

@@ -264,6 +264,112 @@ Description: "放射線検査の実施記録にぶら下がる線量。category 
 * partOf 1..1
 * partOf only Reference(FC_RadProcedure)
 
+// ---- 生理検査 所見レポート ----
+
+Profile: FC_PhysioDiagnosticReport
+Parent: $JP_DiagnosticReport_Common
+Id: fc-physio-diagnostic-report
+Title: "生理検査 所見レポート"
+Description: """生理検査の所見レポート。読影レポート(FC_RadDiagnosticReport)と同じ形で、category・code・拡張の接頭辞だけが違う。
+
+- category = [order-type#physio, v2-0074#OTH, 入院・外来区分]。1 つ目の order-type で種別を判定する(`DiagnosticReport?category=`)。code = exam-report#physio 生理検査報告書(text = 検査内容)。
+- status: preliminary / final / amended。issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 判定。
+- basedOn = 生理検査オーダーのヘッダ。result = 所見 Observation(category procedure、code physio-report-item#findings、valueString)。
+- 画像は physio-report-image(Binary は同じ transaction)、重要所見は physio-critical-finding(通知 Task が作られる)、テンプレート記入は physio-report-findings-response / physio-report-conclusion-response。
+- レポートが付いたオーダーは取消・削除できない。"""
+* insert FCMeta
+* subject only Reference(FC_Patient)
+* category 3..3
+* category ^slicing.discriminator[0].type = #pattern
+* category ^slicing.discriminator[0].path = "$this"
+* category ^slicing.rules = #open
+* category ^slicing.ordered = true
+* category contains
+    orderType 1..1 and
+    kind 1..1 and
+    setting 1..1
+* category[orderType] = $order-type#physio
+* category[kind] = $v2-0074#OTH
+* category[setting] from LabResultSettingVS (required)
+* code.coding 1..1
+* code.coding = http://fhir-client.local/CodeSystem/exam-report#physio
+* issued 1..1
+* performer only Reference(FC_Facility)
+* resultsInterpreter only Reference(FC_Practitioner)
+* basedOn 1..1 MS
+* basedOn only Reference(FC_PhysioOrderHeader)
+* result only Reference(FC_PhysioFindingsObservation)
+* extension contains
+    PhysioReportImage named image 0..* and
+    PhysioCriticalFinding named criticalFinding 0..1 MS and
+    PhysioReportFindingsResponse named findingsResponse 0..1 and
+    PhysioReportConclusionResponse named conclusionResponse 0..1
+
+Profile: FC_PhysioFindingsObservation
+Parent: Observation
+Id: fc-physio-findings-observation
+Title: "生理検査 所見"
+Description: "生理検査の所見レポートの所見。"
+* insert FCMeta
+* subject only Reference(FC_Patient)
+* category 1..1
+* category = $obs-category#procedure
+* code = http://fhir-client.local/CodeSystem/physio-report-item#findings "所見"
+* value[x] only string
+
+// ---- 内視鏡 所見レポート ----
+
+Profile: FC_EndoscopyDiagnosticReport
+Parent: $JP_DiagnosticReport_Common
+Id: fc-endoscopy-diagnostic-report
+Title: "内視鏡 所見レポート"
+Description: """内視鏡の所見レポート。読影レポート(FC_RadDiagnosticReport)と同じ形で、category・code・拡張の接頭辞だけが違う。
+
+- category = [order-type#endoscopy, v2-0074#OTH, 入院・外来区分]。1 つ目の order-type で種別を判定する(`DiagnosticReport?category=`)。code = LOINC 18751-8 Endoscopy study(text = 検査内容)。
+- status: preliminary / final / amended。issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 診断。
+- basedOn = 内視鏡オーダーのヘッダ。result = 所見 Observation(category procedure、code endoscopy-report-item#findings、valueString)。
+- 画像は endoscopy-report-image(Binary は同じ transaction)、重要所見は endoscopy-critical-finding(通知 Task が作られる)、テンプレート記入は endoscopy-report-findings-response / endoscopy-report-conclusion-response。
+- レポートが付いたオーダーは取消・削除できない。"""
+* insert FCMeta
+* subject only Reference(FC_Patient)
+* category 3..3
+* category ^slicing.discriminator[0].type = #pattern
+* category ^slicing.discriminator[0].path = "$this"
+* category ^slicing.rules = #open
+* category ^slicing.ordered = true
+* category contains
+    orderType 1..1 and
+    kind 1..1 and
+    setting 1..1
+* category[orderType] = $order-type#endoscopy
+* category[kind] = $v2-0074#OTH
+* category[setting] from LabResultSettingVS (required)
+* code = $loinc#18751-8
+* code.coding 1..1
+* issued 1..1
+* performer only Reference(FC_Facility)
+* resultsInterpreter only Reference(FC_Practitioner)
+* basedOn 1..1 MS
+* basedOn only Reference(FC_EndoscopyOrderHeader)
+* result only Reference(FC_EndoscopyFindingsObservation)
+* extension contains
+    EndoscopyReportImage named image 0..* and
+    EndoscopyCriticalFinding named criticalFinding 0..1 MS and
+    EndoscopyReportFindingsResponse named findingsResponse 0..1 and
+    EndoscopyReportConclusionResponse named conclusionResponse 0..1
+
+Profile: FC_EndoscopyFindingsObservation
+Parent: Observation
+Id: fc-endoscopy-findings-observation
+Title: "内視鏡 所見"
+Description: "内視鏡の所見レポートの所見。"
+* insert FCMeta
+* subject only Reference(FC_Patient)
+* category 1..1
+* category = $obs-category#procedure
+* code = http://fhir-client.local/CodeSystem/endoscopy-report-item#findings "所見"
+* value[x] only string
+
 // ---- 病理 ----
 
 ValueSet: FCPathoReportCategoryVS

@@ -391,7 +391,7 @@ Profile: FC_ResultReviewTask
 Parent: FC_NotificationTask
 Id: fc-result-review-task
 Title: "検査結果確認 通知"
-Description: "検査結果が届いたことを依頼医に知らせる。preliminary でない報告で作られる。focus = DiagnosticReport。input: 種別(valueString、例 lab)、対象日、内容。確認すると結果確認の Provenance(verifier + signature)が付く。"
+Description: "検査結果が届いたことを依頼医に知らせる。preliminary でない報告で作られる。focus = DiagnosticReport。input: 種別(valueString、lab / micro / patho / rad / physio / endoscopy)、対象日、内容。確認すると結果確認の Provenance(verifier + signature)が付く。"
 * code = $task-code#result-review "検査結果確認"
 * focus only Reference(DiagnosticReport)
 * insert TaskInputSlicing
@@ -410,7 +410,7 @@ Profile: FC_RadCriticalFindingTask
 Parent: FC_NotificationTask
 Id: fc-rad-critical-finding-task
 Title: "重要所見 通知"
-Description: "読影レポートの重要所見。priority = stat。focus = 読影 DiagnosticReport。input: 撮影日 / 撮影内容 / 要点(valueString)。"
+Description: "読影レポートの重要所見。priority = stat。focus = 読影 DiagnosticReport。input: 撮影日(valueDate)/ 撮影内容 / 要点(valueString)。"
 * code = $task-code#rad-critical-finding "重要所見"
 * priority = #stat
 * focus only Reference(FC_RadDiagnosticReport)
@@ -420,8 +420,48 @@ Description: "読影レポートの重要所見。priority = stat。focus = 読�
     examContent 0..1 and
     summary 0..1
 * input[examDate].type.text = "撮影日"
-* input[examDate].value[x] only string
+* input[examDate].value[x] only date
 * input[examContent].type.text = "撮影内容"
+* input[examContent].value[x] only string
+* input[summary].type.text = "要点"
+* input[summary].value[x] only string
+
+Profile: FC_PhysioCriticalFindingTask
+Parent: FC_NotificationTask
+Id: fc-physio-critical-finding-task
+Title: "重要所見(生理検査) 通知"
+Description: "生理検査の所見レポートの重要所見。priority = stat。focus = 生理検査 DiagnosticReport。input: 検査日(valueDate)/ 検査内容 / 要点(valueString)。"
+* code = $task-code#physio-critical-finding "重要所見(生理検査)"
+* priority = #stat
+* focus only Reference(FC_PhysioDiagnosticReport)
+* insert TaskInputSlicing
+* input contains
+    examDate 0..1 and
+    examContent 0..1 and
+    summary 0..1
+* input[examDate].type.text = "検査日"
+* input[examDate].value[x] only date
+* input[examContent].type.text = "検査内容"
+* input[examContent].value[x] only string
+* input[summary].type.text = "要点"
+* input[summary].value[x] only string
+
+Profile: FC_EndoscopyCriticalFindingTask
+Parent: FC_NotificationTask
+Id: fc-endoscopy-critical-finding-task
+Title: "重要所見(内視鏡) 通知"
+Description: "内視鏡の所見レポートの重要所見。priority = stat。focus = 内視鏡 DiagnosticReport。input: 検査日(valueDate)/ 検査内容 / 要点(valueString)。"
+* code = $task-code#endoscopy-critical-finding "重要所見(内視鏡)"
+* priority = #stat
+* focus only Reference(FC_EndoscopyDiagnosticReport)
+* insert TaskInputSlicing
+* input contains
+    examDate 0..1 and
+    examContent 0..1 and
+    summary 0..1
+* input[examDate].type.text = "検査日"
+* input[examDate].value[x] only date
+* input[examContent].type.text = "検査内容"
 * input[examContent].value[x] only string
 * input[summary].type.text = "要点"
 * input[summary].value[x] only string

@@ -357,11 +357,53 @@ Title: "重要所見 通知の例"
 * owner = Reference(Practitioner/example-practitioner)
 * authoredOn = "2026-04-03T15:00:00+09:00"
 * input[examDate].type.text = "撮影日"
-* input[examDate].valueString = "2026-04-03"
+* input[examDate].valueDate = "2026-04-03"
 * input[examContent].type.text = "撮影内容"
 * input[examContent].valueString = "胸部 CT"
 * input[summary].type.text = "要点"
 * input[summary].valueString = "右下葉に腫瘤影。精査を要する。"
+
+Instance: example-physio-critical-finding-task
+InstanceOf: FC_PhysioCriticalFindingTask
+Usage: #example
+Title: "重要所見(生理検査) 通知の例"
+* status = #requested
+* intent = #filler-order
+* priority = #stat
+* code = $task-code#physio-critical-finding "重要所見(生理検査)"
+* focus = Reference(DiagnosticReport/example-physio-diagnostic-report)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* basedOn = Reference(ServiceRequest/example-physio-order-header)
+* authoredOn = "2026-04-01T11:30:00+09:00"
+* description = "2026-04-01 12 誘導心電図 QTc 520 ms。QT 延長をきたす薬剤の確認を要する。"
+* input[examDate].type.text = "検査日"
+* input[examDate].valueDate = "2026-04-01"
+* input[examContent].type.text = "検査内容"
+* input[examContent].valueString = "12 誘導心電図"
+* input[summary].type.text = "要点"
+* input[summary].valueString = "QTc 520 ms。QT 延長をきたす薬剤の確認を要する。"
+
+Instance: example-endoscopy-critical-finding-task
+InstanceOf: FC_EndoscopyCriticalFindingTask
+Usage: #example
+Title: "重要所見(内視鏡) 通知の例"
+* status = #requested
+* intent = #filler-order
+* priority = #stat
+* code = $task-code#endoscopy-critical-finding "重要所見(内視鏡)"
+* focus = Reference(DiagnosticReport/example-endoscopy-diagnostic-report)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* basedOn = Reference(ServiceRequest/example-endoscopy-order-header)
+* authoredOn = "2026-04-10T11:00:00+09:00"
+* description = "2026-04-10 上部消化管内視鏡 胃体上部に 3 型進行癌を疑う潰瘍性病変。"
+* input[examDate].type.text = "検査日"
+* input[examDate].valueDate = "2026-04-10"
+* input[examContent].type.text = "検査内容"
+* input[examContent].valueString = "上部消化管内視鏡"
+* input[summary].type.text = "要点"
+* input[summary].valueString = "胃体上部に 3 型進行癌を疑う潰瘍性病変。"
 
 Instance: example-pathway-variance-task
 InstanceOf: FC_PathwayVarianceTask

@@ -46,6 +46,8 @@ Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
 | lab-panic | 緊急異常値 | alert(stat) | DiagnosticReport | 検体採取日 + 項目ごとの値 | [FC_LabPanicTask](StructureDefinition-fc-lab-panic-task.html) |
 | result-review | 検査結果確認 | info | DiagnosticReport | 種別 / 対象日 / 内容 | [FC_ResultReviewTask](StructureDefinition-fc-result-review-task.html) |
 | rad-critical-finding | 重要所見 | alert(stat) | DiagnosticReport | 撮影日 / 撮影内容 / 要点 | [FC_RadCriticalFindingTask](StructureDefinition-fc-rad-critical-finding-task.html) |
+| physio-critical-finding | 重要所見(生理検査) | alert(stat) | DiagnosticReport | 検査日 / 検査内容 / 要点 | [FC_PhysioCriticalFindingTask](StructureDefinition-fc-physio-critical-finding-task.html) |
+| endoscopy-critical-finding | 重要所見(内視鏡) | alert(stat) | DiagnosticReport | 検査日 / 検査内容 / 要点 | [FC_EndoscopyCriticalFindingTask](StructureDefinition-fc-endoscopy-critical-finding-task.html) |
 | pathway-variance | パスのバリアンス | caution(urgent) | 評価 Observation | 無し | [FC_PathwayVarianceTask](StructureDefinition-fc-pathway-variance-task.html) |
 | radiotherapy-review-due | 放射線治療の診察 | info | ServiceRequest | 治療コース / 前回の診察 | [FC_RadiotherapyReviewDueTask](StructureDefinition-fc-radiotherapy-review-due-task.html) |
 
@@ -62,4 +64,4 @@ Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
 ### 例
 
 - [オーダーの来歴](Provenance-example-order-provenance.html) / [結果確認の来歴](Provenance-example-review-provenance.html)
-- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html)
+- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [重要所見(生理検査)](Task-example-physio-critical-finding-task.html) / [重要所見(内視鏡)](Task-example-endoscopy-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html)
