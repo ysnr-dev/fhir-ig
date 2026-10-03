@@ -9,7 +9,7 @@ Description: "院内マスタ master_surgery_items。明細 ServiceRequest.code�
 CodeSystem: SurgeryProcedureCodeCS
 Id: surgery-procedure-code
 Title: "手術 手技コード(レセプト K / L 章)"
-Description: "レセプト電算の手術・麻酔手技コード。オーダー明細と実施記録 Procedure.code に、術式コードと並べて入れる(display 無し)。"
+Description: "レセプト電算の手術・麻酔手技コード(9 桁)。オーダー明細では術式コード(surgery-order-item)と並べて display 無しで入れ、実施記録 Procedure.code では単独で display(手技名)を付けて入れる。"
 * insert MasterCS
 
 CodeSystem: SurgeryPositionCS
@@ -103,14 +103,14 @@ Id: surgery-equipment
 Title: "使用機器"
 Description: "other のときは自由記載を display に入れる。"
 * insert EnumCS
-* #microscope "顕微鏡"
+* #microscope "手術用顕微鏡"
 * #navigation "ナビゲーション"
-* #c-arm "C アーム"
-* #ultrasonic-scalpel "超音波メス"
+* #c-arm "C-arm(術中透視)"
+* #ultrasonic-scalpel "超音波凝固切開装置"
 * #stapler "自動縫合器"
 * #robot "手術支援ロボット"
 * #neuro-monitoring "術中神経モニタリング"
-* #intraop-us "術中超音波"
+* #intraop-us "術中エコー"
 * #other "その他"
 
 ValueSet: SurgeryEquipmentVS
@@ -154,12 +154,12 @@ Id: surgery-approach
 Title: "アプローチ"
 Description: "アプローチのコード。"
 * insert EnumCS
-* #open "開放手術"
+* #open "開腹・開胸(直視下)"
 * #laparoscopic "腹腔鏡"
 * #thoracoscopic "胸腔鏡"
 * #robotic "ロボット支援"
-* #endoscopic-open "内視鏡併用"
-* #percutaneous "経皮的"
+* #endoscopic-open "鏡視下(開腹移行ありうる)"
+* #percutaneous "経皮・経管"
 * #other "その他"
 
 ValueSet: SurgeryApproachVS

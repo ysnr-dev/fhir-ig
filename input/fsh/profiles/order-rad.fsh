@@ -6,7 +6,6 @@ Id: fc-rad-order-header
 Title: "放射線検査オーダー ヘッダ"
 Description: "放射線検査オーダーのヘッダ。occurrenceDateTime は撮影日(時刻を指定したときは時刻付き)。グループ化できない項目(単純撮影以外など)は項目ごとにヘッダ + 明細に分割し、1 つの transaction で登録する。予約が必要な項目は Appointment / Slot を同じ transaction に含める。"
 * category[orderType] = $order-type#rad "放射線検査"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityExamVS (required)
 * code 0..0

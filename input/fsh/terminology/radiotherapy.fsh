@@ -100,7 +100,7 @@ Title: "放射線治療の実施記録の種類"
 Description: "実施記録 Procedure.category の 2 番目の coding。order-type#radiotherapy と並べる。"
 * insert EnumCS
 * #fraction "照射"
-* #course-summary "コース要約"
+* #course-summary "治療終了サマリー"
 
 ValueSet: RadiotherapyProcedureVS
 Id: radiotherapy-procedure-vs

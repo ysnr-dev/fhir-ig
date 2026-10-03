@@ -61,7 +61,7 @@ fhir-client は FHIR R4 の JSON をフロントエンドで組み立て、backe
 
 ### 来歴と承認
 
-オーダーの登録・変更には **Provenance** が必ず 1 件付きます(target = ヘッダ ServiceRequest)。代行入力(enterer ≠ author)では `order-approval` 通知 Task が依頼医宛に作られ、承認で verifier と signature が付きます。
+オーダーの登録・変更には **Provenance** が 1 件付きます(target = ヘッダ ServiceRequest。ログイン中のアカウントに紐付く医療従事者が無いとき、またはヘッダに requester が無いときは付きません)。代行入力(enterer ≠ author)では `order-approval` 通知 Task が依頼医宛に作られ、承認で verifier と signature が付きます。
 
 ### meta.profile について
 

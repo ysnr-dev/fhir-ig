@@ -12,29 +12,34 @@ CarePlan(適用 = 根、FC_PathwayApplyCarePlan)   partOf 無し(part-of:missing
  │   │   │   ├ Procedure(タスク、FC_PathwayTaskProcedure)   basedOn = [アセスメント, 出したオーダーのヘッダ]
  │   │   │   └ Observation(実測値、FC_PathwayResultObservation)   basedOn → アセスメント
  │   │   └ Observation(アウトカム評価、FC_PathwayEvaluationObservation)   basedOn → 単位
- │   │       └ Task(pathway-variance 通知)   focus → 評価、basedOn → 単位   ※ 未達成のとき
+ │   │       └ Task(pathway-variance 通知)   focus → 評価、basedOn → 単位   ※ 重要アウトカムが未達成のとき
  └ Goal(適用の終了、FC_PathwayApplyGoal)   ※ 終了 / 中止のとき
 ```
 
 - `partOf` は根から自分の親までの祖先すべてを持ちます(上流の `part-of` 検索で木を引くため)。
-- `category[0]` = `care-plan-type#clinical-pathway`、`category[1]` = 階層(`pathway-level`: apply / event / oat-unit / assessment)。OAT 単位とアセスメントは ePath の分類 coding を追加で持ちます。
-- `pathway-display-order` で定義どおりの並びを保ちます(上流の id は uuid で並びを持たない)。
+- `category[0]` は 1 つの CodeableConcept に coding を 2 つ持ちます: `care-plan-type#clinical-pathway`(パスの印)と階層(`pathway-level`: apply / event / oat-unit / assessment)。display は付けません。OAT 単位とアセスメントは `category[1]` 以降に ePath の分類を追加で持ちます。
+- `pathway-display-order` で定義どおりの並びを保ちます(上流の id は uuid で並びを持たない)。OAT 単位・アセスメントの CarePlan とタスクの Procedure に付きます(適用と病日には付きません)。
+- バリアンス通知は、重要アウトカム(EPathCarePlanCriticalIndicator = Y)を未達成と評価したときだけ作り、未達成でなくなれば cancelled にします。
 
 ### 識別子(ePath IdSystem)
 
 | 階層 | system | value |
 |---|---|---|
 | 適用 | `.../IdSystem/apply-id` | `{施設番号}.{uuid}` |
-| 病日 | `.../IdSystem/event-id` | `.{経過日数}[-{pathStep}]` |
-| OAT 単位 | `.../IdSystem/oat-unit-id` | `.{unitKey}[-{repeatNo}]` |
-| アセスメント | `.../IdSystem/assessment-id` | `.{assessmentKey}`(無ければ `ZZZZZZZZZZ`) |
-| タスク | `.../IdSystem/task-id` | `.{taskKey}` |
-| Goal / Observation | `assessment-goal-id` / `outcome-goal-id` / `apply-goal-id` / `observation-evaluation-id` / `observation-result-id` | |
+| 病日 | `.../IdSystem/event-id` | 適用の値 + `.{経過日数}[-{pathStep}]` |
+| OAT 単位 | `.../IdSystem/oat-unit-id` | 病日の値 + `.{unitKey}[-{repeatNo}]` |
+| アセスメント | `.../IdSystem/assessment-id` | OAT 単位の値 + `.{assessmentKey}` |
+| タスク | `.../IdSystem/task-id` | アセスメントの値 + `.{taskKey}` |
+| 適用終了の Goal | `apply-goal-id` | 適用の値と同じ |
+| アウトカムの Goal・評価 Observation | `outcome-goal-id` / `observation-evaluation-id` | OAT 単位の値と同じ |
+| アセスメントの Goal・実測値 Observation | `assessment-goal-id` / `observation-result-id` | アセスメントの値と同じ |
+
+値は親の値にピリオドで連結した全体を持ちます(例: `1311234567.4c1d2e3f-….1.u1.a1`)。
 
 ### ePath の拡張・CodeSystem
 
-- 拡張(`http://e-path.jp/fhir/ePath/StructureDefinition/`): EPathCarePlanAdaptiveCriteriaConfirmation、AdaptiveCriteriaText、ScheduledDays、EventElapsedDays、PathStep、PathStepName、PathStepInpatientOutpatientType、StatusTypeWhenOccured(常に 12)、CriticalIndicator(Y / N)、UnplannedKind(Y / N)、RepeatNo、EPathProcedureTaskPlannedDateTime、EPathGoalStatusReason。
-- CodeSystem(`http://e-path.jp/fhir/ePath/CodeSystem/`): アウトカム分類(BOM / Local OutcomeCategoryCS、OutcomeCodeCS: G / H)、アセスメント分類(BOM / Local AssessmentCategoryCS、AssessmentCodeCS、AssessmentCodeEmptyCS#ZZZZZZZZZZ)、タスク分類(TaskCategoryLv1CS: TP / EX / ML / NO / NC / EG / AL / MD、TaskCategoryLv2CS、LocalTaskCodeCS)、EPathPathClosingTypeCS(1 終了 / 2 中止)、EPathEvaluationItemCS(judgement / S / O / A / P / comp-assessment)、EPathStateOfAchievementCS(1 達成 / 2 未達成 / 3 未評価)。
+- 拡張(`http://e-path.jp/fhir/ePath/StructureDefinition/`): 適用に EPathCarePlanAdaptiveCriteriaConfirmation / EPathCarePlanAdaptiveCriteriaText / EPathCarePlanScheduledDays、病日に EPathCarePlanEventElapsedDays / EPathCarePlanPathStep / EPathCarePlanPathStepName / EPathCarePlanPathStepInpatientOutpatientType(I / O)、OAT 単位に EPathCarePlanStatusTypeWhenOccured(常に 12)/ EPathCarePlanCriticalIndicator(Y / N)/ EPathCarePlanUnplannedKind(Y / N)、アセスメントに EPathCarePlanStatusTypeWhenOccured、タスクの Procedure に EPathProcedureTaskPlannedDateTime(valueDate)、適用終了の Goal に EPathGoalStatusReason。
+- CodeSystem(`http://e-path.jp/fhir/ePath/CodeSystem/`): アウトカムの区分(EPathBOMOutcomeCategoryCS: G 患者目標 / H 患者状態。ローカルコードのパスでも同じ)とコード(EPathBOMOutcomeCodeCS / EPathLocalOutcomeCodeCS、コード体系だけ選んだときは EPathLocalOutcomeCategoryCS)、アセスメント分類(EPathBOMAssessmentCategoryCS / EPathBOMAssessmentCodeCS、EPathLocalAssessmentCategoryCS / EPathLocalAssessmentCodeCS、コードが無ければ EPathAssessmentCodeEmptyCS#ZZZZZZZZZZ)、タスク分類(EPathTaskCategoryLv1CS: TP / EX / ML / NO / NC / EG / AL / MD、EPathTaskCategoryLv2CS、タスクコードは EPathLocalTaskCodeCS)、EPathPathClosingTypeCS(1 終了 / 2 中止)、EPathEvaluationItemCS(judgement / S / O / A / P / comp-assessment)、EPathStateOfAchievementCS(1 達成 / 2 未達成（バリアンス）/ 3 未評価)。
 
 ### 本 IG の拡張
 

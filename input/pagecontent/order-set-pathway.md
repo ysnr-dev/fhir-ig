@@ -17,7 +17,8 @@
 | 要素 | 内容 |
 |---|---|
 | `identifier`(system = `Identifier/pathway-instance`) | 適用 uuid |
-| `extension[pathway-order]` | valueCoding: system = `CodeSystem/pathway`、code = パスコード |
+| `requisition` | 空のオーダーにだけ、同じ identifier を入れる(注射の injection-series などは上書きしない) |
+| `extension[pathway-order]` | valueCoding: system = `CodeSystem/pathway`、code = パスコード、display = パス名 |
 
 パスの CarePlan 木は [クリニカルパス](pathway.html) を参照。パスのタスク(Procedure)の `basedOn` が、出したオーダーのヘッダを指します。
 

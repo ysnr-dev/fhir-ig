@@ -32,7 +32,7 @@ Id: fc-discharge-summary
 Title: "退院時サマリー"
 Description: """退院時サマリー。入院(Encounter)ごとに 1 件。
 
-- type = LOINC 18842-5。encounter = 入院 Encounter(必須)。title = 退院時サマリー。status / attester / author は診療記録と同じ。
+- type = LOINC 18842-5。encounter = 入院 Encounter(必須)。title = 退院時サマリー。status / attester / author / order-department は診療記録と同じ。テンプレートで書いた本文セクションは clinical-note-section-questionnaire-response を持つ。
 - section は固定: 11535-2 退院時診断(entry = Condition)/ 8648-8 入院経過 / 47519-4 手術・処置(entry = ヘッダ ServiceRequest)/ 30954-2 検査 / 10183-2 退院時処方(entry = MedicationRequest)/ 10184-0 退院時状態 / 18776-5 方針 / 48765-2 アレルギー(entry = AllergyIntolerance)。entry を持つセクションは text.status = generated で、空なら「なし」。
 - 退院先は Encounter.hospitalization.dischargeDisposition に同じ transaction で PUT する。確定で document-due 督促 Task が completed になる。"""
 * insert FCMeta
@@ -68,6 +68,8 @@ Description: """退院時サマリー。入院(Encounter)ごとに 1 件。
 * section[plan].code = $loinc#18776-5
 * section[allergies].code = $loinc#48765-2
 * section[allergies].entry only Reference(FC_AllergyIntolerance)
+* section.extension contains ClinicalNoteSectionQuestionnaireResponse named questionnaireResponse 0..1
+* extension contains OrderDepartment named orderDepartment 0..1
 
 Profile: FC_Questionnaire
 Parent: Questionnaire
@@ -76,8 +78,8 @@ Title: "テンプレート(Questionnaire)"
 Description: """診療記録・オーダー・報告書などで使うテンプレート。アプリは meta.profile に JASPEHR の jaspehr-questionnaire を付け、上流サーバーは JASPEHR の不変条件で検証する。JASPEHR パッケージは公開レジストリに無く、IG Publisher でのスナップショット生成にも問題があるため、本 IG では base から派生し JASPEHR への準拠は本文で述べる。
 
 - url / version / name / title / status / subjectType = Patient。url は `http://fhir-client.local/Questionnaire/{id}` など。
-- 標準拡張: questionnaire-itemControl、choiceOrientation、hidden、maxOccurs、minValue、maxValue、maxDecimalPlaces、questionnaire-unit(UCUM)、regex、designNote、variable、questionnaire-itemMedia(Binary)。SDC: initialExpression、calculatedExpression、observationExtract、observationExtract-category。
-- 本 IG の拡張: questionnaire-template-category(分類)、item に questionnaire-organization-field / questionnaire-practitioner-field / questionnaire-practitioner-role-default / questionnaire-login-autofill。
+- 標準拡張: questionnaire-itemControl、choiceOrientation、hidden、maxOccurs、minValue、maxValue、maxDecimalPlaces、questionnaire-unit(system は UCUM 固定だが、code には「回」「本」など UCUM でない単位文字列も入る。既知の非準拠)、regex、designNote、variable、questionnaire-itemMedia(Binary)。SDC: initialExpression、calculatedExpression、sdc-questionnaire-observationExtract、sdc-questionnaire-observation-extract-category(2026-10-03 より前のテンプレートは SDC に無い sdc-observationExtract-category を持つ。アプリは両方を読む)。
+- 本 IG の拡張: questionnaire-template-category(分類)、item に questionnaire-organization-field / questionnaire-practitioner-field / questionnaire-practitioner-role-default / questionnaire-login-autofill(いずれもグループ直下の項目にだけ付く。role-default と login-autofill は practitioner-field と組で使う)。
 - item.code = observation-item や JP_ObservationSocialHistoryCode_CS(抽出 Observation の code になる)。
 - 上流サーバーは JASPEHR の不変条件(choice には itemControl、repeats には maxOccurs など)を検証する。"""
 * insert FCMeta
@@ -98,7 +100,7 @@ Title: "テンプレートの記入(QuestionnaireResponse)"
 Description: """テンプレートの記入。アプリは meta.profile に JASPEHR の jaspehr-questionnaireresponse を付ける(本 IG では base から派生)。
 
 - questionnaire = テンプレートの canonical(url|version)。status: in-progress / completed / amended。authored。
-- contained Practitioner(id = practitioner)を author で参照する。
+- contained Practitioner(id = practitioner、name.text = 記入者名のみ)を author で参照する。
 - identifier.value = \"{施設番号}^{患者ID}^{uuid}\"(system 無し。既知の非準拠)。
 - basedOn = 関連するオーダー(放射線治療の週次診察など)。
 - questionnaire-response-problem = 対象プロブレム。item の questionnaire-response-annotated-image = シェーマに書き込んだ画像(Binary)。
@@ -110,12 +112,40 @@ Description: """テンプレートの記入。アプリは meta.profile に JASP
 * extension contains QuestionnaireResponseProblem named problem 0..1
 * item.extension contains QuestionnaireResponseAnnotatedImage named annotatedImage 0..1
 
+Profile: FC_DpcForm1Response
+Parent: FC_QuestionnaireResponse
+Id: fc-dpc-form1-response
+Title: "DPC 様式1"
+Description: """DPC 退院患者調査の様式1。入院 1 件につき 1 つの QuestionnaireResponse に保存する。
+
+- questionnaire = `http://fhir-client.local/Questionnaire/dpc-form1`(固定。バージョン無し。対応する Questionnaire リソースは上流に置かず、項目の定義はアプリの定義表が持つ)。encounter = 入院。
+- status: in-progress 下書き / completed 確定 / amended 確定後の修正。提出ファイル(FF1)には completed と amended だけを出す。
+- 新規作成は「その入院の様式1 がまだ無いこと」を条件にした transaction(ifNoneExist = questionnaire + encounter)。
+- item は提出ファイルの行と 1 対 1。先頭の `header` グループ(子は header.facility 施設コード / header.dataId データ識別番号 / header.admitDate 入院年月日 / header.count 回数管理番号 / header.summaryNo 統括診療情報番号 / header.fiscalYear 定義表の年度)に続き、レコードごとに linkId = レコードのコード(A000010 など)、text = レコード名のグループを並べる。連番のあるレコードは同じ linkId のグループを行の数だけ繰り返す。
+- レコードのグループの子: `{コード}.ver` バージョン / `{コード}.seq` 連番(連番の無いレコードは 0)/ `{コード}.p1`〜`.p9` ペイロード(値のあるものだけ)/ `{コード}.ref` 値の元になったリソース(valueReference)。値はすべて提出ファイルに書く文字列のまま valueString で持つ(日付は YYYYMMDD、選択肢はコード)。
+- identifier・contained Practitioner・meta.profile はテンプレートの記入と同じ。カルテの時系列には出さない。"""
+* questionnaire = "http://fhir-client.local/Questionnaire/dpc-form1"
+* subject 1..1
+* encounter 1..1
+* encounter only Reference(FC_InpatientEncounter)
+* item 1..*
+* item.linkId ^short = "header、またはレコードのコード(A000010 など)"
+* item.item.answer.value[x] only string or Reference
+
 Profile: FC_PatientFile
 Parent: DocumentReference
 Id: fc-patient-file
 Title: "患者ファイル"
-Description: "患者に取り込んだファイル(画像・PDF など)。Binary(contentType + data、7 MB まで)と同じ transaction で 1 件ずつ作る。status = current。date = 診察日(00:00、オフセット付き)。content[0].attachment = {contentType, url = Binary/{id}, title, size}。category = ファイル分類(file-category、code = UUID、display / text = 分類名)。author = 職員。"
+Description: """患者に取り込んだファイル(画像・PDF など)と、文書作成(Word / Excel の文書テンプレートへの差し込み)で作った文書。
+
+- Binary(contentType + data、7 MB まで)と同じ transaction で 1 件ずつ作る。status = current。date = 診察日(00:00、オフセット付き)。
+- content[0].attachment = {contentType, url = Binary/{id}, title, size}。title はダウンロード時のファイル名になる。
+- category = ファイル分類(file-category、code = UUID、display / text = 分類名。分類を選ばなければ無し)。author = 職員。
+- 文書作成で作ったものは type = 元の文書テンプレート(document-template、code = UUID、display / text = テンプレート名)。
+- 本体の差し替えは、新しい Binary を作り、同じ id の DocumentReference の attachment(contentType / url / size、拡張子が変われば title)だけを同じ transaction で替える。元の Binary は消さない(旧版は _history から辿れる)。"""
 * insert FCMeta
+* type.coding.system = "http://fhir-client.local/CodeSystem/document-template"
+* type ^short = "文書作成で作った文書の、元の文書テンプレート"
 * status = #current
 * subject 1..1
 * subject only Reference(FC_Patient)
@@ -123,7 +153,7 @@ Description: "患者に取り込んだファイル(画像・PDF など)。Binary
 * content 1..1
 * content.attachment.url 1..1
 * content.attachment.contentType 1..1
-* category 1..1 MS
+* category 0..1 MS
 * category.coding.system = "http://fhir-client.local/CodeSystem/file-category"
 * author only Reference(FC_Practitioner)
 
@@ -131,7 +161,7 @@ Profile: FC_ImagingStudy
 Parent: $JP_ImagingStudy_Radiology
 Id: fc-imaging-study
 Title: "DICOM スタディ(取込)"
-Description: "DICOM ファイルの取込で backend が作る ImagingStudy(identifier で条件付き PUT)。identifier = urn:dicom:uid(urn:oid:{StudyInstanceUID})と ACSN(アクセッション番号)。status = available、started(+09:00)。modality / series.modality = DCM(無ければ OT)。series(uid / number / description / numberOfInstances / bodySite.display)、instance(uid / sopClass(urn:ietf:rfc:3986)/ number)。imaging-source = 元施設と元患者。DICOM の実体は backend が保持し FHIR には持たない。"
+Description: "DICOM ファイルの取込で backend が作る ImagingStudy(identifier で条件付き PUT)。identifier = urn:dicom:uid(urn:oid:{StudyInstanceUID})と ACSN(アクセッション番号)。status = available、started(+09:00。StudyTime が無ければ日付のみ)。modality / series.modality = DCM(無ければ OT)。series(uid / number / description / numberOfInstances / bodySite.display)、instance(uid / sopClass(urn:ietf:rfc:3986)/ number)。imaging-source = 元施設と元患者。DICOM の実体は backend が保持し FHIR には持たない。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * identifier 1..*

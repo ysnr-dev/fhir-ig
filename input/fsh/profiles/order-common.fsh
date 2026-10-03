@@ -96,7 +96,7 @@ Title: "オーダー明細(共通)"
 Description: """ヘッダ ServiceRequest に basedOn でぶら下がる明細 ServiceRequest の共通形。
 
 - identifier に部門ごとの IdSystem(`<部門>-order-item-number`)で連番(文字列)を持つ。並び順に使う。
-- authoredOn / occurrenceDateTime はヘッダから複製する。
+- authoredOn / occurrenceDateTime はヘッダから複製する(手術の日程確定・移動・入室でも、ヘッダと同じ transaction で明細を揃える)。
 - category は持たない(種別はヘッダで判定する)。"""
 * insert FCMeta
 * ^abstract = true

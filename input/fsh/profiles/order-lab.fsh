@@ -6,7 +6,6 @@ Id: fc-lab-order-header
 Title: "検体検査オーダー ヘッダ"
 Description: "検体検査オーダーのヘッダ。code は持たず、項目は明細 ServiceRequest で持つ。occurrenceDateTime は検査日。"
 * category[orderType] = $order-type#lab "検体検査"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityRoutineUrgentVS (required)
 * code 0..0
@@ -55,7 +54,7 @@ Description: "明細 ServiceRequest に contained で入る検体。status は�
 * status 0..0
 * subject 1..1
 * subject only Reference(FC_Patient)
-* type 1..1 MS
+* type 0..1 MS
 * type.coding 1..1
 * type.coding.system = "http://fhir-client.local/CodeSystem/jlac11-specimen"
 * container 0..1
@@ -80,7 +79,7 @@ Description: """検体ラベル発行時に backend が採血管ごとに作る 
 * subject only Reference(FC_Patient)
 * request 1..1
 * request only Reference(FC_LabOrderHeader)
-* type 1..1
+* type 0..1 MS
 * type.coding.system = "http://fhir-client.local/CodeSystem/jlac11-specimen"
 * container.type.coding.system = "http://fhir-client.local/CodeSystem/lab-container"
 * receivedTime ^short = "到着確認日時"

@@ -6,7 +6,6 @@ Id: fc-treatment-order-header
 Title: "処置オーダー ヘッダ"
 Description: "処置オーダーのヘッダ。priority は持たない。分割・予約は放射線検査と同じ。"
 * category[orderType] = $order-type#treatment "処置"
-* category[setting] 1..1
 * priority 0..0
 * code 0..0
 * occurrenceDateTime 1..1
@@ -67,7 +66,6 @@ Description: """他科への依頼。明細 ServiceRequest は無い。
 - reasonCode[0].text = 依頼目的。テンプレートで書いたときは consult-purpose-questionnaire-response。
 - 回答は Composition(LOINC 11488-4 Consult note、event = consult-note-event#reply)で、consult-reply 拡張がそれを指す。"""
 * category[orderType] = $order-type#consult "他科依頼"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityRoutineUrgentVS (required)
 * code 1..1 MS

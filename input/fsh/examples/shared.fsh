@@ -4,6 +4,7 @@ Instance: example-organization
 InstanceOf: FC_Facility
 Usage: #example
 Title: "施設(自院)の例"
+Description: "施設(自院)の例"
 * identifier[medicalInstitutionCode].system = $JP_InsuranceMedicalInstitutionNo
 * identifier[medicalInstitutionCode].value = "1311234567"
 * active = true
@@ -18,6 +19,7 @@ Instance: example-department
 InstanceOf: FC_Department
 Usage: #example
 Title: "診療科の例"
+Description: "診療科の例"
 * identifier[departmentCode].system = $ssmix2-department
 * identifier[departmentCode].value = "01"
 * active = true
@@ -29,6 +31,7 @@ Instance: example-patient
 InstanceOf: FC_Patient
 Usage: #example
 Title: "患者の例"
+Description: "患者の例"
 * identifier.system = $JP_MRN
 * identifier.value = "00000001"
 * name[0].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
@@ -47,6 +50,7 @@ Instance: example-practitioner
 InstanceOf: FC_Practitioner
 Usage: #example
 Title: "医師の例"
+Description: "医師の例"
 * name[0].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
 * name[0].extension[0].valueCode = #IDE
 * name[0].family = "山田"
@@ -60,10 +64,26 @@ Title: "医師の例"
 * qualification[0].code = $JP_MedicalLicenseCertificate#medical-registration
 * active = true
 
+Instance: example-nurse
+InstanceOf: FC_Practitioner
+Usage: #example
+Title: "看護師の例"
+Description: "看護師の例"
+* name[0].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[0].extension[0].valueCode = #IDE
+* name[0].family = "看護"
+* name[0].given = "花子"
+* name[1].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[1].extension[0].valueCode = #SYL
+* name[1].family = "カンゴ"
+* name[1].given = "ハナコ"
+* active = true
+
 Instance: example-ward
 InstanceOf: FC_Ward
 Usage: #example
 Title: "病棟の例"
+Description: "病棟の例"
 * status = #active
 * name = "東3階病棟"
 * mode = #instance
@@ -72,9 +92,10 @@ Title: "病棟の例"
 * managingOrganization = Reference(Organization/example-organization)
 
 Instance: example-room
-InstanceOf: FC_Room
+InstanceOf: FC_HospitalRoom
 Usage: #example
 Title: "病室の例"
+Description: "病室の例"
 * status = #active
 * name = "301"
 * mode = #instance
@@ -86,6 +107,7 @@ Instance: example-bed
 InstanceOf: FC_Bed
 Usage: #example
 Title: "ベッドの例"
+Description: "ベッドの例"
 * status = #active
 * name = "1"
 * mode = #instance
@@ -96,6 +118,7 @@ Instance: example-condition
 InstanceOf: FC_Problem
 Usage: #example
 Title: "プロブレム(病名)の例"
+Description: "プロブレム(病名)の例"
 * clinicalStatus = $condition-clinical#active "継続"
 * verificationStatus = $condition-ver-status#confirmed
 * category = $condition-category#problem-list-item
@@ -112,6 +135,7 @@ Instance: example-encounter
 InstanceOf: FC_InpatientEncounter
 Usage: #example
 Title: "入院 Encounter の例"
+Description: "入院 Encounter の例"
 * status = #in-progress
 * class = $v3-ActCode#IMP "inpatient encounter"
 * subject = Reference(Patient/example-patient)

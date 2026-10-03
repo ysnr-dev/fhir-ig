@@ -8,12 +8,13 @@
 
 [FC_Appointment](StructureDefinition-fc-appointment.html)
 
-- `status`: booked(予約)/ checked-in(受付済。当日受付は最初から checked-in)/ fulfilled(診察終了)/ cancelled。
+- `status`: booked(予約)/ checked-in(受付済。当日受付は最初から checked-in)/ fulfilled(診察終了)/ noshow(未来院。予約枠は触らず、取り消すと booked に戻る)/ cancelled。
 - `appointmentType` = v2-0276(ROUTINE 通常 / CHECKUP 健診 / FOLLOWUP 再診 / WALKIN 当日受付 / EMERGENCY 救急)。
 - `participant[0]` は必ず Patient、続いて Practitioner / Location。すべて `required = required`、`status = accepted`。
-- `serviceType` / `specialty` は Schedule から複製。`slot` = 使った予約枠(同じ transaction で busy にする)。`reasonReference` = Condition。
+- `serviceType` / `specialty` は Schedule から複製(当日受付では選んだ診療科。SS-MIX2 コードを持たない院内独自の科は `specialty.text` だけ)。`description` = 予約枠の名前。`slot` = 使った予約枠(同じ transaction で busy にする)。`reasonReference` = Condition。
 - `basedOn` = オーダーのヘッダ ServiceRequest。放射線・生理検査・内視鏡・処置はオーダーの transaction に Appointment と Slot を含め、リハビリ・栄養指導・化学療法は別 transaction で予約します。
-- `appointment-checked-in-at` = 実際の受付日時。
+- `appointment-checked-in-at` = 実際の受付日時(checked-in 以外の status に変えると外れる)。
+- `appointment-visit-kind` = 受付で指定した初再診(first 初診 / revisit 再診)。未指定は判定をレセプトコンピュータに任せる意味で、拡張ごと持ちません。
 - レセプトコンピュータからの受付取込(backend)は `identifier.system` = `integrations/receipt-computer/reception` で条件付き PUT し、WALKIN + checked-in の形で作り、`reception-coverage-set` 拡張(保険組合せキー)を付けます。
 - 外来受診(Encounter、class = AMB)の `appointment[0]` がこれを指し、診察終了で fulfilled になります。
 

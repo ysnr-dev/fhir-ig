@@ -67,7 +67,7 @@ Context: ServiceRequest
 Extension: NursingOrderSchedule
 Id: nursing-order-schedule
 Title: "看護指示の頻度"
-Description: "実施の頻度(Timing)。付いていない指示は随時。"
+Description: "実施の頻度(Timing.repeat)。付いていない指示は随時。形は 4 つ: 1 日 N 回(frequency = N、period = 1、periodUnit = d、timeOfDay = 各回の時刻)/ N 時間毎(period = N、periodUnit = h、timeOfDay = 起点の時刻。frequency は持たない)/ 時刻指定(timeOfDay のみ)/ 週 N 回(frequency = N、period = 1、periodUnit = wk、dayOfWeek、timeOfDay は任意)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Timing

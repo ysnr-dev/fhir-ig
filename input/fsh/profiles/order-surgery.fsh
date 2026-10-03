@@ -9,9 +9,8 @@ Description: """手術申込のヘッダ。
 - priority: routine 予定 / urgent 準緊急 / stat 緊急。
 - occurrenceDateTime は予定日時。未定なら省略する(「日付未定」)。全種別のうち手術だけが省略できる。
 - 手術室・執刀科・体位・スタッフ・麻酔・輸血準備・機器・検体・同意書・術前指示は拡張。
-- 日程確定は ServiceRequest の PUT と Task を同じ transaction で行う。Appointment は作らない。"""
+- 日程確定はヘッダの PUT と Task(accepted)を同じ transaction で行う。カレンダー上の移動はヘッダの PUT だけで Task は変えない。日程未定のまま入室すると、入室日時を occurrenceDateTime に入れ、Task を in-progress で作る。いずれも術式明細の occurrenceDateTime を同じ transaction で揃える。Appointment は作らない。"""
 * category[orderType] = $order-type#surgery "手術"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPrioritySurgeryVS (required)
 * code 0..0

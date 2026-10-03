@@ -4,7 +4,7 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 
 | 項目 | 内容 | 影響 |
 |---|---|---|
-| 略称を code にする | `lab-item-abbreviation` / `micro-antimicrobial-abbreviation` は略称文字列そのものを code にしている(例: `#CBC`)。 | CodeSystem は not-present。コードの集合は施設ごと。 |
+| 略称の coding | `lab-item-abbreviation` は、オーダー明細では略称文字列そのものを code にし(例: `#CBC`)、検体検査結果では code = 結果項目コード・display = 略称にする。`micro-antimicrobial-abbreviation` は code = JANIS 抗菌薬コード・display = 略号。 | CodeSystem は not-present。同じ system でも code の意味が場所で違う。 |
 | category の先頭ルール | 上流サーバーが category の先頭しか索引しないため、種別を表す coding を必ず先頭に置く。 | プロファイルは `^slicing.ordered = true` で表現。 |
 | QuestionnaireResponse.identifier に system が無い | value = `{施設番号}^{患者ID}^{uuid}`。 | value 必須として定義。 |
 | JSON 文字列の拡張 | `schedule-slot-pattern` は Slot の生成パターンを JSON 文字列で valueString に持つ。 | 拡張の Description に JSON の形を記載。 |
@@ -21,13 +21,25 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | JP_Procedure の nurse スライス | JP_Procedure は看護行為の coding の system を medis.or.jp の URL に固定しつつ、ValueSet(JP_ProcedureCodesNurse_VS)は urn:oid:1.2.392.200119.4.701 だけを含むため、どのコードも準拠できない。 | 看護行為の実施記録は base から派生。 |
 | jpfhir-terminology の部分的な CodeSystem | jpfhir-terminology 1.4.0 は J-FAGY(食物 2 件)や MEDIS 看護観察(270 件)などを content = complete で収載しており、アプリが使う実コードが「未知のコード」になる。 | 例は収載されているコードを使う(食事摂取量の 31003419 / 31003420 は例外)。 |
 | 単一ヘッダの Bundle の fullUrl | 単一ヘッダの transaction でも fullUrl が必須。漏れると来歴とパスの参照が付かない。 | |
+| 処方の用量(doseQuantity)の意味 | 内服(頓用以外)は 1 日量、頓用は 1 回量、外用などは全量。JP Core の処方は 1 回量を基本にしている。持参薬(MedicationStatement)の doseQuantity は 1 回量。 | 読む側は用法コードで意味を判定する。 |
+| questionnaire-itemControl の system | アプリと同梱テンプレートは `http://hl7.org/fhir/CodeSystem/questionnaire-item-control` を使う。HL7 の正式な system は `http://hl7.org/fhir/questionnaire-item-control`。 | 例の検証で未知の CodeSystem の警告になる。 |
+| questionnaire-unit の code | system は UCUM(`http://unitsofmeasure.org`)固定のまま、code に「回」「本/日」など UCUM でない単位文字列を入れる。 | UCUM として解釈できない code がある。 |
+| 通知 Task の input | 一覧に出す内容を `Task.input`(type.text をキーにした値)に構造化して持つ。type に coding を持たない。 | プロファイルは type.text でスライスする。 |
 
-### 既知の不具合(アプリ側)
+### 2026-10-03 より前に書かれたデータ
 
-| 項目 | 内容 |
+アプリの次の不具合は 2026-10-03 に直しましたが、それより前に上流へ書かれたリソースは古い形のまま残っています。古いデータを読む側は次の形もありうるものとして扱ってください。
+
+| 項目 | 古いデータの形 |
 |---|---|
-| 細菌検査ヘッダの依頼科・病棟 | `microOrderHelpers.ts` が `micro-prior-antimicrobial` / `micro-exam-purpose` を書くときに `order-department` / `order-ward` を上書きする。`examPurpose` の既定値が diagnostic なので、細菌検査のヘッダはほとんど依頼科・病棟を持たない。本 IG は本来の形を定義している。 |
-| 左右区分の display | `jj1017-laterality` の display が放射線治療(右側 / 左側 / 両側)と手術(右 / 左 / 両側)で異なる。 |
+| 細菌検査ヘッダの依頼科・病棟 | 先行抗菌薬・検査目的の拡張を書くときに `order-department` / `order-ward` を消していたため、ほとんどの細菌検査ヘッダが依頼科・病棟を持たない。 |
+| 手術明細の左右 | `jj1017-laterality` の display と `bodySite.text` の頭が「右 / 左」(現在は JJ1017 の名称「右側 / 左側」)。 |
+| 報告の入院・外来区分 | 検体検査・細菌検査・病理の DiagnosticReport は、区分が未選択でも category の 2 つ目を書いていたため、code が空文字の Coding がありうる(現在は category ごと省く)。 |
+| 与薬記録の用量 | 与薬 1 回の MedicationAdministration.dosage.dose に処方の用量(内服は 1 日量)を複製していた(現在はその枠の 1 回量)。 |
+| 持参薬からの継続処方 | 持参薬の 1 回量を処方の用量(内服は 1 日量)の初期値にそのまま写していたため、人が直さなかった処方は用量が 1 日量になっていない。 |
+| 手術明細の予定日時 | 日程確定・カレンダーでの移動・日程未定のままの入室でヘッダだけを書き換えていたため、術式明細の occurrenceDateTime が古いまま(または無いまま)。 |
+| Observation 抽出カテゴリの拡張 URL | テンプレートが SDC に無い `sdc-observationExtract-category` を使っていた(現在は SDC の `sdc-questionnaire-observation-extract-category`)。アプリは両方を読む。編集して保存し直すと新しい URL になる。 |
+| 持参薬の用法 | 用法を入れなかった持参薬が空の `dosage.timing.code`(`{}`)を持つ。 |
 
 ### 上流サーバーの制約
 

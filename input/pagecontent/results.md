@@ -1,6 +1,6 @@
 ### 報告の共通点
 
-検査結果・報告は **DiagnosticReport** で、`basedOn` がオーダーのヘッダ ServiceRequest、`result` が項目ごとの Observation、`specimen` が検体を指します。
+検査結果・報告は **DiagnosticReport** で、`basedOn` がオーダーのヘッダ ServiceRequest、`result` が項目ごとの Observation、`specimen` が検体を指します。検体検査・細菌検査・病理は、オーダーに紐付けずに結果を登録(取込)でき、そのときは `basedOn` を持ちません。
 
 | 報告 | プロファイル | category | code | status |
 |---|---|---|---|---|
@@ -14,24 +14,27 @@
 - 入院・外来区分は `lab-result-setting`(inpatient / outpatient)。
 - 依頼科は `order-department` 拡張。
 - 確定した報告を編集保存すると status が corrected(検体検査)/ amended(読影・生理検査・内視鏡・病理)に遷移します。
-- preliminary でない報告で依頼医宛の `result-review` 通知が作られ、確認すると結果確認の Provenance(verifier + signature)が付きます。
+- preliminary でない報告で依頼医宛の `result-review` 通知が作られ、確認すると結果確認の Provenance(verifier + signature)が付きます。オーダーに紐付かない結果の通知は宛先(owner)を持ちません。
+- 同じ報告に緊急異常値(検体検査)・重要所見(読影・生理検査・内視鏡)の通知が未対応で残っている間は `result-review` を作らず、既にある未対応の `result-review` は cancelled にします(1 つの結果に通知を 1 件にする)。緊急の通知を確認したときに、報告が final / corrected(amended)なら結果確認の Provenance も書き、未対応の `result-review` を completed にします。
+- `effectiveDateTime` の意味は報告ごとに違います: 検体検査・細菌検査 = 検体日(採取日、日付のみ)、読影・生理検査・内視鏡 = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、病理 = 報告日。`issued` と `performer` は検体検査と読影・生理検査・内視鏡が持ち、細菌検査と病理は持ちません。
 
 ### 検体検査
 
-- 項目ごとの Observation([FC_LabResultObservation](StructureDefinition-fc-lab-result-observation.html)): `code.coding` = [院内結果項目(`lab-result-item`), JLAC11, JLAC10, 略称]、値はマスタのデータ型で Quantity(UCUM)/ CodeableConcept / string、`interpretation` = v3(HH / H / L / LL / N)、`referenceRange`。
-- パニック値(HH / LL)があると `lab-panic` 通知(priority = stat)が作られます。宛先が決まらないときは owner を持ちません。
+- 項目ごとの Observation([FC_LabResultObservation](StructureDefinition-fc-lab-result-observation.html)): `code.coding` = [院内結果項目(`lab-result-item`), JLAC11, JLAC10, 略称(`lab-item-abbreviation`。code = 結果項目コード、display = 略称)]。施設の結果項目コードを持たない項目は JLAC11 から始まります、値はマスタのデータ型で Quantity(UCUM)/ CodeableConcept / string、`interpretation` = v3(HH / H / L / LL / N)、`referenceRange`。
+- パニック値(HH / LL)があると、報告区分に関係なく(中間報告でも)`lab-panic` 通知(priority = stat)が作られます。訂正で値が変わると本文を更新して未対応に戻し、パニック値が無くなると未対応の通知を cancelled にします。宛先が決まらないときは owner を持ちません。
 - 検体は検体ラベルの Specimen を参照します(結果入力で作ることもある)。
 
 ### 細菌検査
 
-- 所見([FC_MicroFindingObservation](StructureDefinition-fc-micro-finding-observation.html)): 培養(陰性 / 陽性)、塗抹(string)、喀痰 Miller & Jones / Geckler 分類、膿尿(method = 判定方法)。
-- 分離菌([FC_MicroIsolateObservation](StructureDefinition-fc-micro-isolate-observation.html)): `valueCodeableConcept` = 菌種(JANIS)、component = 菌量の種別 / 菌量 / 起因菌。
-- 感受性([FC_MicroSusceptibilityObservation](StructureDefinition-fc-micro-susceptibility-observation.html)): `code` = 抗菌薬(JANIS + 略称)、`derivedFrom` = 分離菌、`method` = 測定法、MIC は Quantity(ug/mL、comparator)、component = 阻止円直径 / 段階、`interpretation` = S / I / R。
+- 所見([FC_MicroFindingObservation](StructureDefinition-fc-micro-finding-observation.html)): 培養結果(陰性 / 陽性)、塗抹・鏡検所見(string)、喀痰品質評価(Miller & Jones 分類 / Geckler 分類)、膿尿評価(method = 判定方法)。
+- 分離菌([FC_MicroIsolateObservation](StructureDefinition-fc-micro-isolate-observation.html)): `valueCodeableConcept` = 菌種(JANIS)、component = 菌量(半定量 / 定量)/ 菌数 / 起炎性。
+- 感受性([FC_MicroSusceptibilityObservation](StructureDefinition-fc-micro-susceptibility-observation.html)): `code` = 抗菌薬(JANIS コード + 同じコードに略号を display として付けた coding)、`derivedFrom` = 分離菌、`method` = 測定法、MIC は Quantity(µg/mL、comparator)、component = 阻止円径 / 判定(+)、`interpretation` = S / I / R。
 
 ### 放射線 読影
 
 - `result` = 所見 Observation(category imaging、`rad-report-item#findings`、valueString)、`conclusion` = 診断、`resultsInterpreter` = 読影医。
 - 画像は `rad-report-image`(source / annotated、Binary)、重要所見は `rad-critical-finding`(通知 Task)、テンプレート記入は `rad-report-findings-response` / `rad-report-conclusion-response`。
+- 重要所見の通知は暫定報告でも出します。要点を書き換えると通知を未対応に戻し、要点を外すと未対応の通知を cancelled にします。レポートを削除すると、未対応の重要所見・検査結果確認の通知を cancelled にします(生理検査・内視鏡も同じ)。
 
 ### 生理検査・内視鏡 所見
 

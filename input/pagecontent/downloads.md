@@ -15,8 +15,9 @@ FSH のソースと本文は GitHub の [ysnr-dev/fhir-ig](https://github.com/ys
 |---|---|---|
 | jpfhir.jp.core(JP Core) | 1.2.0 | https://jpfhir.jp/fhir/core/1.2.0/package.tgz |
 | jpfhir-terminology | 1.4.0 | https://jpfhir.jp/fhir/core/terminology/jpfhir-terminology.r4-1.4.0.tgz |
+| hl7.fhir.uv.sdc(SDC) | 3.0.0 | 公開パッケージレジストリ(packages.fhir.org) |
 
-いずれも公開パッケージレジストリには無いため、ビルド前に `_installdeps.sh` で `~/.fhir/packages` に展開します。
+JP Core と jpfhir-terminology は公開パッケージレジストリには無いため、ビルド前に `_installdeps.sh` で `~/.fhir/packages` に展開します。
 
 ### QA
 

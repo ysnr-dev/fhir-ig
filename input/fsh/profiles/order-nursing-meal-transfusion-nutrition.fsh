@@ -6,7 +6,7 @@ Id: fc-nursing-order
 Title: "看護指示"
 Description: """看護指示。指示 1 行ごとに 1 件の ServiceRequest で、ヘッダ・明細の区別は無い。
 
-- category は nursing + inpatient(常に入院)。encounter = 入院。
+- category は nursing + inpatient(常に入院)。encounter = 入院(入院中でない患者にオーダーセット・パスから適用したときは付かない)。
 - code は MEDIS 看護実践用語標準マスタ(看護行為: master-nursingAction-16digits + urn:oid:1.2.392.200119.4.704 の 8 桁管理番号、看護観察: master-nursingObservationKeyCode)、または text のみ。
 - 同時に入力した指示は requisition(nursing-order-requisition)の uuid で束ねる。
 - occurrenceDateTime = 開始日、nursing-order-end = 終了日、nursing-order-schedule = 頻度(Timing)。orderDetail[0].text = 条件。
@@ -14,7 +14,7 @@ Description: """看護指示。指示 1 行ごとに 1 件の ServiceRequest で
 * category[orderType] = $order-type#nursing "看護指示"
 * category[setting] 1..1
 * category[setting] = $prescription-setting#inpatient
-* encounter 1..1
+* encounter 0..1 MS
 * encounter only Reference(FC_InpatientEncounter)
 * code 1..1 MS
 * code.coding ^slicing.discriminator[0].type = #value
@@ -43,15 +43,15 @@ Id: fc-meal-order
 Title: "食事オーダー"
 Description: """食事オーダー。明細 ServiceRequest も Task も無い。
 
-- category は meal + inpatient。encounter = 入院。
+- category は meal + inpatient。encounter = 入院(入院中でない患者にオーダーセット・パスから適用したときは付かない)。status は常に active で、取消はリソースを削除する。
 - occurrenceDateTime = 開始日時(朝 08:00 / 昼 12:00 / 夕 18:00)、meal-order-end = 終了日時。
 - code = 食種(meal-type)。orderDetail = 主食(meal-staple-food)と副食の形態(meal-side-dish-form)で、それぞれ meal-timing 拡張で朝 / 昼 / 夕を持つ。
-- 欠食は meal-skipped-timing(最大 3 件)と meal-fasting-reason。塩分制限は meal-salt-limit。
-- 変更・再開・外泊欠食のつながりは meal-order-link、終了理由は meal-order-end-reason。入院の外出・外泊や退院の変更と同じ transaction で作られる。"""
+- 欠食(1 食だけ出さない)は meal-skipped-timing(最大 3 件)。meal-fasting-reason は欠食と、食止めの食種で出したオーダーの理由。塩分制限は meal-salt-limit。
+- 変更・再開・外泊食止めのつながりは meal-order-link、終了理由は meal-order-end-reason。入院の外出・外泊や退院の変更と同じ transaction で作られる。"""
 * category[orderType] = $order-type#meal "食事"
 * category[setting] 1..1
 * category[setting] = $prescription-setting#inpatient
-* encounter 1..1
+* encounter 0..1 MS
 * encounter only Reference(FC_InpatientEncounter)
 * code 1..1 MS
 * code.coding.system = "http://fhir-client.local/CodeSystem/meal-type"
@@ -80,9 +80,8 @@ Profile: FC_TransfusionOrderHeader
 Parent: FC_OrderHeader
 Id: fc-transfusion-order-header
 Title: "輸血オーダー ヘッダ"
-Description: "輸血オーダーのヘッダ。code = 輸血前検査の種類(交差適合試験 / T&S)。occurrenceDateTime = 投与予定日時(空なら無し)。血液型と同意は拡張。"
+Description: "輸血オーダーのヘッダ。code = 輸血前検査の種類(交差適合試験 / T&S)。occurrenceDateTime = 投与予定日時(画面からの登録では必須)。血液型と同意は拡張(同意の確認も画面で必須なので、登録したオーダーは transfusion-consent = true を持つ)。"
 * category[orderType] = $order-type#transfusion "輸血"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityRoutineUrgentVS (required)
 * code 1..1 MS

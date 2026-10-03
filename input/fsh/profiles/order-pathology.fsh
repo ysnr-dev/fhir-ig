@@ -6,7 +6,6 @@ Id: fc-patho-order-header
 Title: "病理検査オーダー ヘッダ"
 Description: "病理検査オーダーのヘッダ。code = 検査区分(JAHIS LPATHO001: 組織診 / 細胞診 / 術中迅速)。occurrenceDateTime = 採取日時。臨床情報・報告希望日・手術室・シェーマ画像は拡張。シェーマ画像の Binary とテンプレート記入の QuestionnaireResponse は同じ transaction で登録する。"
 * category[orderType] = $order-type#pathology "病理検査"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityRoutineUrgentVS (required)
 * code 1..1 MS

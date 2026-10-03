@@ -34,8 +34,9 @@ fhir-ig/
 |---|---|---|
 | jpfhir.jp.core(JP Core) | 1.2.0 | https://jpfhir.jp/fhir/core/1.2.0/package.tgz |
 | jpfhir-terminology(.r4) | 1.4.0 | https://jpfhir.jp/fhir/core/terminology/jpfhir-terminology.r4-1.4.0.tgz |
+| hl7.fhir.uv.sdc(SDC) | 3.0.0 | packages.fhir.org(SUSHI / IG Publisher が自動で取得) |
 
-いずれも公開パッケージレジストリ(packages.fhir.org)には無いため、`_installdeps.sh` でダウンロードして
+JP Core と jpfhir-terminology は公開パッケージレジストリ(packages.fhir.org)には無いため、`_installdeps.sh` でダウンロードして
 `~/.fhir/packages/<name>#<version>/package` に展開します(SUSHI と IG Publisher が共用するキャッシュ)。
 
 ## ビルド
@@ -48,12 +49,20 @@ npm install -g fsh-sushi   # 初回。node 22 以上
 sushi .                    # fsh-generated/ に FHIR JSON を出力
 ```
 
+ホストに node が無いときは、IG Publisher のコンテナに入っている SUSHI を使えます(1 分ほど)。
+
+```bash
+./_installdeps.sh          # 初回
+docker run --rm -v "$PWD":/src -v "$HOME/.fhir":/home/publisher/.fhir -w /src \
+  hl7fhir/ig-publisher-base:latest sushi .
+```
+
 ### IG 全体をビルドする(Docker)
 
 ホストに Java 17 以上が無くても、IG Publisher 同梱のコンテナでビルドできます。
 
 ```bash
-./_docker.sh               # output/index.html と output/qa.html ができる(約 20 分)
+./_docker.sh               # output/index.html と output/qa.html ができる(7 分前後。初回はイメージと publisher.jar の取得が加わる)
 open output/index.html
 ```
 
@@ -74,8 +83,8 @@ Java 17 以上・jekyll・sushi がある環境では `./_build.sh` を直接実
 4. ビルド結果の QA(エラー / 警告数)は Actions の Job Summary に出る。`qa.html` は公開先の `/qa.html`。
 
 ビルドが失敗するのは SUSHI のエラーと IG Publisher の異常終了だけで、IG Publisher の QA のエラー・警告では失敗しません。
-QA に残るエラーは、アプリ側の既知の非準拠(`known-issues.md` に記載: 処方・注射ヘッダの prr-1、jpfhir-terminology に無い MEDIS コード)と、
-院内マスタ由来コードへの narrative リンクだけです。
+QA に残るエラーは、アプリ側の既知の非準拠(`known-issues.md` に記載: 処方・注射ヘッダの prr-1、jpfhir-terminology に無い MEDIS コード、
+テンプレートの questionnaire-itemControl の system が HL7 の正式な URL と違う)と、院内マスタ由来コードへの narrative リンクだけです。
 
 ## 書き方の規約
 
@@ -84,3 +93,8 @@ QA に残るエラーは、アプリ側の既知の非準拠(`known-issues.md` �
 - コードが列挙されている CodeSystem は `content = #complete` + 日本語 display + 対の ValueSet(`<id>-vs`)。院内マスタ由来は `content = #not-present`。
 - 具象プロファイルには必ず 1 件以上の例を書く(IG Publisher がプロファイルで検証するので、FSH がアプリの出力と合っているかの主な確認手段)。
 - 本文・Title・display は日本語。
+- 例はアプリの build 関数の出力をそのまま写す(`code.text`、`lastModified`、`description` のように常に出る要素を省かない。コードの値はマスタ・seed にある実際の形にする)。
+- アプリが条件付きでしか出さない要素を `1..1` にしない(入外区分の category、診療科コードの identifier など、画面で未選択にできるものは `0..1 MS`)。
+- CodeSystem の display はアプリのコードにある表示名と一字一句合わせる(pattern に display を入れると `display-warnings` でも救われない)。
+- 例で名前付きスライスの拡張と URL 直書きの拡張を混ぜるときは、名前付きを先に書き、直書きは `extension[1]` から番号を振る(`extension[0]` や `[+]` は名前付きスライスと衝突する)。
+- 入れ子の `Questionnaire.item.item` には親プロファイルのスライス名が効かないので、拡張は URL 直書きにする。

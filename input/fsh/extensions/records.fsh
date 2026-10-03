@@ -38,7 +38,7 @@ Extension: QuestionnaireOrganizationField
 Id: questionnaire-organization-field
 Title: "施設情報の自動入力"
 Description: "この項目に自院の施設情報のどの値を自動入力するか。"
-Context: Questionnaire.item
+Context: Questionnaire.item, Questionnaire.item.item
 * insert FCMeta
 * value[x] only code
 * valueCode from QuestionnaireOrganizationFieldVS (required)
@@ -47,7 +47,7 @@ Extension: QuestionnairePractitionerField
 Id: questionnaire-practitioner-field
 Title: "医療従事者情報の自動入力"
 Description: "この項目に医療従事者のどの値を自動入力するか。"
-Context: Questionnaire.item
+Context: Questionnaire.item, Questionnaire.item.item
 * insert FCMeta
 * value[x] only code
 * valueCode from QuestionnairePractitionerFieldVS (required)
@@ -56,7 +56,7 @@ Extension: QuestionnairePractitionerRoleDefault
 Id: questionnaire-practitioner-role-default
 Title: "医療従事者選択の既定職種"
 Description: "医療従事者を選ぶ項目の既定の職種(practitioner-role のコード)。"
-Context: Questionnaire.item
+Context: Questionnaire.item, Questionnaire.item.item
 * insert FCMeta
 * value[x] only code
 * valueCode from PractitionerRoleVS (required)
@@ -65,7 +65,7 @@ Extension: QuestionnaireLoginAutofill
 Id: questionnaire-login-autofill
 Title: "ログイン職員の自動入力"
 Description: "true なら、この項目にログイン中の職員を自動入力する。"
-Context: Questionnaire.item
+Context: Questionnaire.item, Questionnaire.item.item
 * insert FCMeta
 * value[x] only boolean
 
@@ -81,7 +81,7 @@ Extension: QuestionnaireResponseAnnotatedImage
 Id: questionnaire-response-annotated-image
 Title: "注釈付き画像(記入)"
 Description: "シェーマ項目に書き込んだ画像(image/png)。url は Binary/{id}。"
-Context: QuestionnaireResponse.item
+Context: QuestionnaireResponse.item, QuestionnaireResponse.item.item, QuestionnaireResponse.item.answer.item
 * insert FCMeta
 * value[x] only Attachment
 * valueAttachment.url 1..1
@@ -91,8 +91,8 @@ Context: QuestionnaireResponse.item
 Extension: PathwayDisplayOrder
 Id: pathway-display-order
 Title: "パス要素の表示順"
-Description: "上流の id は uuid で並びを持たないため、定義どおりの順を保つ。"
-Context: CarePlan
+Description: "上流の id は uuid で並びを持たないため、定義どおりの順を保つ。OAT 単位・アセスメントの CarePlan と、タスクの Procedure に付く。"
+Context: CarePlan, Procedure
 * insert FCMeta
 * value[x] only integer
 

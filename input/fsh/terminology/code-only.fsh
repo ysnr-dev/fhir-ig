@@ -47,13 +47,13 @@ Description: "食事のタイミング ValueSet。"
 
 CodeSystem: MealFastingReasonCS
 Id: meal-fasting-reason
-Title: "欠食の理由"
-Description: "欠食の理由のコード。"
+Title: "欠食・食止めの理由"
+Description: "欠食(meal-skipped-timing)と、食止めの食種で出した食事オーダーの理由(meal-fasting-reason 拡張の valueCode)。"
 * insert EnumCS
-* #npo "絶食"
-* #ope "手術"
-* #exam "検査"
-* #leave "外出・外泊"
+* #npo "絶食(NPO)"
+* #ope "手術絶食"
+* #exam "検査絶食"
+* #leave "外泊"
 * #discharge "退院"
 * #other "その他"
 
@@ -71,7 +71,7 @@ Description: "食事オーダーのつながりの種類のコード。"
 * #start "開始"
 * #change "変更"
 * #resume "再開"
-* #leave-fasting "外泊欠食"
+* #leave-fasting "外泊食止め"
 
 ValueSet: MealOrderLinkKindVS
 Id: meal-order-link-kind-vs
@@ -85,8 +85,8 @@ Title: "食事オーダーの終了理由"
 Description: "食事オーダーの終了理由のコード。"
 * insert EnumCS
 * #change "変更"
-* #discharge-plan "退院予定"
-* #discharge "退院"
+* #discharge-plan "退院食止め(予定)"
+* #discharge "退院食止め"
 * #leave "外泊"
 
 ValueSet: MealOrderEndReasonVS
@@ -100,9 +100,9 @@ Id: brought-medication-substitution
 Title: "持参薬の院内採用薬"
 Description: "持参薬の院内採用薬のコード。"
 * insert EnumCS
-* #same "同一薬あり"
-* #alternative "代替薬あり"
-* #none "代替なし"
+* #same "同じ薬が院内にある"
+* #alternative "院内の代替薬"
+* #none "持参分を使う"
 
 ValueSet: BroughtMedicationSubstitutionVS
 Id: brought-medication-substitution-vs
@@ -115,10 +115,10 @@ Id: regimen-discontinuation-reason
 Title: "レジメン中止理由"
 Description: "レジメン中止理由のコード。"
 * insert EnumCS
-* #progression "増悪"
+* #progression "病勢進行"
 * #adverse-event "有害事象"
 * #patient-request "患者希望"
-* #change "レジメン変更"
+* #change "治療変更"
 * #other "その他"
 
 ValueSet: RegimenDiscontinuationReasonVS
@@ -146,13 +146,13 @@ Id: questionnaire-organization-field
 Title: "施設情報の自動入力項目"
 Description: "施設情報の自動入力項目のコード。"
 * insert EnumCS
-* #name "施設名"
-* #institutionNumber "医療機関番号"
-* #addressFull "住所(郵便番号付き)"
-* #address "住所"
+* #name "名称"
+* #institutionNumber "保険医療機関番号"
+* #addressFull "郵便番号+所在地"
+* #address "所在地"
 * #postalCode "郵便番号"
 * #phone "電話番号"
-* #fax "FAX 番号"
+* #fax "ＦＡＸ"
 
 ValueSet: QuestionnaireOrganizationFieldVS
 Id: questionnaire-organization-field-vs
@@ -166,12 +166,12 @@ Title: "医療従事者情報の自動入力項目"
 Description: "医療従事者情報の自動入力項目のコード。"
 * insert EnumCS
 * #name "氏名"
-* #kana "カナ"
+* #kana "氏名(カナ)"
 * #medicalRegistrationNumber "医籍登録番号"
 * #role "職種"
-* #organizationName "所属"
+* #organizationName "所属医療機関名"
 * #phone "電話番号"
-* #email "メール"
+* #email "メールアドレス"
 
 ValueSet: QuestionnairePractitionerFieldVS
 Id: questionnaire-practitioner-field-vs

@@ -4,11 +4,10 @@ Profile: FC_MicroOrderHeader
 Parent: FC_OrderHeader
 Id: fc-micro-order-header
 Title: "細菌検査オーダー ヘッダ"
-Description: """細菌検査オーダーのヘッダ。code は持たない。進捗の Task は無く、ServiceRequest.status で読む。
+Description: """細菌検査オーダーのヘッダ。code は持たない。進捗の Task は無い。ServiceRequest.status は常に active で、結果の有無は basedOn で紐付く DiagnosticReport(preliminary 中間報告 / final 最終報告)で読む。
 
-既知の不具合: 現行のアプリは micro-prior-antimicrobial / micro-exam-purpose を書くときに order-department / order-ward を上書きしてしまう(microOrderHelpers.ts)。本プロファイルは本来の形(両方を持つ)を定義する。"""
+依頼科・病棟(order-department / order-ward)と先行抗菌薬・検査目的の拡張を並べて持つ。2026-10-03 より前のヘッダはほとんどが依頼科・病棟を持たない(既知の問題)。"""
 * category[orderType] = $order-type#micro "細菌検査"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityRoutineUrgentVS (required)
 * code 0..0
@@ -55,7 +54,7 @@ Description: "検体グループ明細に contained で入る検体。type = JAN
 * status 0..0
 * subject 1..1
 * subject only Reference(FC_Patient)
-* type 1..1 MS
+* type 0..1 MS
 * type.coding 1..1
 * type.coding.system = "http://fhir-client.local/CodeSystem/janis-specimen-type"
 * collection.bodySite.coding ^slicing.discriminator[0].type = #value

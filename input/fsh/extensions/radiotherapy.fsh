@@ -44,7 +44,7 @@ Context: ServiceRequest
 * extension contains
     volumeId 1..1 and
     label 1..1 and
-    type 1..1 and
+    type 0..1 and
     bodySite 0..1 and
     description 0..1
 * extension[volumeId].value[x] only string
@@ -112,7 +112,7 @@ Context: ServiceRequest
 Extension: RadiotherapyFraction
 Id: radiotherapy-fraction
 Title: "照射の実施内容"
-Description: "照射 1 回の実施内容。phaseId は処方のフェーズ、fractionNumber は通算の照射回数。doseDeliveredToVolume は体積ごとに繰り返す(volume = volumeId、dose は Gy)。"
+Description: "照射 1 回の実施内容。phaseId は処方のフェーズ、fractionNumber はそのフェーズの中での回数(1 始まり。中止した回の番号は空き、振り替えで再利用する)。doseDeliveredToVolume は体積ごとに繰り返す(volume = volumeId、dose は Gy)。"
 Context: Procedure
 * insert FCMeta
 * extension contains

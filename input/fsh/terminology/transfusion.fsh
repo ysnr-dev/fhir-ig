@@ -55,7 +55,7 @@ Id: transfusion-observation
 Title: "輸血実施の観察項目"
 Description: "輸血実施記録にぶら下がる Observation.code。"
 * insert EnumCS
-* #reaction "輸血反応"
+* #reaction "輸血副作用"
 
 ValueSet: TransfusionObservationVS
 Id: transfusion-observation-vs
@@ -65,14 +65,14 @@ Description: "輸血実施の観察項目 ValueSet。"
 
 CodeSystem: TransfusionReactionCS
 Id: transfusion-reaction
-Title: "輸血反応の有無"
-Description: "輸血反応の有無のコード。"
+Title: "輸血副作用の有無"
+Description: "輸血副作用の有無のコード。"
 * insert EnumCS
 * #none "なし"
 * #present "あり"
 
 ValueSet: TransfusionReactionVS
 Id: transfusion-reaction-vs
-Title: "輸血反応の有無 ValueSet"
-Description: "輸血反応の有無 ValueSet。"
+Title: "輸血副作用の有無 ValueSet"
+Description: "輸血副作用の有無 ValueSet。"
 * insert AllOf(TransfusionReactionCS)

@@ -27,7 +27,7 @@ ServiceRequest(ヘッダ、FC_LabOrderHeader)
 
 ### 結果
 
-[検査結果・報告](results.html) を参照。パニック値の通知(`lab-panic`)と結果確認の通知(`result-review`)が報告と同時に作られます。
+[検査結果・報告](results.html) を参照。報告と同時に、パニック値があれば `lab-panic` 通知が、中間報告でなければ結果確認の通知(`result-review`)が作られます(`lab-panic` が未対応の間は `result-review` を作りません)。
 
 ### 例
 

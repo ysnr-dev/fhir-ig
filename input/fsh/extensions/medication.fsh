@@ -101,13 +101,13 @@ Context: MedicationStatement
 Extension: Regimen
 Id: regimen
 Title: "レジメン適用の内容"
-Description: "適用時のサイクル日数・治療日数・予定サイクル数、体表面積・身長・体重、中止・完了の記録。"
+Description: "適用時のサイクル日数・治療日数・予定サイクル数、体表面積・身長・体重、中止・完了の記録。plannedCycles が無ければ継続(クール数を決めない)。"
 Context: ServiceRequest
 * insert FCMeta
 * extension contains
     cycleDays 1..1 and
     treatmentDays 1..1 and
-    plannedCycles 1..1 and
+    plannedCycles 0..1 and
     bsa 0..1 and
     height 0..1 and
     weight 0..1 and

@@ -71,10 +71,10 @@ Id: fc-department-task
 Title: "部門進捗 Task(共通)"
 Description: """オーダー(focus)の部門側の進捗。
 
-- Task が存在しない = requested。最初の状態変更で作られる(看護指示だけは登録時に作る)。
+- Task が存在しない = requested。最初の状態変更で作られる(看護指示は登録時に requested で作る。放射線検査の即時実施・処置の即実施・日程未定のまま入室した手術は、最初から completed / in-progress で作る)。
 - intent = filler-order。code = Task 種別(task-code)。focus = ヘッダ ServiceRequest(同じ Bundle で登録するときは urn:uuid)。for = 患者。
 - priority / requester はオーダーから複製。authoredOn / lastModified を持つ。
-- executionPeriod: accepted / in-progress / on-hold で start、completed で end。requested / cancelled では持たない。
+- executionPeriod: accepted / in-progress / on-hold で start(最初に受け付けた時刻を保つ)、completed で end が加わる。requested / cancelled では持たない。
 - owner は看護指示以外は持たない。businessStatus / input / 拡張は持たない。"""
 * insert FCMeta
 * ^abstract = true
@@ -161,7 +161,7 @@ Profile: FC_TreatmentTask
 Parent: FC_DepartmentTask
 Id: fc-treatment-task
 Title: "処置 進捗 Task"
-Description: "処置 進捗 Task。"
+Description: "処置の進捗。実施登録と同時に completed になる。「即実施」(オーダー登録と同時に実施を入力)では、オーダー・実施記録・completed の Task を同じ transaction で作り、focus は urn:uuid。実施入力をしない項目だけのオーダーでは実施記録を作らず Task だけ completed にする。"
 * code = $task-code#treatment "処置"
 * status from FCTaskStatusBasicVS (required)
 * focus only Reference(FC_TreatmentOrderHeader)
@@ -216,20 +216,22 @@ Profile: FC_RxDispenseTask
 Parent: FC_DepartmentTask
 Id: fc-rx-dispense-task
 Title: "調剤 進捗 Task"
-Description: "処方の調剤進捗。requested 依頼済 / accepted 受付済(処方箋発行)/ in-progress 調剤済 / completed 実施済 / cancelled 中止。note[] に疑義照会(時刻付き)。executionPeriod.start は受付、end は調剤(preserveEnd)。"
+Description: "処方の調剤進捗。requested 依頼済 / accepted 受付済(処方箋発行)/ in-progress 調剤済 / completed 実施済 / cancelled 中止。note[] に疑義照会(時刻付き)。executionPeriod.start は最初に受付または調剤した時刻で、end は completed のときだけ持つ(調剤済 in-progress では start だけ)。statusReason.text = レジメンの日オーダーを中止した理由(cancelled のときだけ)。"
 * code = $task-code#rx-dispense "調剤"
 * status from FCTaskStatusInProgressVS (required)
 * focus only Reference(FC_PrescriptionOrder)
 * note ^short = "疑義照会"
+* statusReason.text ^short = "レジメンの日オーダーを中止した理由(cancelled のときだけ。中止取消で消える)"
 
 Profile: FC_InjectionTask
 Parent: FC_DepartmentTask
 Id: fc-injection-task
 Title: "注射 進捗 Task"
-Description: "注射(1 日分の ServiceRequest)の進捗。requested 依頼済 / accepted 受付済 / in-progress 払出済 / completed 実施済 / cancelled 中止。実施記録の数が timing.event の数に達したら completed。"
+Description: "注射(1 日分の ServiceRequest)の進捗。requested 依頼済 / accepted 受付済 / in-progress 払出済 / completed 実施済 / cancelled 中止。実施記録の数が timing.event の数に達したら completed。statusReason.text = レジメンの日オーダーを中止した理由(cancelled のときだけ)。"
 * code = $task-code#injection "注射"
 * status from FCTaskStatusInProgressVS (required)
 * focus only Reference(FC_InjectionOrder)
+* statusReason.text ^short = "レジメンの日オーダーを中止した理由(cancelled のときだけ。中止取消で消える)"
 
 Profile: FC_BroughtMedReviewTask
 Parent: Task
@@ -267,7 +269,8 @@ Description: """担当者宛の通知。
 
 - status: requested 未対応 / completed 対応済 / cancelled 取消。intent = filler-order。
 - priority は重要度(alert → stat、caution → urgent、info → routine)。
-- code = 通知種別(task-code)。focus = 通知の対象、for = 患者、owner = 宛先の職員、requester = 発生させた職員、basedOn = 関連するオーダー。
+- code = 通知種別(task-code)。focus = 通知の対象、for = 患者、owner = 宛先の職員(宛先が決まらなければ無し)、requester = 発生させた職員、basedOn = 関連するオーダー。
+- authoredOn = 最初に作った時刻、lastModified = 最後に書いた時刻(内容が変わって未対応に戻したときも更新する)。
 - input[] は type.text をキーにした付帯情報(種別ごとに定義)。restriction.period.end = 期限。
 - 対応済みにするとき executionPeriod と note(authorReference / time / text)が付く。"""
 * insert FCMeta
@@ -283,9 +286,10 @@ Description: """担当者宛の通知。
 * for only Reference(FC_Patient)
 * owner 0..1 MS
 * owner only Reference(FC_Practitioner)
-* owner ^short = "宛先の職員。宛先が決まらない緊急異常値だけ無し"
+* owner ^short = "宛先の職員。宛先が決まらないとき(オーダーに紐付かない結果の緊急異常値・検査結果確認、主治医のいない入院の持参薬鑑別済)は無し"
 * requester only Reference(FC_Practitioner)
 * authoredOn 1..1
+* lastModified 1..1
 * description MS
 * restriction.period.end ^short = "期限"
 
@@ -329,7 +333,7 @@ Profile: FC_BroughtMedIdentifiedTask
 Parent: FC_NotificationTask
 Id: fc-brought-med-identified-task
 Title: "持参薬鑑別済 通知"
-Description: "薬剤部の鑑別が終わったことを担当医に知らせる。focus と encounter = 入院。input: 入院(valueReference)、入院日(valueDate)、剤数(valueInteger)、判断待ち(valueInteger)。"
+Description: "薬剤部の鑑別が終わったことを入院の主治医に知らせる(主治医がいなければ owner 無し)。focus と encounter = 入院。description = 「持参薬 N 剤の鑑別が済みました(判断待ち M 剤)」。input: 入院(valueReference)、入院日(valueDate)、剤数(valueInteger)、判断待ち(valueInteger)。"
 * code = $task-code#brought-med-identified "持参薬鑑別済"
 * focus only Reference(FC_InpatientEncounter)
 * encounter only Reference(FC_InpatientEncounter)
@@ -352,7 +356,7 @@ Profile: FC_DocumentDueTask
 Parent: FC_NotificationTask
 Id: fc-document-due-task
 Title: "文書作成 督促"
-Description: "退院時サマリーなどの文書作成の督促。focus と encounter = 入院。restriction.period.end = 期限。input: 文書(valueCode = discharge-summary)、文書名 / 退院日 / 期限(valueString)、入院(valueReference)。"
+Description: "退院時サマリーなどの文書作成の督促。focus と encounter = 入院。restriction.period.end = 期限。input: 文書(valueCode = discharge-summary)、文書名(valueString)、入院(valueReference)、退院日 / 期限(valueDate)。restriction.period.end も日付のみ。"
 * code = $task-code#document-due "文書作成"
 * focus only Reference(FC_InpatientEncounter)
 * encounter only Reference(FC_InpatientEncounter)
@@ -370,15 +374,20 @@ Description: "退院時サマリーなどの文書作成の督促。focus と en
 * input[admission].type.text = "入院"
 * input[admission].value[x] only Reference(Encounter)
 * input[dischargeDate].type.text = "退院日"
-* input[dischargeDate].value[x] only string
+* input[dischargeDate].value[x] only date
 * input[dueDate].type.text = "期限"
-* input[dueDate].value[x] only string
+* input[dueDate].value[x] only date
 
 Profile: FC_LabPanicTask
 Parent: FC_NotificationTask
 Id: fc-lab-panic-task
 Title: "緊急異常値 通知"
-Description: "検体検査結果のパニック値。priority = stat。focus = DiagnosticReport。input: 検体採取日(valueDate)と、パニック値の項目ごとに type.coding = [lab-result-item(display のみ), v3-ObservationInterpretation の HH / LL] + valueQuantity。宛先が決まらない(依頼医が居ない)ときは owner を持たない。"
+Description: """検体検査結果のパニック値。
+
+- priority = stat。focus = DiagnosticReport。description = 「検体採取日 項目と値の要約」。報告区分に関係なく(preliminary でも)作る。
+- input: 検体採取日(valueDate)と、パニック値の項目ごとに type.coding = [lab-result-item(system と display だけで code 無し), v3-ObservationInterpretation の HH / LL]、type.text = 項目名、valueQuantity = {value, unit, system = UCUM}(code 無し)。
+- 訂正で値が変わると本文を更新して未対応に戻し、パニック値が無くなると未対応の通知を cancelled にする。
+- 宛先が決まらない(オーダーに紐付かない結果で依頼医が居ない)ときは owner を持たない。"""
 * code = $task-code#lab-panic "緊急異常値"
 * priority = #stat
 * focus only Reference(FC_LabDiagnosticReport)
@@ -391,9 +400,15 @@ Profile: FC_ResultReviewTask
 Parent: FC_NotificationTask
 Id: fc-result-review-task
 Title: "検査結果確認 通知"
-Description: "検査結果が届いたことを依頼医に知らせる。preliminary でない報告で作られる。focus = DiagnosticReport。input: 種別(valueString、lab / micro / patho / rad / physio / endoscopy)、対象日、内容。確認すると結果確認の Provenance(verifier + signature)が付く。"
+Description: """検査結果が届いたことを依頼医に知らせる。
+
+- preliminary でない報告で作られる。ただし同じ報告の緊急異常値・重要所見の通知が未対応で残っている間は作らず、既にある未対応の検査結果確認は cancelled にする(1 つの結果に通知を 1 件にする)。
+- focus = DiagnosticReport、basedOn = オーダーのヘッダ(オーダーに紐付かない結果では無く、owner も無い)。description = 「種別名 対象日 内容」。
+- input: 種別(valueString、lab / micro / patho / rad / physio / endoscopy)、対象日(valueDate)、内容(valueString)。
+- 確認すると結果確認の Provenance(verifier + signature)が付く。緊急異常値・重要所見の通知を確認したときも、報告が final / corrected なら同じ Provenance を書き、未対応の検査結果確認を completed にする。"""
 * code = $task-code#result-review "検査結果確認"
 * focus only Reference(DiagnosticReport)
+* basedOn only Reference(ServiceRequest)
 * insert TaskInputSlicing
 * input contains
     kind 0..1 and
@@ -402,7 +417,7 @@ Description: "検査結果が届いたことを依頼医に知らせる。prelim
 * input[kind].type.text = "種別"
 * input[kind].value[x] only string
 * input[targetDate].type.text = "対象日"
-* input[targetDate].value[x] only string
+* input[targetDate].value[x] only date
 * input[content].type.text = "内容"
 * input[content].value[x] only string
 
@@ -470,17 +485,37 @@ Profile: FC_PathwayVarianceTask
 Parent: FC_NotificationTask
 Id: fc-pathway-variance-task
 Title: "パスのバリアンス 通知"
-Description: "クリニカルパスの評価で未達成が出たことの通知。priority = urgent。focus = 評価 Observation、basedOn = OAT 単位の CarePlan。"
+Description: "クリニカルパスの評価で未達成が出たことの通知。priority = urgent。focus = 評価 Observation、basedOn = OAT 単位の CarePlan、requester = 評価を記録した職員。description = 「パス名 病日の表示 アウトカム名 未達成」。input: パス名 / 適用(適用 CarePlan の id)/ 病日(病日 CarePlan の id)/ 病日の表示 / アウトカム(valueString)、対象日(valueDate)。主治医のいない入院や入院外では owner を持たない。"
 * code = $task-code#pathway-variance "パスのバリアンス"
 * priority = #urgent
 * focus only Reference(FC_PathwayEvaluationObservation)
 * basedOn only Reference(FC_PathwayUnitCarePlan)
+* insert TaskInputSlicing
+* input contains
+    pathway 0..1 and
+    apply 0..1 and
+    event 0..1 and
+    eventLabel 0..1 and
+    targetDate 0..1 and
+    outcome 0..1
+* input[pathway].type.text = "パス名"
+* input[pathway].value[x] only string
+* input[apply].type.text = "適用"
+* input[apply].value[x] only string
+* input[event].type.text = "病日"
+* input[event].value[x] only string
+* input[eventLabel].type.text = "病日の表示"
+* input[eventLabel].value[x] only string
+* input[targetDate].type.text = "対象日"
+* input[targetDate].value[x] only date
+* input[outcome].type.text = "アウトカム"
+* input[outcome].value[x] only string
 
 Profile: FC_RadiotherapyReviewDueTask
 Parent: FC_NotificationTask
 Id: fc-radiotherapy-review-due-task
 Title: "放射線治療の診察 通知"
-Description: "治療中の週次診察が期限を迎えたことの通知。focus = 放射線治療処方。input: 治療コース / 前回の診察(valueString)。"
+Description: "治療中の週次診察が期限を迎えたことの通知。focus = 放射線治療処方。input: 治療コース(valueString。「第 n コース 部位」)/ 前回の診察(valueDate。一度も診察していなければ input ごと無い)。"
 * code = $task-code#radiotherapy-review-due "放射線治療の診察"
 * focus only Reference(FC_RadiotherapyOrder)
 * insert TaskInputSlicing
@@ -490,4 +525,4 @@ Description: "治療中の週次診察が期限を迎えたことの通知。foc
 * input[course].type.text = "治療コース"
 * input[course].value[x] only string
 * input[lastReview].type.text = "前回の診察"
-* input[lastReview].value[x] only string
+* input[lastReview].value[x] only date

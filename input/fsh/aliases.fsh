@@ -32,6 +32,7 @@ Alias: $allergy-clinical = http://terminology.hl7.org/CodeSystem/allergyintolera
 Alias: $allergy-verification = http://terminology.hl7.org/CodeSystem/allergyintolerance-verification
 Alias: $medication-statement-category = http://terminology.hl7.org/CodeSystem/medication-statement-category
 Alias: $discharge-disposition = http://terminology.hl7.org/CodeSystem/discharge-disposition
+Alias: $admit-source = http://terminology.hl7.org/CodeSystem/admit-source
 Alias: $location-physical-type = http://terminology.hl7.org/CodeSystem/location-physical-type
 Alias: $organization-type = http://terminology.hl7.org/CodeSystem/organization-type
 Alias: $provenance-participant-type = http://terminology.hl7.org/CodeSystem/provenance-participant-type

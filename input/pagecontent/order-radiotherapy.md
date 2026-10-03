@@ -33,7 +33,7 @@ phaseId、number、label、status(active / revoked)、modalityAndTechnique(modal
 
 ### 照射記録・コース要約
 
-[実施記録](procedures.html) を参照。照射の取消は削除ではなく `entered-in-error` にします。
+[実施記録](procedures.html) を参照。照射済みの記録の取消は削除ではなく `entered-in-error` にします(照射予定の取消は削除)。照射と治療終了サマリーの登録は Task を変えません。`radiotherapy-fraction` の fractionNumber はフェーズ内の回数です。
 
 ### 例
 

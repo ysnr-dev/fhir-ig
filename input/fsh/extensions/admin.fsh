@@ -141,3 +141,63 @@ Context: Appointment
 * insert FCMeta
 * ^url = "http://fhir-client.local/integrations/receipt-computer/StructureDefinition/reception-coverage-set"
 * value[x] only string
+
+Extension: AppointmentVisitKind
+Id: appointment-visit-kind
+Title: "初再診"
+Description: "受付で指定した初診(first)・再診(revisit)。未指定は判定をレセプトコンピュータに任せる意味で、拡張ごと持たない。"
+Context: Appointment
+* insert FCMeta
+* value[x] only code
+* valueCode from AppointmentVisitKindVS (required)
+
+Extension: EmergencyTriageLevel
+Id: emergency-triage-level
+Title: "JTAS の現在のレベル"
+Description: "救急受診の現在の JTAS レベル(1 蘇生〜5 非緊急)。一覧の表示・並べ替え用で、判定の履歴はトリアージの Observation(FC_TriageObservation)が持つ。"
+Context: Encounter
+* insert FCMeta
+* value[x] only integer
+* valueInteger ^minValueInteger = 1
+* valueInteger ^maxValueInteger = 5
+
+Extension: EncounterOriginEmergency
+Id: encounter-origin-emergency
+Title: "元の救急受診"
+Description: "救急外来から入院したときの、元の救急受診(Encounter、class = EMER)。入院 Encounter に付く。"
+Context: Encounter
+* insert FCMeta
+* value[x] only Reference(Encounter)
+
+Extension: EncounterReferral
+Id: encounter-referral
+Title: "他院よりの紹介の有無"
+Description: "他院よりの紹介の有無(DPC 様式1 の入院情報)。入院経路が家庭(1)・他院からの転院(4)・介護施設(5)のときだけ持つ。"
+Context: Encounter
+* insert FCMeta
+* value[x] only boolean
+
+Extension: EncounterFromOutpatient
+Id: encounter-from-outpatient
+Title: "自院の外来からの入院"
+Description: "自院の外来からの入院か(DPC 様式1 の入院情報)。入院経路が家庭(1)・他院からの転院(4)・介護施設(5)のときだけ持つ。"
+Context: Encounter
+* insert FCMeta
+* value[x] only boolean
+
+Extension: EncounterAmbulance
+Id: encounter-ambulance
+Title: "救急車による搬送の有無"
+Description: "救急車による搬送の有無(DPC 様式1 の入院情報)。入院経路が家庭(1)・他院からの転院(4)・介護施設(5)のときに持つ。救急外来から入院予定を作ったときは、来院方法が救急車・ドクターヘリ・ドクターカーなら入院経路が未入力でも true で引き継ぐ。"
+Context: Encounter
+* insert FCMeta
+* value[x] only boolean
+
+Extension: EncounterPriorHomeCare
+Id: encounter-prior-home-care
+Title: "入院前の在宅医療の有無"
+Description: "入院前の在宅医療の有無(DPC 様式1 の入院情報。0 無 / 1 当院が提供 / 2 他施設が提供 / 9 不明)。入院経路が家庭(1)・他院からの転院(4)・介護施設(5)で、入力されたときだけ持つ。"
+Context: Encounter
+* insert FCMeta
+* value[x] only code
+* valueCode from EncounterPriorHomeCareVS (required)

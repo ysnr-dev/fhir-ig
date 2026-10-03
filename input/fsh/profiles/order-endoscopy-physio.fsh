@@ -6,7 +6,6 @@ Id: fc-endoscopy-order-header
 Title: "内視鏡オーダー ヘッダ"
 Description: "内視鏡オーダーのヘッダ。分割・予約は放射線検査と同じ。"
 * category[orderType] = $order-type#endoscopy "内視鏡"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityExamVS (required)
 * code 0..0
@@ -44,7 +43,6 @@ Id: fc-physio-order-header
 Title: "生理検査オーダー ヘッダ"
 Description: "生理検査オーダーのヘッダ。分割・予約は放射線検査と同じ。"
 * category[orderType] = $order-type#physio "生理検査"
-* category[setting] 1..1
 * priority 1..1 MS
 * priority from FCPriorityExamVS (required)
 * code 0..0

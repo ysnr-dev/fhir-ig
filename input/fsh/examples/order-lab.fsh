@@ -2,6 +2,7 @@ Instance: example-lab-order-header
 InstanceOf: FC_LabOrderHeader
 Usage: #example
 Title: "検体検査オーダー ヘッダの例"
+Description: "検体検査オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * priority = #routine
@@ -32,6 +33,7 @@ Instance: example-lab-order-item
 InstanceOf: FC_LabOrderItem
 Usage: #example
 Title: "検体検査オーダー 明細の例"
+Description: "検体検査オーダー 明細の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/lab-order-item-number"
@@ -41,7 +43,7 @@ Title: "検体検査オーダー 明細の例"
 * authoredOn = "2026-04-01T09:00:00+09:00"
 * occurrenceDateTime = "2026-04-02"
 * code.coding[item] = http://fhir-client.local/CodeSystem/lab-order-item#0301 "HbA1c"
-* code.coding[jlac11] = http://fhir-client.local/CodeSystem/jlac11#3D0460000023220000
+* code.coding[jlac11] = http://fhir-client.local/CodeSystem/jlac11#3D046000001906202
 * code.coding[abbreviation] = $lab-item-abbreviation#HbA1c "HbA1c"
 * code.text = "HbA1c"
 * contained[0] = example-lab-order-specimen
@@ -51,6 +53,7 @@ Instance: example-lab-label-specimen
 InstanceOf: FC_LabLabelSpecimen
 Usage: #example
 Title: "検体ラベルの検体の例"
+Description: "検体ラベルの検体の例"
 * accessionIdentifier.system = "http://fhir-client.local/IdSystem/lab-label-number"
 * accessionIdentifier.value = "00000001231"
 * status = #available

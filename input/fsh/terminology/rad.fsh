@@ -61,7 +61,7 @@ Description: "実施記録の線量 Observation.code。単位は UCUM(ctdivol mG
 * insert EnumCS
 * #ctdivol "CTDIvol"
 * #dlp "DLP"
-* #dap "面積線量(DAP)"
+* #dap "DAP(面積線量)"
 * #fluoroscopy-time "透視時間"
 
 ValueSet: RadDoseVS

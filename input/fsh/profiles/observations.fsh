@@ -81,7 +81,7 @@ Profile: FC_NursingObservation
 Parent: Observation
 Id: fc-nursing-observation
 Title: "看護観察 記録"
-Description: "看護観察の指示に対する記録。category[0] = order-type#nursing のみ。code = 指示の MEDIS coding(master-nursingObservationKeyCode)に、対応があれば LOINC のバイタルコードを添える(31000001 SpO2 / 31001368 体温 / 31001390 脈拍 / 31001369 呼吸数 / 31000296 体重 / 31000298 身長 / 31002365 血圧)。value = valueQuantity(UCUM)/ valueCodeableConcept(nursing-observation-result)/ component / valueString。basedOn = 看護指示、encounter、performer。identifier = nursing-perform-entry。"
+Description: "看護観察の指示に対する記録。category[0] = order-type#nursing のみ。code = 指示の MEDIS coding(master-nursingObservationKeyCode)に、対応があれば LOINC のバイタルコードを添える(31000001 SpO2 / 31001368 体温 / 31001390 脈拍 / 31001369 呼吸数 / 31000296 体重 / 31000298 身長 / 31002365 血圧)。value = valueQuantity(LOINC に対応するバイタルだけ UCUM の system / code を持ち、他は unit 文字列のみ)/ valueCodeableConcept(nursing-observation-result + text)/ component(2 数値型。code.text のみ)/ valueString。マスタに無い自由記載の指示の記録は code.text のみ + valueString。basedOn = 看護指示、encounter、performer。identifier = nursing-perform-entry。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"
@@ -145,3 +145,24 @@ Description: "有害事象。AdverseEvent リソースは使わず Observation �
 * basedOn only Reference(FC_RegimenOrder or FC_RadiotherapyOrder)
 * performer only Reference(FC_Practitioner)
 * extension contains TreatmentContext named treatmentContext 0..1 MS
+
+Profile: FC_TriageObservation
+Parent: Observation
+Id: fc-triage-observation
+Title: "トリアージ(JTAS)の判定記録"
+Description: "救急受診のトリアージ 1 回ぶんの判定記録。status = final、category = survey、code = emergency-observation#jtas。valueCodeableConcept = JTAS レベル(jtas-level の 1〜5)。encounter = 救急受診、effectiveDateTime = 判定日時、performer = 判定した職員。再判定のたびに 1 件増え、現在のレベルは Encounter の emergency-triage-level 拡張が持つ。"
+* insert FCMeta
+* status = #final
+* category 1..1
+* category = $obs-category#survey
+* code = http://fhir-client.local/CodeSystem/emergency-observation#jtas
+* subject 1..1
+* subject only Reference(FC_Patient)
+* encounter 1..1
+* encounter only Reference(FC_EmergencyEncounter)
+* effective[x] 1..1
+* effective[x] only dateTime
+* value[x] 1..1
+* value[x] only CodeableConcept
+* valueCodeableConcept from JtasLevelVS (required)
+* performer only Reference(FC_Practitioner)

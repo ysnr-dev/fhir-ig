@@ -22,7 +22,7 @@ ServiceRequest(ヘッダ = 申込、FC_SurgeryOrderHeader)
 - `priority`: routine 予定 / urgent 準緊急 / stat 緊急。
 - `occurrenceDateTime` は予定日時。未定なら省略します(全種別で手術だけが省略可。カルテでは「日付未定」に表示)。
 - 術式明細の `code` = 術式マスタ(`surgery-order-item`)+ レセプト K コード(`surgery-procedure-code`)+ 略称。`bodySite` = 左右 + text。`reasonReference` / `reasonCode` = 術前診断。アプローチは `surgery-approach`。
-- 日程の確定は ServiceRequest の PUT と Task を同じ transaction で行います。Appointment は作りません。手術室の割当は `surgery-room`(Location)。
+- 日程の確定はヘッダの PUT と Task(accepted)を同じ transaction で行います。カレンダー上の移動はヘッダの PUT だけで Task は変えません。日程未定のまま入室すると、入室日時を `occurrenceDateTime` に入れ、Task を in-progress で作ります。いずれも術式明細の `occurrenceDateTime` を同じ transaction でヘッダに揃えます。Appointment は作りません。手術室の割当は `surgery-room`(Location)。
 
 ### Task
 

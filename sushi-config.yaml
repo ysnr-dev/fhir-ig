@@ -18,6 +18,8 @@ jurisdiction: urn:iso:std:iso:3166#JP "Japan"
 
 dependencies:
   jpfhir.jp.core: 1.2.0
+  # テンプレート(Questionnaire)が使う SDC の拡張(Observation 抽出・初期値式)の定義
+  hl7.fhir.uv.sdc: 3.0.0
 
 parameters:
   show-inherited-invariants: false
@@ -90,6 +92,8 @@ pages:
     title: クリニカルパス
   questionnaire.md:
     title: Questionnaire / QuestionnaireResponse
+  dpc-form1.md:
+    title: DPC 様式1
   admin.md:
     title: 患者・管理リソース
   scheduling.md:
@@ -117,6 +121,7 @@ menu:
     診療記録: records.html
     クリニカルパス: pathway.html
     Questionnaire: questionnaire.html
+    DPC 様式1: dpc-form1.html
   管理:
     患者・管理: admin.html
     予約: scheduling.html

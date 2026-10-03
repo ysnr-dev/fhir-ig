@@ -2,9 +2,9 @@
 
 診療記録・オーダーの検査目的や特別指示・臨床情報・術前指示・依頼目的・読影レポート・栄養指導記録・パスの評価などで使うテンプレートは **Questionnaire**([FC_Questionnaire](StructureDefinition-fc-questionnaire.html))です。アプリは `meta.profile` に JASPEHR の `jaspehr-questionnaire` を付け、上流サーバーが JASPEHR の不変条件で検証します(本 IG のプロファイルは base から派生)。
 
-- `url` = `http://fhir-client.local/Questionnaire/{id}`(同梱テンプレート: admission-plan-01、plan-01、consult-purpose-01、consult-purpose-radiotherapy-01、endoscopy-*、family-01、ros-01、social-01、sur-*、rad-ct-01、radiotherapy-review-01、nutrition-guidance-record-01、oral-function-01、perio-summary-01、hbcr-01)。`version` と `url` の組で一意。
+- `url` = `http://fhir-client.local/Questionnaire/{id}`(同梱テンプレート: admission-plan-01、plan-01、consult-purpose-01、consult-purpose-radiotherapy-01、endoscopy-*、family-01、ros-01、social-01、sur-*、rad-ct-01、radiotherapy-review-01、nutrition-guidance-record-01、oral-function-01、perio-summary-01、hf-symptom-01、physio-ecg-report-01、hbcr-01)。`version` と `url` の組で一意。
 - `subjectType` = Patient。`name` は 15 文字まで。enableWhen は choice の子項目にだけ使えます(上流サーバーが JASPEHR の不変条件を検証)。
-- 標準拡張: questionnaire-itemControl(choice には必須)、choiceOrientation、hidden、maxOccurs(repeats には必須)、minValue / maxValue / maxDecimalPlaces、questionnaire-unit(UCUM)、regex、designNote、variable、questionnaire-itemMedia(Binary)。SDC: initialExpression、calculatedExpression、sdc-questionnaire-observationExtract、sdc-observationExtract-category。
+- 標準拡張: questionnaire-itemControl(choice には必須)、choiceOrientation、hidden、maxOccurs(repeats には必須)、minValue / maxValue / maxDecimalPlaces、questionnaire-unit(system は UCUM 固定。code には UCUM でない単位文字列も入る — [既知の非準拠](known-issues.html))、regex、designNote、variable、questionnaire-itemMedia(Binary)。SDC: initialExpression、calculatedExpression、sdc-questionnaire-observationExtract、sdc-observationExtract-category。
 - 本 IG の拡張:
 
 | 拡張 | 置く場所 | 内容 |
@@ -22,7 +22,7 @@
 [FC_QuestionnaireResponse](StructureDefinition-fc-questionnaire-response.html)は、アプリが `meta.profile` に JASPEHR の `jaspehr-questionnaireresponse` を付けるものです(本 IG のプロファイルは base から派生)。
 
 - `questionnaire` = テンプレートの canonical(`url|version`)。`status`: in-progress / completed / amended。
-- `author` は contained Practitioner(`#practitioner`)。
+- `author` は contained Practitioner(`#practitioner`、name.text = 記入者名のみ)。
 - `identifier.value` = `{施設番号}^{患者ID}^{uuid}`(system 無し。[既知の非準拠](known-issues.html))。
 - `basedOn` = 関連するオーダー(放射線治療の週次診察など)。
 - `questionnaire-response-problem` = 対象プロブレム。item の `questionnaire-response-annotated-image` = シェーマに書き込んだ画像(Binary)。

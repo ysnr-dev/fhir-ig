@@ -11,7 +11,7 @@ ServiceRequest(ヘッダ、FC_MicroOrderHeader)
      └ result → 所見 / 分離菌 / 感受性の Observation
 ```
 
-進捗の Task はありません。`ServiceRequest.status` で進捗を読みます。
+進捗の Task はありません。`ServiceRequest.status` は常に active で、結果の有無は `basedOn` で紐付く DiagnosticReport(preliminary 中間報告 / final 最終報告)で読みます。
 
 ### オーダー
 
@@ -19,9 +19,7 @@ ServiceRequest(ヘッダ、FC_MicroOrderHeader)
 - 検体グループの contained Specimen: `type` = JANIS 検体種別、`collection.bodySite` = 採取部位(`micro-collection-site`)+ 左右(`micro-laterality`)、`collection.method` = 採取方法。
 - 検査項目の `code` = `micro-order-item`(培養・同定・感受性・塗抹など)。
 
-### 既知の不具合
-
-現行のアプリは `micro-prior-antimicrobial` / `micro-exam-purpose` を書くときに `order-department` / `order-ward` を上書きしてしまいます(`microOrderHelpers.ts`)。`examPurpose` の既定値が diagnostic なので、細菌検査のヘッダはほとんどの場合に依頼科・病棟を持ちません。本 IG は本来の形(両方を持つ)を定義しています。
+2026-10-03 より前に書かれた細菌検査ヘッダは、ほとんどが依頼科・病棟を持ちません([既知の問題](known-issues.html))。
 
 ### 結果
 

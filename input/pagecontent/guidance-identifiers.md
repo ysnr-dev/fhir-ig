@@ -24,7 +24,7 @@ fhir-client が `identifier.system` / `accessionIdentifier.system` / `requisitio
 | `injection-series` | 注射 ServiceRequest.requisition | 1 回の登録で展開した日ごとの ServiceRequest を束ねる uuid |
 | `nursing-order-requisition` | 看護指示 ServiceRequest.requisition | 同時入力した指示を束ねる uuid |
 | `order-set-instance` | ヘッダ ServiceRequest.identifier(と requisition) | オーダーセット適用 1 回の uuid |
-| `pathway-instance` | ヘッダ ServiceRequest.identifier | パス適用 1 回の uuid |
+| `pathway-instance` | ヘッダ ServiceRequest.identifier(と、空いていれば requisition) | パス適用 1 回の uuid |
 | `regimen-instance` | レジメン適用 ServiceRequest.identifier、日オーダーの requisition | レジメン適用ごとの uuid |
 
 #### 記録の入力単位
@@ -57,3 +57,5 @@ fhir-client が `identifier.system` / `accessionIdentifier.system` / `requisitio
 #### system を持たない identifier
 
 QuestionnaireResponse.identifier は system を持たず、value = `{施設番号}^{患者ID}^{uuid}` です([既知の非準拠](known-issues.html))。
+
+DICOM 取込の ImagingStudy のアクセッション番号も system を持たず、`type` = v2-0203#ACSN と value だけです。

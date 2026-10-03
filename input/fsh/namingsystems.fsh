@@ -30,18 +30,21 @@ Instance: ns-rad-order-item-number
 InstanceOf: NamingSystem
 Usage: #definition
 Title: "放射線検査オーダー 明細番号"
+Description: "放射線検査オーダー 明細番号"
 * insert FCNamingSystem(RadOrderItemNumber, http://fhir-client.local/IdSystem/rad-order-item-number)
 
 Instance: ns-endoscopy-order-item-number
 InstanceOf: NamingSystem
 Usage: #definition
 Title: "内視鏡オーダー 明細番号"
+Description: "内視鏡オーダー 明細番号"
 * insert FCNamingSystem(EndoscopyOrderItemNumber, http://fhir-client.local/IdSystem/endoscopy-order-item-number)
 
 Instance: ns-physio-order-item-number
 InstanceOf: NamingSystem
 Usage: #definition
 Title: "生理検査オーダー 明細番号"
+Description: "生理検査オーダー 明細番号"
 * insert FCNamingSystem(PhysioOrderItemNumber, http://fhir-client.local/IdSystem/physio-order-item-number)
 
 Instance: ns-patho-order-item-number
@@ -62,12 +65,14 @@ Instance: ns-treatment-order-item-number
 InstanceOf: NamingSystem
 Usage: #definition
 Title: "処置オーダー 明細番号"
+Description: "処置オーダー 明細番号"
 * insert FCNamingSystem(TreatmentOrderItemNumber, http://fhir-client.local/IdSystem/treatment-order-item-number)
 
 Instance: ns-transfusion-order-item-number
 InstanceOf: NamingSystem
 Usage: #definition
 Title: "輸血オーダー 製剤番号"
+Description: "輸血オーダー 製剤番号"
 * insert FCNamingSystem(TransfusionOrderItemNumber, http://fhir-client.local/IdSystem/transfusion-order-item-number)
 
 Instance: ns-lab-label-number
@@ -104,7 +109,7 @@ Instance: ns-pathway-instance
 InstanceOf: NamingSystem
 Usage: #definition
 Title: "クリニカルパス適用"
-Description: "パスの 1 回の適用で出したオーダーのヘッダ ServiceRequest.identifier の system。値は適用 uuid。"
+Description: "パスの 1 回の適用で出したオーダーのヘッダ ServiceRequest.identifier(と、空いていれば requisition)の system。値は適用 uuid。"
 * insert FCNamingSystem(PathwayInstance, http://fhir-client.local/Identifier/pathway-instance)
 
 Instance: ns-regimen-instance

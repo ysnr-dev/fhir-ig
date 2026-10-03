@@ -14,6 +14,7 @@ ServiceRequest(ヘッダ、FC_TreatmentOrderHeader)
 
 - 明細の `code` = 院内項目コード(`treatment-order-item`)+ 略称。
 - 実施記録の手技コードは `treatment-procedure-code`、材料は `medical-material` + `treatment-material-quantity`。
+- 「即実施」では、オーダー・実施記録・completed の Task を同じ transaction で作ります(Task.focus と Procedure.basedOn は urn:uuid)。実施入力をしない項目だけのオーダーでは実施記録を作らず、Task だけ completed にします。
 
 ### 例
 

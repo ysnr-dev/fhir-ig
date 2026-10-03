@@ -9,7 +9,8 @@ Description: """オーダーの実施を表す Procedure の共通形(ハブ)。
 - category.coding の先頭 = オーダー種別(order-type)。上流サーバーは category の先頭しか索引しない。
 - basedOn = オーダーのヘッダ ServiceRequest。subject = 患者。performer.actor = 実施者。
 - 2 件目以降の手技は別の Procedure(partOf = ハブ、basedOn は同じ)。薬剤は MedicationAdministration(partOf = ハブ)、測定値は Observation(partOf = ハブ)。
-- 取消は entered-in-error にせずリソースを削除する(放射線治療の照射だけは entered-in-error)。"""
+- 取消は entered-in-error にせずリソースを削除する(放射線治療の照射済みの記録だけは entered-in-error)。
+- 検査・処置・手術・輸血・注射の実施は同じ transaction で部門 Task を進める。リハビリ・栄養指導・看護行為・与薬・放射線治療の実施記録は Task を変えない。"""
 * insert FCMeta
 * ^abstract = true
 * category 1..1 MS
@@ -97,12 +98,14 @@ Description: """手術の実施(ハブ)。
 
 - performedPeriod = 入室〜退室。各時刻(麻酔開始 / 執刀開始 / 執刀終了 / 麻酔終了)は surgery-perform-times。
 - performer[].function = スタッフの役割(surgery-staff-role)。
-- code = 術式(surgery-order-item + surgery-procedure-code)。usedCode = 材料(medical-material + surgery-material-quantity)。
+- status = completed。code = 先頭の術式・麻酔の手技(surgery-procedure-code のレセプト電算コード + display、text = 手技名)。2 件目以降の手技は partOf でぶら下がる別の Procedure(performer は持たない)。usedCode = 材料(medical-material + surgery-material-quantity、text は常にある)。
 - complication[].text、outcome(surgery-outcome)、創分類・カウント確認は拡張。
 - 出血量・尿量・輸血量は Observation(surgery-observation、mL)、薬剤は MedicationAdministration(route: IV / IM / SC / TOP / IH / PO / PR)。"""
 * category.coding[orderType] = $order-type#surgery "手術"
 * basedOn only Reference(FC_SurgeryOrderHeader)
+* status = #completed
 * performed[x] only Period
+* code.coding.system = "http://fhir-client.local/CodeSystem/surgery-procedure-code"
 * performer.function.coding.system = "http://fhir-client.local/CodeSystem/surgery-staff-role"
 * outcome from SurgeryOutcomeVS (required)
 * usedCode.coding.system = "http://fhir-client.local/CodeSystem/medical-material"
@@ -129,7 +132,7 @@ Profile: FC_NutritionGuidanceProcedure
 Parent: FC_ProcedureHub
 Id: fc-nutrition-guidance-procedure
 Title: "栄養指導 実施記録"
-Description: "栄養指導の 1 回の実施。code = 実施区分(nutrition-guidance-session-type)、nutrition-guidance-performed-minutes = 指導時間、nutrition-guidance-record = 指導記録の QuestionnaireResponse(同じ transaction)。"
+Description: "栄養指導の 1 回の実施。code = 実施区分(nutrition-guidance-session-type)、nutrition-guidance-performed-minutes = 指導時間、nutrition-guidance-record = 指導記録の QuestionnaireResponse(同じ transaction)。Task は変えない。"
 * category.coding[orderType] = $order-type#nutrition-guidance "栄養指導"
 * status = #completed
 * basedOn only Reference(FC_NutritionGuidanceOrder)
@@ -144,7 +147,7 @@ Profile: FC_RadiotherapyFractionProcedure
 Parent: FC_ProcedureHub
 Id: fc-radiotherapy-fraction-procedure
 Title: "放射線治療 照射記録"
-Description: "1 回の照射。category = [order-type#radiotherapy, radiotherapy-procedure#fraction]。status: preparation(予定)/ completed / not-done(statusReason = 中止理由)/ entered-in-error(取消。削除はしない)。code = 処方の照射技術(radiotherapy-technique)、usedCode = 治療装置。radiotherapy-fraction 拡張にフェーズ・通算回数・IGRT・体積ごとの線量。"
+Description: "1 回の照射。category = [order-type#radiotherapy, radiotherapy-procedure#fraction]。status: preparation(照射予定)/ completed / not-done(statusReason = 中止理由)/ entered-in-error(照射済みの記録の取消。削除はしない)。照射予定(preparation)の取消だけはリソースを削除する。performed[x] は、時刻を入力したとき performedPeriod(start、end)、入力しないとき日付のみの performedDateTime。code = 処方の照射技術(radiotherapy-technique)、usedCode = 治療装置。radiotherapy-fraction 拡張にフェーズ・フェーズ内の回数・IGRT・体積ごとの線量。Task は変えない。"
 * category.coding ^slicing.discriminator[0].type = #value
 * category.coding ^slicing.discriminator[0].path = "system"
 * category.coding ^slicing.rules = #open
@@ -163,8 +166,8 @@ Description: "1 回の照射。category = [order-type#radiotherapy, radiotherapy
 Profile: FC_RadiotherapyCourseSummaryProcedure
 Parent: FC_ProcedureHub
 Id: fc-radiotherapy-course-summary-procedure
-Title: "放射線治療 コース要約"
-Description: "コース終了時の要約。category = [order-type#radiotherapy, radiotherapy-procedure#course-summary]。status: completed / stopped。outcome = 転帰(radiotherapy-course-outcome)。radiotherapy-course-summary 拡張に照射回数・線量・中止理由・経過・有害事象・今後の方針。"
+Title: "放射線治療 治療終了サマリー"
+Description: "コース終了時の治療終了サマリー。category = [order-type#radiotherapy, radiotherapy-procedure#course-summary]。status: completed / stopped。outcome = 転帰(radiotherapy-course-outcome)。performedPeriod = 治療期間(日付のみ)。radiotherapy-course-summary 拡張に照射回数・線量・中止理由・経過・有害事象・今後の方針。Task は変えない。"
 * category.coding ^slicing.discriminator[0].type = #value
 * category.coding ^slicing.discriminator[0].path = "system"
 * category.coding ^slicing.rules = #open
@@ -182,7 +185,7 @@ Profile: FC_TransfusionProcedure
 Parent: FC_ProcedureHub
 Id: fc-transfusion-procedure
 Title: "輸血 実施記録"
-Description: "輸血の実施(ハブ)。code.text = 輸血、performedPeriod。バッグごとの投与は MedicationAdministration(medication = transfusion-product、effectivePeriod、transfusion-lot-number)、輸血反応は Observation(transfusion-observation#reaction)。"
+Description: "輸血の実施(ハブ)。code.text = 輸血、performedPeriod。バッグごとの投与は MedicationAdministration(medication = transfusion-product + text、effectivePeriod、dosage.dose = 単位数(unit は製剤の単位名)、transfusion-lot-number)、輸血副作用は Observation(transfusion-observation#reaction)。"
 * category.coding[orderType] = $order-type#transfusion "輸血"
 * status = #completed
 * basedOn only Reference(FC_TransfusionOrderHeader)
@@ -212,7 +215,7 @@ Profile: FC_NursingActionProcedure
 Parent: Procedure
 Id: fc-nursing-action-procedure
 Title: "看護行為 実施記録"
-Description: "看護行為(MEDIS 看護行為マスタ)の指示の実施。category = order-type#nursing、code = 指示の code(master-nursingAction-16digits)。identifier(nursing-perform-entry)で同じラウンドの記録を束ねる。アプリは meta.profile に JP_Procedure を付けるが、JP_Procedure の nurse スライスは system を medis.or.jp の URL に固定しつつ ValueSet が urn:oid:1.2.392.200119.4.701 のコードだけを含むため、どのコードも準拠できない。本 IG では base から派生する(既知の非準拠)。"
+Description: "看護行為(MEDIS 看護行為マスタ)の指示の実施。category = order-type#nursing、code = 指示の code をそのまま写す(master-nursingAction-16digits と、8 桁管理番号 urn:oid:1.2.392.200119.4.704 の 2 coding + text)。Task は変えない。identifier(nursing-perform-entry)で同じラウンドの記録を束ねる。アプリは meta.profile に JP_Procedure を付けるが、JP_Procedure の nurse スライスは system を medis.or.jp の URL に固定しつつ ValueSet が urn:oid:1.2.392.200119.4.701 のコードだけを含むため、どのコードも準拠できない。本 IG では base から派生する(既知の非準拠)。"
 * insert FCMeta
 * category 1..1 MS
 * category.coding 1..*
@@ -229,14 +232,21 @@ Description: "看護行為(MEDIS 看護行為マスタ)の指示の実施。cate
 * basedOn only Reference(FC_NursingOrder)
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"
 * code 1..1
-* code.coding.system = $medis-nursing-action
+* code.coding ^slicing.discriminator[0].type = #value
+* code.coding ^slicing.discriminator[0].path = "system"
+* code.coding ^slicing.rules = #open
+* code.coding contains
+    nursingAction 1..1 MS and
+    nursingActionNumber 0..1
+* code.coding[nursingAction].system = $medis-nursing-action
+* code.coding[nursingActionNumber].system = $medis-nursing-action-oid
 * encounter only Reference(FC_InpatientEncounter)
 
 Profile: FC_AnesthesiaChartProcedure
 Parent: FC_ProcedureHub
 Id: fc-anesthesia-chart-procedure
 Title: "麻酔チャート"
-Description: "麻酔チャートのハブ。category = order-type#anesthesia-chart、basedOn = 手術オーダー。status: in-progress(記録中)→ completed(確定、performedPeriod.end)。performer.function = surgery-staff-role#anesthetist。バイタル Observation(category 無し、LOINC)、イベント Observation(anesthesia-event)、薬剤 MedicationAdministration(ボーラス: completed + effectiveDateTime + dose、持続: in-progress + effectivePeriod.start + rateQuantity → 終了で completed + end)が partOf でぶら下がる。"
+Description: "麻酔チャートのハブ。category = order-type#anesthesia-chart、basedOn = 手術オーダー。code.text = 麻酔チャート。status: in-progress(記録中)→ completed(確定、performedPeriod.end)。確定後に再開すると in-progress に戻り end が消える。取消は子とハブを削除する。performer(ログイン中の職員が医療従事者のときだけ)の function = surgery-staff-role#anesthetist。バイタル Observation(category 無し、LOINC)、イベント Observation(anesthesia-event)、薬剤 MedicationAdministration(ボーラス: completed + effectiveDateTime + dose、持続: in-progress + effectivePeriod.start + rateQuantity → 終了で completed + end)が partOf でぶら下がる。"
 * category.coding[orderType] = $order-type#anesthesia-chart "麻酔チャート"
 * basedOn only Reference(FC_SurgeryOrderHeader)
 * performed[x] only Period
@@ -246,7 +256,7 @@ Profile: FC_PathwayTaskProcedure
 Parent: Procedure
 Id: fc-pathway-task-procedure
 Title: "パスのタスク"
-Description: "クリニカルパスのタスク(ePath の Procedure)。status: preparation(予定)/ completed。category = ePath の TaskCategoryLv1CS / TaskCategoryLv2CS。basedOn = アセスメントの CarePlan と、タスクから出したオーダーのヘッダ ServiceRequest。identifier = ePath task-id。拡張は ePath の EPathProcedureTaskPlannedDateTime / RepeatNo / CriticalIndicator / UnplannedKind など。"
+Description: "クリニカルパスのタスク(ePath の Procedure)。status: preparation(予定)/ completed。category = ePath の EPathTaskCategoryLv1CS と(あれば)EPathTaskCategoryLv2CS の coding を 1 つの CodeableConcept に持つ(display 無し)。code = タスクコード(EPathLocalTaskCodeCS。あれば)+ text = タスク名。basedOn = アセスメントの CarePlan と、タスクから出したオーダーのヘッダ ServiceRequest。identifier = ePath task-id(値はアセスメントの値に連結)。拡張は ePath の EPathProcedureTaskPlannedDateTime(valueDate)と pathway-display-order。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * status from http://hl7.org/fhir/ValueSet/event-status (required)
@@ -254,3 +264,4 @@ Description: "クリニカルパスのタスク(ePath の Procedure)。status: p
 * basedOn 1..* MS
 * basedOn only Reference(FC_PathwayAssessmentCarePlan or ServiceRequest)
 * identifier.system = "http://e-path.jp/fhir/ePath/IdSystem/task-id"
+* extension contains PathwayDisplayOrder named displayOrder 0..1

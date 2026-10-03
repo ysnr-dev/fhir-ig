@@ -6,6 +6,7 @@ Instance: example-micro-order-header
 InstanceOf: FC_MicroOrderHeader
 Usage: #example
 Title: "細菌検査オーダー ヘッダの例"
+Description: "細菌検査オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * priority = #routine
@@ -33,6 +34,7 @@ Instance: example-micro-order-specimen-group
 InstanceOf: FC_MicroOrderSpecimenGroup
 Usage: #example
 Title: "細菌検査オーダー 検体グループの例"
+Description: "細菌検査オーダー 検体グループの例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/micro-order-item-number"
@@ -51,6 +53,7 @@ Instance: example-micro-order-item
 InstanceOf: FC_MicroOrderItem
 Usage: #example
 Title: "細菌検査オーダー 検査項目の例"
+Description: "細菌検査オーダー 検査項目の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/micro-order-item-number"
@@ -67,6 +70,7 @@ Instance: example-rad-order-header
 InstanceOf: FC_RadOrderHeader
 Usage: #example
 Title: "放射線検査オーダー ヘッダの例"
+Description: "放射線検査オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * priority = #routine
@@ -83,6 +87,7 @@ Instance: example-rad-order-item
 InstanceOf: FC_RadOrderItem
 Usage: #example
 Title: "放射線検査オーダー 明細の例"
+Description: "放射線検査オーダー 明細の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/rad-order-item-number"
@@ -91,14 +96,16 @@ Title: "放射線検査オーダー 明細の例"
 * subject = Reference(Patient/example-patient)
 * authoredOn = "2026-04-01T09:30:00+09:00"
 * occurrenceDateTime = "2026-04-03T10:00:00+09:00"
-* code.coding[item] = http://fhir-client.local/CodeSystem/rad-order-item#CT-CHEST "胸部 CT"
-* code.coding[jj1017-32] = http://fhir-client.local/CodeSystem/jj1017-32#10201030000000000000000000000000
-* code.coding[jj1017-16m] = http://fhir-client.local/CodeSystem/jj1017-16m#1020103000000000
-* code.coding[jj1017-16s] = http://fhir-client.local/CodeSystem/jj1017-16s#0000000000000000
-* code.coding[abbreviation] = $lab-item-abbreviation#CT "CT"
-* code.text = "胸部 CT"
-* category = http://fhir-client.local/CodeSystem/jj1017-modality#CT "CT"
-* bodySite.coding[part] = http://fhir-client.local/CodeSystem/jj1017p#CHEST "胸部"
+* code.coding[item] = http://fhir-client.local/CodeSystem/rad-order-item#000103 "Ｘ線ＣＴ検査胸部仰臥位"
+* code.coding[jj1017-32] = http://fhir-client.local/CodeSystem/jj1017-32#60000002000200000000010000000000 "Ｘ線ＣＴ検査胸部仰臥位"
+* code.coding[jj1017-16m] = http://fhir-client.local/CodeSystem/jj1017-16m#6000000200020000
+* code.coding[jj1017-16s] = http://fhir-client.local/CodeSystem/jj1017-16s#0000010000000000
+* code.coding[abbreviation] = $lab-item-abbreviation#胸部CT "胸部CT"
+* code.text = "Ｘ線ＣＴ検査胸部仰臥位"
+* category = http://fhir-client.local/CodeSystem/jj1017-modality#6 "Ｘ線CT検査"
+* category.text = "Ｘ線CT検査"
+* bodySite.coding[part] = http://fhir-client.local/CodeSystem/jj1017p#200 "胸部"
+* bodySite.text = "胸部"
 * reasonCode.text = "肺炎疑い"
 * note.text = "呼吸停止困難"
 * extension[examPurpose].valueString = "肺炎の評価"
@@ -109,6 +116,7 @@ Instance: example-radiotherapy-order
 InstanceOf: FC_RadiotherapyOrder
 Usage: #example
 Title: "放射線治療処方の例"
+Description: "放射線治療処方の例"
 * status = #active
 * intent = #order
 * category[orderType] = $order-type#radiotherapy "放射線治療"
@@ -119,8 +127,9 @@ Title: "放射線治療処方の例"
 * performer = Reference(Practitioner/example-practitioner)
 * authoredOn = "2026-04-01T11:00:00+09:00"
 * occurrenceDateTime = "2026-04-15"
-* bodySite.coding[part] = http://fhir-client.local/CodeSystem/jj1017p#CHEST "胸部"
+* bodySite.coding[part] = http://fhir-client.local/CodeSystem/jj1017p#200 "胸部"
 * bodySite.coding[laterality] = $jj1017-laterality#R "右側"
+* bodySite.text = "右側 胸部"
 * extension[orderDepartment].valueReference = Reference(Organization/example-department)
 * extension[course].extension[courseNumber].valueInteger = 1
 * extension[course].extension[intent].valueCoding = http://fhir-client.local/CodeSystem/radiotherapy-intent#curative "根治"
@@ -128,6 +137,7 @@ Title: "放射線治療処方の例"
 * extension[volume][0].extension[volumeId].valueString = "v1"
 * extension[volume][0].extension[label].valueString = "PTV-lung"
 * extension[volume][0].extension[type].valueCoding = http://fhir-client.local/CodeSystem/radiotherapy-volume-type#PTV "PTV"
+* extension[volume][0].extension[bodySite].valueCodeableConcept.text = "右肺上葉"
 * extension[phase][0].extension[phaseId].valueString = "p1"
 * extension[phase][0].extension[number].valueInteger = 1
 * extension[phase][0].extension[label].valueString = "初期照射"
@@ -147,6 +157,7 @@ Instance: example-endoscopy-order-header
 InstanceOf: FC_EndoscopyOrderHeader
 Usage: #example
 Title: "内視鏡オーダー ヘッダの例"
+Description: "内視鏡オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * priority = #routine
@@ -162,6 +173,7 @@ Instance: example-endoscopy-order-item
 InstanceOf: FC_EndoscopyOrderItem
 Usage: #example
 Title: "内視鏡オーダー 明細の例"
+Description: "内視鏡オーダー 明細の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/endoscopy-order-item-number"
@@ -181,6 +193,7 @@ Instance: example-physio-order-header
 InstanceOf: FC_PhysioOrderHeader
 Usage: #example
 Title: "生理検査オーダー ヘッダの例"
+Description: "生理検査オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * priority = #urgent
@@ -195,6 +208,7 @@ Instance: example-physio-order-item
 InstanceOf: FC_PhysioOrderItem
 Usage: #example
 Title: "生理検査オーダー 明細の例"
+Description: "生理検査オーダー 明細の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/physio-order-item-number"
@@ -213,6 +227,7 @@ Instance: example-treatment-order-header
 InstanceOf: FC_TreatmentOrderHeader
 Usage: #example
 Title: "処置オーダー ヘッダの例"
+Description: "処置オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * category[orderType] = $order-type#treatment "処置"
@@ -228,6 +243,7 @@ Instance: example-treatment-order-item
 InstanceOf: FC_TreatmentOrderItem
 Usage: #example
 Title: "処置オーダー 明細の例"
+Description: "処置オーダー 明細の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/treatment-order-item-number"
@@ -244,6 +260,7 @@ Instance: example-patho-order-header
 InstanceOf: FC_PathoOrderHeader
 Usage: #example
 Title: "病理検査オーダー ヘッダの例"
+Description: "病理検査オーダー ヘッダの例"
 * status = #active
 * intent = #order
 * priority = #routine
@@ -271,6 +288,7 @@ Instance: example-patho-order-item
 InstanceOf: FC_PathoOrderItem
 Usage: #example
 Title: "病理検査オーダー 検体明細の例"
+Description: "病理検査オーダー 検体明細の例"
 * status = #active
 * intent = #order
 * identifier.system = "http://fhir-client.local/IdSystem/patho-order-item-number"

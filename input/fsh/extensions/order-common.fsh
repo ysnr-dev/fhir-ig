@@ -31,7 +31,7 @@ Context: ServiceRequest
 Extension: PathwayOrder
 Id: pathway-order
 Title: "パス適用の印"
-Description: "どのクリニカルパスの適用から出したか。valueCoding.code = パスコード。同時に identifier(pathway-instance)に適用 uuid が入る。"
+Description: "どのクリニカルパスの適用から出したか。valueCoding.code = パスコード、display = パス名。同時に identifier(pathway-instance)に適用 uuid が入り、requisition が空のオーダーには同じ identifier が requisition にも入る。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Coding

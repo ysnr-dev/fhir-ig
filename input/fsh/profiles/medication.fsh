@@ -66,7 +66,9 @@ Description: """処方の薬剤 1 行。JP Core の JP_MedicationRequest を意�
 - identifier: RP 番号(Medication-RPGroupNumber)と RP 内連番(MedicationAdministrationIndex)。同じ RP 番号の行が 1 つの RP。用法・日数・回数は RP 内の全行に複製する。
 - basedOn = 処方ヘッダ。authoredOn はヘッダと同じ。
 - medicationCodeableConcept: 銘柄は medicine-code(レセプト電算)+ YJ コード、一般名処方は MedicationGeneralOrderCode のみ。text = 薬剤名。
-- dosageInstruction[0]: timing.code = 用法(medicine-usage 16 桁 + medicine-usage-basic-category + text)、doseQuantity(system 無し)、additionalInstruction = JAMI 補足用法コード(urn:oid:1.2.392.200250.2.2.20.22: 間隔 I / 曜日 W / 日付 D / 期間内回数 C、不均等投与 V)と用法コメント(text のみ)。頓用(用法コード 3 桁目 = 5)は asNeededBoolean = true、timing.repeat.count = 回数。
+- dosageInstruction[0]: timing.code = 用法(medicine-usage 16 桁 + medicine-usage-basic-category + text)、doseQuantity = 用量({value, unit}。system 無し)。用量の意味は用法で変わる: 内服(頓用以外)は 1 日量(不均等投与では各回の量の合計)、頓用は 1 回量、外用などは全量。
+- additionalInstruction は 補足用法 → 不均等投与(服用順)→ 用法コメント(text のみ)の順。補足用法・不均等投与は JAMI 補足用法コード(urn:oid:1.2.392.200250.2.2.20.22、8 桁)の coding + 同じ文言の text: 日数間隔 `I{服用日数}{休薬日数}00000`、曜日 `W` + 日〜土の 0/1 を 7 桁、日付 `D{月(0 = 毎月)}{日…}`(1 コード 6 日まで)、期間内回数 `C{Y|M|W}{回数}00000`、不均等投与 `V{n 回目}{量}` を N で 8 桁に埋める(例 V13.5NNN)。
+-頓用(用法コード 3 桁目 = 5)は asNeededBoolean = true、timing.repeat.count = 回数。
 - dispenseRequest.expectedSupplyDuration = 投与日数(内服・非頓用のみ、UCUM d)。
 - note = 薬剤コメント。supportingInformation = 元になった持参薬 MedicationStatement。
 - requester / order-department / order-ward はヘッダと同じ。レジメンの日オーダーでは regimen-dose 拡張。"""
@@ -188,7 +190,7 @@ Description: """処方の調剤、注射の払出。MedicationRequest ごとに 
 
 - status = completed。authorizingPrescription[0] = MedicationRequest。whenHandedOver = 調剤日時。
 - medicationCodeableConcept は処方と同じ系。substitution.wasSubstituted = 処方と異なるコードで調剤したとき true(一般名処方では常に false)。
-- quantity {value, unit}: 処方は 1 回量 × 日数(頓用は × 回数)、注射は 本数 × その日の投与回数。
+- quantity {value, unit}: 処方は、内服(頓用以外)= 1 日量 × 投与日数、頓用 = 1 回量 × 投与回数、それ以外(外用など)= 用量そのまま。力価で出たオーダーは換算マスタで製剤の数量に直す。注射は 本数 × その日の投与回数。
 - daysSupply(UCUM d)は内服処方のみ。performer[0].actor = 薬剤師。
 - JP_MedicationDispense は RP 内連番の identifier を必須とするが、アプリは identifier を付けないため base から派生する(既知の非準拠)。"""
 * insert FCMeta
@@ -211,7 +213,7 @@ Description: """薬剤の投与記録。実施記録の Procedure ハブ(与薬 
 - status: completed(注射の途中中止は stopped、麻酔の持続投与中は in-progress)。
 - medicationCodeableConcept = medicine-code + YJ(輸血製剤は transfusion-product)。
 - request = 元の MedicationRequest(オーダーに無い薬剤を投与したときは無し)。
-- effectiveDateTime または effectivePeriod。dosage の dose / route / site / method / rateQuantity はオーダーから複製。
+- effectiveDateTime または effectivePeriod。dosage の route / site / method / rateQuantity はオーダーから複製。dose は投与した量で、与薬では処方の用量(内服は 1 日量)をその枠の 1 回量に割ったもの(不均等投与はその枠の量)。
 - JP_MedicationAdministration は RP 内連番の identifier を必須とするが、アプリは identifier を付けないため base から派生する(既知の非準拠)。"""
 * insert FCMeta
 * subject 1..1
@@ -229,9 +231,9 @@ Description: """入院時の持参薬。薬剤ごとに 1 件の MedicationState
 
 - category = medication-statement-category#community。context = 入院 Encounter。informationSource = 登録した職員。
 - status: active(未鑑別・未判断・継続)/ on-hold(休止)/ stopped(中止)/ not-taken / completed(退院時)/ entered-in-error。
-- medicationCodeableConcept は処方と同じ系、同定できないときは text のみ。dosage[0] は処方と同じ形(自由記載の用法は timing.code.text)。effectivePeriod.end = 最終服用。
+- medicationCodeableConcept は処方と同じ系、同定できないときは text のみ。dosage[0] は処方と同じ形(自由記載の用法は timing.code.text)だが、doseQuantity は 1 回量(処方の内服は 1 日量)。effectivePeriod.end = 最終服用。
 - 登録時の情報は brought-medication-info、薬剤部の鑑別は brought-medication-identification、医師の判断は brought-medication-decision(内容は statusReason = brought-medication-decision CodeSystem)。
-- 「継続」は処方区分 brought の院内処方を同じ transaction で作り、decision.convertedOrder がそれを指す。
+- 「継続」は処方区分 brought の院内処方を同じ transaction で作り、decision.convertedOrder がそれを指す。処方の用量は、内服(頓用以外)では 1 回量 × 1 日の服用回数(1 日量)にする。
 - JP_MedicationStatement は dosage の doseQuantity に UCUM code を要求するが、アプリは unit 文字列だけを持つため base から派生する(既知の非準拠)。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -255,7 +257,7 @@ Description: """レジメンの適用(コース全体)を表す ServiceRequest�
 - **intent = plan**。status: active / on-hold / revoked(中止)/ completed。
 - category = chemo-regimen + 入院・外来区分。code = レジメンコード(regimen)。identifier = regimen-instance(uuid)。instantiatesUri = `http://fhir-client.local/regimen/{code}`。
 - occurrenceDateTime = 第 1 サイクルの Day 1。
-- regimen 拡張にサイクル日数・治療日数・予定サイクル数・体表面積・身長・体重、中止・完了の記録。
+- regimen 拡張にサイクル日数・治療日数・予定サイクル数(任意。無ければ継続)・体表面積・身長・体重、中止・完了の記録。
 - 各サイクル・各日の注射 / 処方は通常の注射 / 処方オーダーで、requisition = regimen-instance、regimen-order 拡張でこの適用を指す。化学療法の予約 Appointment は日オーダーを basedOn で指す。"""
 * insert FCMeta
 * insert OrderHeaderCommonRules

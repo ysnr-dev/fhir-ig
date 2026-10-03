@@ -12,8 +12,8 @@ Description: """検体検査の結果報告。
 - status: preliminary 中間報告 / final 最終報告 / corrected 訂正報告(final / corrected の報告を編集保存すると必ず corrected)。
 - category[0] = v2-0074#LAB、category[1] = 入院・外来区分(lab-result-setting)。code = LOINC 11502-2(text 臨床検査結果)。
 - effectiveDateTime = 検体日(日付のみ)、issued = 保存日時。performer = 自院 Organization と入力者 Practitioner。
-- basedOn = オーダーのヘッダ、specimen[] = 検体ラベルの Specimen(または結果入力で作った Specimen)、result[] = 項目ごとの Observation。conclusion、order-department。
-- preliminary でない報告で result-review 通知、パニック値で lab-panic 通知が作られる。"""
+- basedOn = オーダーのヘッダ(オーダーに紐付けずに登録・取込した結果では持たない)、specimen[] = 検体ラベルの Specimen(または結果入力で作った Specimen)、result[] = 項目ごとの Observation。conclusion、order-department。
+- パニック値があれば報告区分に関係なく lab-panic 通知が作られる。preliminary でない報告では result-review 通知が作られるが、lab-panic 通知が未対応の間は作らない(FC_ResultReviewTask 参照)。"""
 * insert FCMeta
 * subject 1..1
 * subject only Reference(FC_Patient)
@@ -32,7 +32,7 @@ Description: """検体検査の結果報告。
 * effective[x] 1..1
 * issued 1..1
 * performer only Reference(FC_Facility or FC_Practitioner)
-* basedOn 1..1 MS
+* basedOn 0..1 MS
 * basedOn only Reference(FC_LabOrderHeader)
 * specimen only Reference(FC_LabLabelSpecimen or FC_LabResultSpecimen)
 * result only Reference(FC_LabResultObservation)
@@ -46,7 +46,7 @@ Description: """検体検査の項目ごとの結果。
 
 - アプリは meta.profile に JP_Observation_LabResult を付けるが、category の system が HL7 observation-category(JP Core は JP_SimpleObservationCategory_CS)なので、本 IG では base から派生する(既知の非準拠)。
 - status は報告と同じ。category = observation-category#laboratory。
-- code.coding は [lab-result-item, jlac11, jlac10, lab-item-abbreviation(display = 略称)] の順。
+- code.coding は [lab-result-item, jlac11, jlac10, lab-item-abbreviation(code = 結果項目コード、display = 略称)] の順。施設の結果項目コードを持たない項目(JLAC11 だけで取り込んだ結果)は jlac11 から始まる。
 - value: マスタの data_type が PQ → valueQuantity(UCUM)、CD / CO → valueCodeableConcept(system はマスタの value_code_system)、それ以外 → valueString。
 - interpretation = v3-ObservationInterpretation(HH / H / L / LL / N。空は N)。referenceRange(PQ のみ、type = normal)。method.text、specimen、note。"""
 * insert FCMeta
@@ -59,7 +59,7 @@ Description: """検体検査の項目ごとの結果。
 * code.coding ^slicing.discriminator[0].path = "system"
 * code.coding ^slicing.rules = #open
 * code.coding contains
-    item 1..1 MS and
+    item 0..1 MS and
     jlac11 0..1 and
     jlac10 0..1 and
     abbreviation 0..1
@@ -75,7 +75,7 @@ Profile: FC_LabResultSpecimen
 Parent: $JP_Specimen_Common
 Id: fc-lab-result-specimen
 Title: "検体検査結果の検体"
-Description: "結果入力時に作る検体(ラベルの Specimen が無いとき)。status = available、type = JLAC11 材料コード、collection.collectedDateTime。"
+Description: "結果入力時に作る検体(ラベルの Specimen が無いとき)。status = available、type = JLAC11 材料コード、collection.collectedDateTime = 検体日(日付のみ)。"
 * insert FCMeta
 * status = #available
 * subject only Reference(FC_Patient)
@@ -88,7 +88,7 @@ Profile: FC_MicroDiagnosticReport
 Parent: $JP_DiagnosticReport_Common
 Id: fc-micro-diagnostic-report
 Title: "細菌検査 報告"
-Description: "細菌検査の結果報告。category = v2-0074#MB + 入院・外来区分。code = LOINC 18725-2。status: preliminary / final。basedOn = ヘッダ、specimen(1 件)、result[] = 所見・分離菌・感受性の Observation。order-department。"
+Description: "細菌検査の結果報告。category = v2-0074#MB + 入院・外来区分。code = LOINC 18725-2(text = 細菌検査結果)。status: preliminary / final。effectiveDateTime = 検体採取日(日付のみ)。issued と performer は持たない。basedOn = ヘッダ(オーダーに紐付けずに登録した結果では持たない)、specimen(1 件)、result[] = 所見・分離菌・感受性の Observation。order-department。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * category 2..2
@@ -102,7 +102,8 @@ Description: "細菌検査の結果報告。category = v2-0074#MB + 入院・外
 * category[kind] = $v2-0074#MB
 * category[setting] from LabResultSettingVS (required)
 * code = $loinc#18725-2
-* basedOn 1..1 MS
+* effective[x] only dateTime
+* basedOn 0..1 MS
 * basedOn only Reference(FC_MicroOrderHeader)
 * specimen 1..1
 * specimen only Reference(FC_MicroResultSpecimen)
@@ -113,8 +114,9 @@ Profile: FC_MicroResultSpecimen
 Parent: $JP_Specimen_Common
 Id: fc-micro-result-specimen
 Title: "細菌検査結果の検体"
-Description: "細菌検査結果の検体。"
+Description: "細菌検査結果の検体。status = available、type = JANIS 検体種別、collection.collectedDateTime = 検体採取日(日付のみ)。"
 * insert FCMeta
+* status = #available
 * subject only Reference(FC_Patient)
 * type 1..1
 * type.coding.system = "http://fhir-client.local/CodeSystem/janis-specimen-type"
@@ -166,7 +168,7 @@ Profile: FC_MicroSusceptibilityObservation
 Parent: Observation
 Id: fc-micro-susceptibility-observation
 Title: "細菌検査 薬剤感受性"
-Description: "分離菌ごと・抗菌薬ごとの感受性。code = 抗菌薬(janis-antimicrobial + 略称)。derivedFrom = 分離菌 Observation。method = 測定法(janis-susceptibility-method)。MIC は valueQuantity(ug/mL、comparator < <= >= >)。component: disk-diameter(mm)/ susceptibility-grade。interpretation = v3 S / I / R。"
+Description: "分離菌ごと・抗菌薬ごとの感受性。code = 抗菌薬(janis-antimicrobial と、同じコードに略号を display として付けた micro-antimicrobial-abbreviation)。derivedFrom = 分離菌 Observation。method = 測定法(janis-susceptibility-method)。MIC は valueQuantity(unit = µg/mL、UCUM code = ug/mL、comparator < <= >= >)。component: disk-diameter(mm)/ susceptibility-grade。interpretation = v3 S / I / R。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * category 1..1
@@ -206,9 +208,9 @@ Title: "放射線 読影レポート"
 Description: """読影レポート。
 
 - category = [LOINC LP29684-5 Radiology, v2-0074#RAD, 入院・外来区分]。code = JP_DocumentCodes_CS#18748-4 画像検査報告書(text = 検査内容)。
-- status: preliminary / final / amended。issued、performer = 自院 Organization、resultsInterpreter = 読影医、conclusion = 診断。
+- status: preliminary / final / amended。effectiveDateTime = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、issued、performer = 自院 Organization、resultsInterpreter = 読影医、conclusion = 診断。order-department = 依頼科。
 - basedOn = 放射線検査オーダーのヘッダ。result = 所見 Observation(category imaging、code rad-report-item#findings、valueString)。
-- 画像は rad-report-image(Binary は同じ transaction)、重要所見は rad-critical-finding(通知 Task が作られる)、テンプレート記入は rad-report-findings-response / rad-report-conclusion-response。
+- 画像は rad-report-image(Binary は同じ transaction)、重要所見は rad-critical-finding(通知 Task が作られる。暫定報告でも出す)、テンプレート記入は rad-report-findings-response / rad-report-conclusion-response。
 - レポートが付いたオーダーは取消・削除できない。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -226,6 +228,7 @@ Description: """読影レポート。
 * category[setting] from LabResultSettingVS (required)
 * code.coding 1..1
 * code.coding = $JP_DocumentCodes#18748-4
+* effective[x] only dateTime
 * issued 1..1
 * performer only Reference(FC_Facility)
 * resultsInterpreter only Reference(FC_Practitioner)
@@ -233,6 +236,7 @@ Description: """読影レポート。
 * basedOn only Reference(FC_RadOrderHeader)
 * result only Reference(FC_RadFindingsObservation)
 * extension contains
+    OrderDepartment named orderDepartment 0..1 and
     RadReportImage named image 0..* and
     RadCriticalFinding named criticalFinding 0..1 MS and
     RadReportFindingsResponse named findingsResponse 0..1 and
@@ -273,7 +277,7 @@ Title: "生理検査 所見レポート"
 Description: """生理検査の所見レポート。読影レポート(FC_RadDiagnosticReport)と同じ形で、category・code・拡張の接頭辞だけが違う。
 
 - category = [order-type#physio, v2-0074#OTH, 入院・外来区分]。1 つ目の order-type で種別を判定する(`DiagnosticReport?category=`)。code = exam-report#physio 生理検査報告書(text = 検査内容)。
-- status: preliminary / final / amended。issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 判定。
+- status: preliminary / final / amended。effectiveDateTime = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 判定。order-department = 依頼科。
 - basedOn = 生理検査オーダーのヘッダ。result = 所見 Observation(category procedure、code physio-report-item#findings、valueString)。
 - 画像は physio-report-image(Binary は同じ transaction)、重要所見は physio-critical-finding(通知 Task が作られる)、テンプレート記入は physio-report-findings-response / physio-report-conclusion-response。
 - レポートが付いたオーダーは取消・削除できない。"""
@@ -293,6 +297,7 @@ Description: """生理検査の所見レポート。読影レポート(FC_RadDia
 * category[setting] from LabResultSettingVS (required)
 * code.coding 1..1
 * code.coding = http://fhir-client.local/CodeSystem/exam-report#physio
+* effective[x] only dateTime
 * issued 1..1
 * performer only Reference(FC_Facility)
 * resultsInterpreter only Reference(FC_Practitioner)
@@ -300,6 +305,7 @@ Description: """生理検査の所見レポート。読影レポート(FC_RadDia
 * basedOn only Reference(FC_PhysioOrderHeader)
 * result only Reference(FC_PhysioFindingsObservation)
 * extension contains
+    OrderDepartment named orderDepartment 0..1 and
     PhysioReportImage named image 0..* and
     PhysioCriticalFinding named criticalFinding 0..1 MS and
     PhysioReportFindingsResponse named findingsResponse 0..1 and
@@ -326,7 +332,7 @@ Title: "内視鏡 所見レポート"
 Description: """内視鏡の所見レポート。読影レポート(FC_RadDiagnosticReport)と同じ形で、category・code・拡張の接頭辞だけが違う。
 
 - category = [order-type#endoscopy, v2-0074#OTH, 入院・外来区分]。1 つ目の order-type で種別を判定する(`DiagnosticReport?category=`)。code = LOINC 18751-8 Endoscopy study(text = 検査内容)。
-- status: preliminary / final / amended。issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 診断。
+- status: preliminary / final / amended。effectiveDateTime = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 診断。order-department = 依頼科。
 - basedOn = 内視鏡オーダーのヘッダ。result = 所見 Observation(category procedure、code endoscopy-report-item#findings、valueString)。
 - 画像は endoscopy-report-image(Binary は同じ transaction)、重要所見は endoscopy-critical-finding(通知 Task が作られる)、テンプレート記入は endoscopy-report-findings-response / endoscopy-report-conclusion-response。
 - レポートが付いたオーダーは取消・削除できない。"""
@@ -346,6 +352,7 @@ Description: """内視鏡の所見レポート。読影レポート(FC_RadDiagno
 * category[setting] from LabResultSettingVS (required)
 * code = $loinc#18751-8
 * code.coding 1..1
+* effective[x] only dateTime
 * issued 1..1
 * performer only Reference(FC_Facility)
 * resultsInterpreter only Reference(FC_Practitioner)
@@ -353,6 +360,7 @@ Description: """内視鏡の所見レポート。読影レポート(FC_RadDiagno
 * basedOn only Reference(FC_EndoscopyOrderHeader)
 * result only Reference(FC_EndoscopyFindingsObservation)
 * extension contains
+    OrderDepartment named orderDepartment 0..1 and
     EndoscopyReportImage named image 0..* and
     EndoscopyCriticalFinding named criticalFinding 0..1 MS and
     EndoscopyReportFindingsResponse named findingsResponse 0..1 and
@@ -387,8 +395,8 @@ Title: "病理診断レポート"
 Description: """病理診断レポート。JAHIS 病理診断レポート構造化記述規約のセクション構成に合わせ、セクションごとの Observation を result に並べる。
 
 - category = [v2-0074#SP(組織診)または #CP(細胞診), 入院・外来区分]。code = LOINC 11526-1 Pathology study(text 病理診断レポート)。
-- status: preliminary 中間報告 / final 最終報告 / amended 修正報告(確定後の編集保存)。effectiveDateTime。
-- basedOn = 病理オーダーのヘッダ。specimen[] = 検体(臓器・検体タイプ・実採取日)。
+- status: preliminary 中間報告 / final 最終報告 / amended 修正報告(確定後の編集保存)。effectiveDateTime = 報告日(検体の採取日ではない)。issued と performer は持たない。
+- basedOn = 病理オーダーのヘッダ(オーダーに紐付けずに登録した結果では持たない)。specimen[] = 検体(臓器・検体タイプ・実採取日)。
 - result[] = 肉眼所見(LOINC 22634-0)/ 顕微鏡所見(22635-7)/ 診断(22637-3)/ 採取法・検体処理法(10157-6)の Observation。細胞診の診断は valueCodeableConcept(patho-cyto-judgement)と component 推定病変。
 - 画像は patho-report-image(Binary は同じ transaction)、order-department。"""
 * insert FCMeta
@@ -405,7 +413,7 @@ Description: """病理診断レポート。JAHIS 病理診断レポート構造�
 * category[setting] from LabResultSettingVS (required)
 * code = $loinc#11526-1
 * effective[x] only dateTime
-* basedOn 1..1 MS
+* basedOn 0..1 MS
 * basedOn only Reference(FC_PathoOrderHeader)
 * specimen only Reference(FC_PathoResultSpecimen)
 * result only Reference(FC_PathoFindingObservation)
@@ -460,13 +468,13 @@ Description: "出血量 / 尿量 / 輸血量。code = surgery-observation、valu
 Profile: FC_TransfusionReactionObservation
 Parent: Observation
 Id: fc-transfusion-reaction-observation
-Title: "輸血反応"
-Description: "category = order-type#transfusion、code = transfusion-observation#reaction、valueCodeableConcept = transfusion-reaction(none / present)、partOf = 輸血実施記録。"
+Title: "輸血副作用"
+Description: "輸血副作用の有無。category = order-type#transfusion、code = transfusion-observation#reaction(text = 輸血副作用)、valueCodeableConcept = transfusion-reaction(none / present)、effectiveDateTime = 輸血開始時刻、partOf = 輸血実施記録。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * category 1..1
 * category = $order-type#transfusion
-* code = http://fhir-client.local/CodeSystem/transfusion-observation#reaction "輸血反応"
+* code = http://fhir-client.local/CodeSystem/transfusion-observation#reaction
 * value[x] only CodeableConcept
 * valueCodeableConcept from TransfusionReactionVS (required)
 * partOf 1..1

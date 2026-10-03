@@ -106,11 +106,21 @@ Description: "Task 種別 ValueSet。"
 CodeSystem: Jj1017LateralityCS
 Id: jj1017-laterality
 Title: "左右区分(JJ1017)"
-Description: "JJ1017 の左右区分。放射線検査では display を院内マスタから転記し、放射線治療は「右側/左側/両側」、手術は「右/左/両側」を display に入れる。"
+Description: "JJ1017 の左右等区分(別表 4)。放射線検査は院内マスタ(JJ1017 部品コード)のコードと名称をそのまま入れるので 13 コードすべてが出うる。放射線治療と手術は R / L / B を同じ名称(右側 / 左側 / 両側)の display で入れる。"
 * insert EnumCS
-* #R "右"
-* #L "左"
+* #0 "指定なし"
 * #B "両側"
+* #R "右側"
+* #L "左側"
+* #H "頭側"
+* #F "足側"
+* #A "前側"
+* #P "後側"
+* #W "全体"
+* #Q "右前側"
+* #S "右後側"
+* #K "左前側"
+* #M "左後側"
 
 ValueSet: Jj1017LateralityVS
 Id: jj1017-laterality-vs
@@ -121,7 +131,7 @@ Description: "左右区分(JJ1017) ValueSet。"
 CodeSystem: LabItemAbbreviationCS
 Id: lab-item-abbreviation
 Title: "検査項目略称"
-Description: "code = 略称文字列そのもの(例: WBC, CRP, CT)。検体検査・放射線・内視鏡・生理検査・処置・手術の明細 code.coding と検体検査結果 Observation.code.coding に補助的に付く。コードの集合は院内マスタで決まる。"
+Description: "項目マスタの略称を coding に添えるための system。検体検査・放射線・内視鏡・生理検査・処置・手術のオーダー明細 code.coding では code = 略称文字列そのもの(例: WBC, CRP, CT)。検体検査結果 Observation.code.coding では code = 結果項目コード(無ければ JLAC11、それも無ければ項目名)で、略称は display に入る。コードの集合は院内マスタで決まる。"
 * insert MasterCS
 
 CodeSystem: OrderSetCS

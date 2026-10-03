@@ -4,7 +4,7 @@
 ServiceRequest(ヘッダ、FC_PrescriptionOrder)   ※ order-type の category を持たない
  │  category = 入院・外来区分 + 処方区分 / orderDetail[] = "RP{n}-{m}" + prescription-medication-request → MedicationRequest
  ├ MedicationRequest(薬剤行、FC_PrescriptionMedicationRequest)  basedOn → ヘッダ
- │   identifier = RP 番号 + RP 内連番 / dosageInstruction[0] = 用法・1 回量・補足用法 / dispenseRequest.expectedSupplyDuration = 日数
+ │   identifier = RP 番号 + RP 内連番 / dosageInstruction[0] = 用法・用量・補足用法 / dispenseRequest.expectedSupplyDuration = 日数
  ├ Task(rx-dispense、FC_RxDispenseTask)  focus → ヘッダ   ※ note = 疑義照会
  ├ MedicationDispense(調剤、FC_MedicationDispense)  authorizingPrescription → 薬剤行   ※ 薬剤行ごと、Task と同じ transaction
  └ Procedure(与薬記録、FC_OralAdministrationProcedure)  basedOn → ヘッダ   ※ 服用予定ごと
@@ -25,7 +25,7 @@ ServiceRequest(ヘッダ、FC_PrescriptionOrder)   ※ order-type の category �
 - `identifier`: RP 番号(`Medication-RPGroupNumber`)と RP 内連番(`MedicationAdministrationIndex`)。同じ RP 番号の行が 1 つの RP で、用法・日数・回数は RP 内の全行に複製します。
 - `medicationCodeableConcept`: 銘柄は レセプト電算コード(`medicine-code`)+ YJ コード、一般名処方は `MedicationGeneralOrderCode` のみ。
 - `dosageInstruction[0].timing.code` = 用法(JAMI 16 桁 `medicine-usage` + 基本区分 `medicine-usage-basic-category` + text)。
-- `doseAndRate[0].doseQuantity` = 1 回量(`{value, unit}`、UCUM の code は無し)。
+- `doseAndRate[0].doseQuantity` = 用量(`{value, unit}`、UCUM の code は無し)。意味は用法で変わります: 内服(頓用以外)は **1 日量**(不均等投与では各回の量の合計)、頓用は 1 回量、外用などは全量。調剤の数量は 1 日量 × 投与日数(頓用は 1 回量 × 回数)です。
 - `additionalInstruction[]` = JAMI 補足用法コード(`urn:oid:1.2.392.200250.2.2.20.22`: I 日数間隔 / W 曜日 / D 日付 / C 期間内回数、不均等投与 V)と用法コメント(text のみ)。
 - 頓用は用法コードの 3 桁目が 5 で、`asNeededBoolean = true`、`timing.repeat.count` = 回数。用法マスタに「頓服」区分はありません。
 - `dispenseRequest.expectedSupplyDuration` = 投与日数(内服・非頓用のみ、UCUM d)。
@@ -49,14 +49,15 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
 
 ### 持参薬
 
-入院時の持参薬は薬剤ごとに MedicationStatement([FC_BroughtMedication](StructureDefinition-fc-brought-medication.html))で持ち、登録(`brought-medication-info`)→ 薬剤部の鑑別(`brought-medication-identification`、Task `brought-med-review`)→ 医師の判断(`brought-medication-decision`、statusReason = 継続 / 休止 / 中止)の順に拡張が増えます。鑑別が終わると担当医宛に `brought-med-identified` 通知が作られます。「継続」は処方区分 brought の院内処方を同じ transaction で作ります。
+入院時の持参薬は薬剤ごとに MedicationStatement([FC_BroughtMedication](StructureDefinition-fc-brought-medication.html))で持ち、登録(`brought-medication-info`)→ 薬剤部の鑑別(`brought-medication-identification`、Task `brought-med-review`)→ 医師の判断(`brought-medication-decision`、statusReason = 継続 / 休止 / 中止)の順に拡張が増えます。鑑別が終わると入院の主治医宛(主治医がいなければ宛先なし)に `brought-med-identified` 通知が作られます。持参薬の `doseQuantity` は 1 回量で、処方(内服は 1 日量)と意味が違います。継続で処方を起こすときは、内服(頓用以外)の用量を 1 回量 × 1 日の服用回数にします。「継続」は処方区分 brought の院内処方を同じ transaction で作ります。
 
 ### 化学療法レジメン
 
 レジメンの定義は backend のマスタ(PlanDefinition は無し)で、適用は `intent = plan` の ServiceRequest([FC_RegimenOrder](StructureDefinition-fc-regimen-order.html))です。
 
 - `code` = レジメンコード(`regimen`)、`identifier` = `regimen-instance`、`instantiatesUri` = `http://fhir-client.local/regimen/{code}`、`occurrenceDateTime` = 第 1 サイクル Day 1。
-- `regimen` 拡張にサイクル日数・治療日数・予定サイクル数・体表面積・身長・体重と、中止・完了の記録。
+- `regimen` 拡張にサイクル日数・治療日数・予定サイクル数(任意。無ければ継続)・体表面積・身長・体重と、中止・完了の記録。
+- 日オーダーを中止すると、その調剤・注射の Task が cancelled になり `statusReason.text` に中止理由を持ちます(中止取消で消える)。
 - 各サイクル・各日の注射 / 処方は通常の注射 / 処方オーダーで、`requisition` = regimen-instance、`regimen-order` 拡張(regimen / cycle / day / code / name / reduction)を持ち、各 MedicationRequest に `regimen-dose`(drug / ratio / amount / unit / packs)が付きます。
 - 化学療法の予約 Appointment は日オーダーを `basedOn` で指します。有害事象は Observation([FC_AdverseEventObservation](StructureDefinition-fc-adverse-event-observation.html))で、`basedOn` がレジメン適用を指します。
 
