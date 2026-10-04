@@ -523,3 +523,26 @@ Description: "放射線治療の診察 通知の例"
 * input[course].valueString = "第1コース 右側 胸部"
 * input[lastReview].type.text = "前回の診察"
 * input[lastReview].valueDate = "2026-04-15"
+
+Instance: example-nursing-summary-returned-task
+InstanceOf: FC_NursingSummaryReturnedTask
+Usage: #example
+Title: "看護サマリー差戻し 通知の例"
+Description: "看護サマリー差戻し 通知の例"
+* status = #requested
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#nursing-summary-returned "看護サマリー差戻し"
+* code.text = "看護サマリー差戻し"
+* focus = Reference(Composition/example-nursing-summary)
+* for = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* owner = Reference(Practitioner/example-nurse)
+* requester = Reference(Practitioner/example-nurse-2)
+* authoredOn = "2026-04-20T15:30:00+09:00"
+* lastModified = "2026-04-20T15:30:00+09:00"
+* description = "看護サマリー(退院) 差戻し: 継続看護に退院後の連絡先を追記してください"
+* input[summary].type.text = "看護サマリ"
+* input[summary].valueString = "看護サマリー(退院)"
+* input[reason].type.text = "理由"
+* input[reason].valueString = "継続看護に退院後の連絡先を追記してください"

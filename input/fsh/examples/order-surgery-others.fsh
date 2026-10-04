@@ -158,6 +158,30 @@ Description: "看護指示の例(行為)"
 * occurrenceDateTime = "2026-04-01"
 * extension[schedule].valueTiming.repeat.timeOfDay[0] = "10:00:00"
 
+Instance: example-nursing-plan-order
+InstanceOf: FC_NursingOrder
+Usage: #example
+Title: "看護指示の例(看護計画から展開)"
+Description: "看護指示の例(看護計画の行から展開。reasonReference = 看護問題)"
+* status = #active
+* intent = #order
+* category[orderType] = $order-type#nursing "看護指示"
+* category[setting] = $prescription-setting#inpatient "入院"
+* code.coding[nursingAction] = $medis-nursing-action#A001B006C051D031 "低床ベッドへ交換"
+* code.coding[nursingActionNumber] = $medis-nursing-action-oid#12000956 "低床ベッドへ交換"
+* code.text = "低床ベッドへ交換する"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* requester = Reference(Practitioner/example-nurse)
+* reasonReference = Reference(Condition/example-nursing-problem)
+* reasonReference.display = "転倒転落の危険がある状態"
+* requisition.system = "http://fhir-client.local/Identifier/nursing-order-requisition"
+* requisition.value = "5b6c7d8e-9f01-4a23-8b45-c6d7e8f90a1b"
+* authoredOn = "2026-04-02T10:10:00+09:00"
+* occurrenceDateTime = "2026-04-02"
+* extension[planActivity].extension[plan].valueReference = Reference(CarePlan/example-nursing-care-plan)
+* extension[planActivity].extension[activity].valueString = "7a2d3b4c-5e6f-4071-8b82-ac1d2e3f4051"
+
 Instance: example-meal-order
 InstanceOf: FC_MealOrder
 Usage: #example

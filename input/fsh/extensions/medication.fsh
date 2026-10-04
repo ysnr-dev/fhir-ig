@@ -164,3 +164,35 @@ Context: MedicationRequest
 * extension[amount].value[x] only decimal
 * extension[unit].value[x] only string
 * extension[packs].value[x] only decimal
+
+Extension: InsulinScale
+Id: insulin-scale
+Title: "インスリンのスケール指示"
+Description: """インスリンの血糖・食事量・フリースケール。注射の薬剤行の dosageInstruction[0] に付く。
+
+- kind = 種別(insulin-scale-kind)。set = 写した元のスケールセット(写したまま行を直していないときだけ)。
+- row = スケールの 1 行(血糖・食事量は low の小さい順、フリーは入力した順)。low / high = 幅(両端を含む整数。片側は無くてよい)、condition = フリースケールの条件、dose = その行で施行する単位(UCUM [iU]。単位指定 + スケールでは基本量への上乗せ)、note = 「Dr コール」など。
+- 単位指定 + スケールでは doseAndRate.doseQuantity が基本量。スケールのみでは doseQuantity を持たず、doseAndRate.doseRange に施行量の最小〜最大を入れる。dosageInstruction.text にはスケールの要約を足す。"""
+Context: MedicationRequest.dosageInstruction
+* insert FCMeta
+* extension contains
+    kind 1..1 and
+    set 0..1 and
+    row 1..*
+* extension[kind].value[x] only Coding
+* extension[kind].valueCoding from InsulinScaleKindVS (required)
+* extension[set].value[x] only Coding
+* extension[set].valueCoding.system = "http://fhir-client.local/CodeSystem/insulin-scale-set"
+* extension[row].extension contains
+    low 0..1 and
+    high 0..1 and
+    condition 0..1 and
+    dose 0..1 and
+    note 0..1
+* extension[row].extension[low].value[x] only decimal
+* extension[row].extension[high].value[x] only decimal
+* extension[row].extension[condition].value[x] only string
+* extension[row].extension[dose].value[x] only Quantity
+* extension[row].extension[dose].valueQuantity.system = $ucum
+* extension[row].extension[dose].valueQuantity.code = #[iU]
+* extension[row].extension[note].value[x] only string

@@ -96,6 +96,7 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #endoscopy-critical-finding "重要所見(内視鏡)"
 * #pathway-variance "パスのバリアンス"
 * #radiotherapy-review-due "放射線治療の診察"
+* #nursing-summary-returned "看護サマリー差戻し"
 
 ValueSet: TaskCodeVS
 Id: task-code-vs

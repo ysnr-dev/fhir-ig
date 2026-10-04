@@ -84,3 +84,24 @@ Id: regimen
 Title: "化学療法レジメン(院内マスタ)"
 Description: "code = backend のレジメンマスタの regimen_code。レジメン適用 ServiceRequest.code。"
 * insert MasterCS
+
+CodeSystem: InsulinScaleKindCS
+Id: insulin-scale-kind
+Title: "インスリンスケールの種別"
+Description: "insulin-scale 拡張の kind。glucose = 血糖(mg/dL)、meal = 食事量(主食の摂取量 %)で、測った値で行が決まる。free = フリースケール(行ごとの条件を文で書き、実施入力で行を選ぶ)。"
+* insert EnumCS
+* #glucose "血糖"
+* #meal "食事量"
+* #free "フリー"
+
+ValueSet: InsulinScaleKindVS
+Id: insulin-scale-kind-vs
+Title: "インスリンスケールの種別 ValueSet"
+Description: "インスリンスケールの種別 ValueSet。"
+* insert AllOf(InsulinScaleKindCS)
+
+CodeSystem: InsulinScaleSetCS
+Id: insulin-scale-set
+Title: "インスリンスケールセット(院内マスタ)"
+Description: "code = backend のスケールセットの id、display = セット名。insulin-scale 拡張の set(セットから写したまま行を直していないときだけ付く)。"
+* insert MasterCS

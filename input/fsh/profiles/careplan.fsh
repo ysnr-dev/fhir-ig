@@ -151,3 +151,98 @@ Description: "アセスメント項目の実測値。category[0] = care-plan-typ
 * value[x] only Quantity or CodeableConcept or string
 * basedOn 1..1
 * basedOn only Reference(FC_PathwayAssessmentCarePlan)
+
+// ---- 看護計画 ----
+// 看護問題 1 件を Condition(FC_NursingProblem)・CarePlan・Goal で持ち、評価を Observation で残す(nursing-care-plan.md)。
+
+Profile: FC_NursingCarePlan
+Parent: CarePlan
+Id: fc-nursing-care-plan
+Title: "看護計画"
+Description: """看護問題 1 件の看護計画。Condition・Goal と 1 transaction で書く。
+
+- status: active → completed(解決)/ entered-in-error(取消)。intent = plan。category = care-plan-type#nursing。title = 看護問題名。
+- period.start = 立案日、解決・取消で period.end。addresses = 看護問題、goal = 目標(外した目標は goal から外して Goal を cancelled にする)。
+- activity = OP / TP / EP の行、または看護介入の行動。id は行の uuid(展開した看護指示が nursing-care-plan-activity で指す)。nursing-plan-activity-type = 区分(看護介入の行動には無い)、nursing-intervention = 看護介入。detail.status = in-progress / stopped(中止した行)、detail.code = 看護指示と同じ形(MEDIS 看護行為・看護観察の coding + text、または text のみ)、detail.description = 行の文言。行が無ければ activity を持たない。
+- nursing-care-plan-entry = 立案の入口。instantiatesUri = `http://fhir-client.local/master/nursing-standard-plans/{標準看護計画のコード}`(標準看護計画から立てたとき)。
+- 新規のときだけ encounter(入院)・author・created を付ける。"""
+* insert FCMeta
+* intent = #plan
+* category 1..1
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing
+* title 1..1
+* subject only Reference(FC_Patient)
+* period.start 1..1
+* addresses 1..1
+* addresses only Reference(FC_NursingProblem)
+* goal 1..*
+* goal only Reference(FC_NursingGoal)
+* encounter only Reference(FC_InpatientEncounter)
+* author only Reference(FC_Practitioner)
+* activity.id 1..1
+* activity.extension contains
+    NursingPlanActivityType named type 0..1 and
+    NursingIntervention named intervention 0..1
+* activity.detail 1..1
+* activity.detail.status from NursingPlanActivityStatusVS (required)
+* activity.detail.code 1..1
+* activity.detail.code.text 1..1
+* activity.detail.description 1..1
+* instantiatesUri 0..1
+* extension contains NursingCarePlanEntry named entry 1..1 MS
+
+ValueSet: NursingPlanActivityStatusVS
+Id: nursing-plan-activity-status-vs
+Title: "看護計画の行の状態"
+Description: "看護計画の行(CarePlan.activity.detail.status)の取りうる値。"
+* insert FCMeta
+* http://hl7.org/fhir/care-plan-activity-status#in-progress
+* http://hl7.org/fhir/care-plan-activity-status#stopped
+
+Profile: FC_NursingGoal
+Parent: Goal
+Id: fc-nursing-goal
+Title: "看護計画の目標"
+Description: """看護計画の目標。
+
+- lifecycleStatus: active → completed(達成、または看護問題の解決)/ cancelled(計画から外した)/ entered-in-error(看護問題の取消)。category = care-plan-type#nursing。
+- description = 看護成果(nursing-outcome、結びついているときだけ)+ text = 目標の文言。startDate = 立案日。addresses = 看護問題。target[0].dueDate = 評価予定日(無ければ target を持たない)。
+- 評価を記録すると statusDate = 評価日、achievementStatus = 達成度(HL7 goal-achievement、display は日本語)、outcomeReference に評価 Observation を足す。"""
+* insert FCMeta
+* category 1..1
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing
+* description.coding.system = "http://fhir-client.local/CodeSystem/nursing-outcome"
+* description.text 1..1
+* subject only Reference(FC_Patient)
+* addresses 1..1
+* addresses only Reference(FC_NursingProblem)
+* target 0..1
+* target.due[x] only date
+* outcomeReference only Reference(FC_NursingEvaluationObservation)
+
+Profile: FC_NursingEvaluationObservation
+Parent: Observation
+Id: fc-nursing-evaluation-observation
+Title: "看護計画の評価"
+Description: """看護計画の評価。1 回の評価で、評価した目標ごとの Observation(code = nursing-evaluation#goal)と、看護問題単位の判定の Observation(#problem)を 1 transaction で書く。
+
+- category = care-plan-type#nursing。code.text = 目標の文言 / 看護問題名。basedOn = 看護計画、observation-problem = 看護問題。
+- 目標の評価: focus = Goal、valueCodeableConcept = 達成度(HL7 goal-achievement、display は日本語。未選択なら値なし)、note = 評価の内容。達成度か内容のどちらかがある目標だけ作る。
+- 看護問題の評価: focus = Condition、valueCodeableConcept = 判定(nursing-evaluation-decision)、note = 全体の評価。
+- effectiveDateTime = 評価日(今日なら時刻付き)。performer = 評価した職員。encounter = 入院。"""
+* insert FCMeta
+* status = #final
+* category 1..1
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing
+* code.coding 1..1
+* code.coding.system = "http://fhir-client.local/CodeSystem/nursing-evaluation"
+* subject only Reference(FC_Patient)
+* focus 1..1
+* focus only Reference(FC_NursingGoal or FC_NursingProblem)
+* basedOn 1..1
+* basedOn only Reference(FC_NursingCarePlan)
+* encounter only Reference(FC_InpatientEncounter)
+* performer only Reference(FC_Practitioner)
+* effective[x] only dateTime
+* value[x] only CodeableConcept
+* extension contains ObservationProblem named problem 1..1

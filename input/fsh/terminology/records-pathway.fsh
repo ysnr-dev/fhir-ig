@@ -13,6 +13,32 @@ Title: "Observation のカテゴリ(独自) ValueSet"
 Description: "Observation のカテゴリ(独自) ValueSet。"
 * insert AllOf(ObservationCategoryCS)
 
+CodeSystem: ClinicalNoteCategoryCS
+Id: clinical-note-category
+Title: "診療記録の区分"
+Description: "診療記録 Composition.category。nursing = 看護職(看護師・保健師・助産師)が書いた記録で、新規保存のときに付き、編集では保存済みの値を引き継ぐ。看護サマリーの「看護記録」の取り込みはこれで検索する。"
+* insert EnumCS
+* #nursing "看護記録"
+
+ValueSet: ClinicalNoteCategoryVS
+Id: clinical-note-category-vs
+Title: "診療記録の区分 ValueSet"
+Description: "診療記録の区分 ValueSet。"
+* insert AllOf(ClinicalNoteCategoryCS)
+
+CodeSystem: DocumentTypeCS
+Id: document-type
+Title: "文書の種類(独自)"
+Description: "Composition.type のうち、一致する LOINC を確認できていない文書の種類。"
+* insert EnumCS
+* #nursing-summary "看護サマリー"
+
+ValueSet: DocumentTypeVS
+Id: document-type-vs
+Title: "文書の種類(独自) ValueSet"
+Description: "文書の種類(独自) ValueSet。"
+* insert AllOf(DocumentTypeCS)
+
 CodeSystem: ObservationItemCS
 Id: observation-item
 Title: "テンプレート項目コード"
@@ -28,9 +54,10 @@ Description: "code = backend の questionnaire_categories の UUID。Questionnai
 CodeSystem: CarePlanTypeCS
 Id: care-plan-type
 Title: "CarePlan の種類"
-Description: "CarePlan.category の先頭、および評価 Observation.category の先頭。"
+Description: "CarePlan.category の先頭、および評価 Observation.category の先頭。nursing は看護計画の CarePlan・Goal・評価 Observation の category。"
 * insert EnumCS
 * #clinical-pathway "クリニカルパス"
+* #nursing "看護計画"
 
 ValueSet: CarePlanTypeVS
 Id: care-plan-type-vs

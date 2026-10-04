@@ -161,6 +161,78 @@ Description: "退院時サマリーの例"
 * section[plan].text.status = #additional
 * section[plan].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>外来で経過観察。</p></div>"
 
+Instance: example-nursing-clinical-note
+InstanceOf: FC_ClinicalNote
+Usage: #example
+Title: "診療記録の例(看護記録)"
+Description: "診療記録の例(看護職が書いた記録。category = clinical-note-category#nursing)"
+* status = #final
+* type = $loinc#11506-3 "Progress note"
+* category = http://fhir-client.local/CodeSystem/clinical-note-category#nursing "看護記録"
+* subject = Reference(Patient/example-patient)
+* date = "2026-04-03T21:00:00+09:00"
+* author = Reference(Practitioner/example-nurse)
+* title = "看護記録"
+* attester.mode = #legal
+* attester.time = "2026-04-03T21:00:00+09:00"
+* attester.party = Reference(Practitioner/example-nurse)
+* section[0].code = $loinc#77599-9 "Additional documentation"
+* section[0].text.status = #additional
+* section[0].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>夜間 2 回トイレ歩行。ナースコールあり、付き添いで歩行。</p></div>"
+
+Instance: example-nursing-summary
+InstanceOf: FC_NursingSummary
+Usage: #example
+Title: "看護サマリーの例"
+Description: "看護サマリーの例(退院・承認済)"
+* status = #final
+* type = http://fhir-client.local/CodeSystem/document-type#nursing-summary "看護サマリー"
+* type.text = "看護サマリー"
+* category = http://fhir-client.local/CodeSystem/nursing-summary-kind#discharge "退院"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* date = "2026-04-20T14:00:00+09:00"
+* author = Reference(Practitioner/example-nurse)
+* title = "看護サマリー(退院)"
+* event.period.start = "2026-04-01"
+* event.period.end = "2026-04-20"
+* attester[0].mode = #legal
+* attester[0].time = "2026-04-20T14:00:00+09:00"
+* attester[0].party = Reference(Practitioner/example-nurse)
+* attester[1].mode = #official
+* attester[1].time = "2026-04-20T16:30:00+09:00"
+* attester[1].party = Reference(Practitioner/example-nurse-2)
+* section[basic].title = "基本情報"
+* section[basic].code = http://fhir-client.local/CodeSystem/nursing-summary-section#basic "Basic information"
+* section[basic].text.status = #additional
+* section[basic].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>68歳 男性<br/>入院日: 2026-04-01 / 退院日: 2026-04-20<br/>病棟: 東3階病棟<br/>主治医: 山田 一郎<br/>担当看護師: 看護 花子<br/>アレルギー: なし</p></div>"
+* section[pastHistory].title = "既往歴"
+* section[pastHistory].code = $loinc#11348-0 "History of past illness"
+* section[pastHistory].text.status = #additional
+* section[pastHistory].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>虫垂炎(手術)(2005-06-01)</p></div>"
+* section[conditions].title = "病名"
+* section[conditions].code = http://fhir-client.local/CodeSystem/nursing-summary-section#conditions "Conditions"
+* section[conditions].text.status = #generated
+* section[conditions].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">#1 2型糖尿病</div>"
+* section[conditions].entry = Reference(Condition/example-condition)
+* section[conditions].entry.display = "#1 2型糖尿病"
+* section[nursingProblems].title = "看護問題・計画"
+* section[nursingProblems].code = http://fhir-client.local/CodeSystem/nursing-summary-section#nursing-problems "Nursing problems"
+* section[nursingProblems].text.status = #generated
+* section[nursingProblems].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">#1 転倒転落の危険がある状態<br/>　目標: 移動のときにナースコールを押せる(成果: 転倒を防ぐ行動)(改善)<br/>　OP（観察）: 意識障害の有無<br/>　TP（ケア）: 低床ベッドへ交換する<br/>　評価 2026-04-09: 継続</div>"
+* section[nursingProblems].entry = Reference(CarePlan/example-nursing-care-plan)
+* section[nursingProblems].entry.display = "#1 転倒転落の危険がある状態\n　目標: 移動のときにナースコールを押せる(成果: 転倒を防ぐ行動)(改善)\n　OP（観察）: 意識障害の有無\n　TP（ケア）: 低床ベッドへ交換する\n　評価 2026-04-09: 継続"
+* section[course].title = "看護経過"
+* section[course].code = http://fhir-client.local/CodeSystem/nursing-summary-section#nursing-course "Nursing course"
+* section[course].text.status = #additional
+* section[course].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>入院中の転倒なし。インスリンは血糖スケールで調整し、退院前に自己注射の手技を確認した。</p></div>"
+* section[continuingCare].title = "継続看護"
+* section[continuingCare].code = http://fhir-client.local/CodeSystem/nursing-summary-section#continuing-care "Continuing nursing care"
+* section[continuingCare].text.status = #additional
+* section[continuingCare].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>外来で自己注射と低血糖時の対応を再確認する。</p></div>"
+* extension[orderWard].valueReference = Reference(Location/example-ward)
+* extension[orderWard].valueReference.display = "東3階病棟"
+
 Instance: social-01
 InstanceOf: FC_Questionnaire
 Usage: #example

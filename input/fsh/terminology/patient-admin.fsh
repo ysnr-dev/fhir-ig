@@ -2,15 +2,16 @@
 
 CodeSystem: ConditionCategoryCS
 Id: condition-category
-Title: "病名カテゴリ(既往歴)"
-Description: "既往歴の Condition に、HL7 の problem-list-item と併せて付ける 2 つ目の category。"
+Title: "病名カテゴリ(既往歴・看護問題)"
+Description: "既往歴・看護問題の Condition に、HL7 の problem-list-item と併せて付ける 2 つ目の category。看護問題は病名・プロブレムの一覧とレセコン送信から外す(病名の検索は category:not で除く)。"
 * insert EnumCS
 * #past-history "既往歴"
+* #nursing-problem "看護問題"
 
 ValueSet: ConditionCategoryVS
 Id: condition-category-vs
-Title: "病名カテゴリ(既往歴) ValueSet"
-Description: "病名カテゴリ(既往歴) ValueSet。"
+Title: "病名カテゴリ(既往歴・看護問題) ValueSet"
+Description: "病名カテゴリ(既往歴・看護問題) ValueSet。"
 * insert AllOf(ConditionCategoryCS)
 
 CodeSystem: FlagCategoryCS

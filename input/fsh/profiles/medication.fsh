@@ -138,7 +138,8 @@ dosageInstruction[0]:
 - text = 要約。timing.event[] = 投与開始時刻。
 - extension: injection-usage-type(点滴 / ワンショット)、JP_MedicationDosage_Line(injection-line)、injection-scheduled-period(投与時刻ごとの開始・終了)。
 - route = JP Core route-codes(IV / IM / SC / ID / IA / IT / IP)、site = JAMI 部位コード(urn:oid:1.2.392.200250.2.2.20.32)、method = JAMI 詳細用法(urn:oid:1.2.392.200250.2.2.20.40)。
-- doseAndRate: doseQuantity と、点滴のときは rateQuantity(mL/h、UCUM)。
+- doseAndRate: doseQuantity と、点滴のときは rateQuantity(mL/h、UCUM)。インスリン(量の単位が「単位」の薬剤)の doseQuantity は UCUM [iU] を持つ。
+- インスリンのスケール指示は insulin-scale 拡張。スケールのみの指示は doseQuantity を持たず doseRange(施行量の最小〜最大、[iU])で、text にスケールの要約を足す。
 - additionalInstruction[0].text = 用法コメント。"""
 * insert FCMeta
 * insert MedicationRequestIdentifierRules
@@ -159,7 +160,8 @@ dosageInstruction[0]:
 * dosageInstruction.extension contains
     InjectionUsageType named usageType 0..1 MS and
     $JP_MedicationDosage_Line named line 0..1 and
-    InjectionScheduledPeriod named scheduledPeriod 0..*
+    InjectionScheduledPeriod named scheduledPeriod 0..* and
+    InsulinScale named insulinScale 0..1
 * dosageInstruction.extension[line].valueCodeableConcept from InjectionLineVS (required)
 * dosageInstruction.extension[line] ^short = "注射ルート(injection-line)"
 * dosageInstruction.route.coding.system = $JP_route-codes
@@ -203,6 +205,7 @@ Description: """薬剤の投与記録。実施記録の Procedure ハブ(与薬 
 - medicationCodeableConcept = medicine-code + YJ(輸血製剤は transfusion-product)。
 - request = 元の MedicationRequest(オーダーに無い薬剤を投与したときは無し)。
 - effectiveDateTime または effectivePeriod。dosage の route / site / method / rateQuantity はオーダーから複製。dose は投与した量で、与薬では処方の用量(内服は 1 日量)をその枠の 1 回量に割ったもの(不均等投与はその枠の量)。
+- 注射のインスリンは dose に UCUM [iU] を持つ(経過表はこれでインスリンの行を作る)。スケールの薬剤は 0 単位でも dose を残し、supportingInformation = スケールに使った測定値(血糖値または主食の摂取量の Observation)、note = 手入力した主食の摂取量・フリースケールで選んだ行(「スケール: 条件」)・案内量と変えた理由。
 - JP_MedicationAdministration は RP 内連番の identifier を必須とするが、アプリは identifier を付けないため base から派生する(既知の非準拠)。"""
 * insert FCMeta
 * subject 1..1
@@ -211,6 +214,7 @@ Description: """薬剤の投与記録。実施記録の Procedure ハブ(与薬 
 * partOf 1..* MS
 * partOf only Reference(FC_ProcedureHub)
 * request only Reference(MedicationRequest)
+* supportingInformation only Reference(Observation)
 
 Profile: FC_BroughtMedication
 Parent: MedicationStatement

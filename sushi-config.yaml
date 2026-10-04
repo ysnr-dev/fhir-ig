@@ -90,6 +90,8 @@ pages:
     title: 診療記録・退院時サマリー
   pathway.md:
     title: クリニカルパス
+  nursing-care-plan.md:
+    title: 看護計画・看護サマリー
   questionnaire.md:
     title: Questionnaire / QuestionnaireResponse
   dpc-form1.md:
@@ -120,6 +122,7 @@ menu:
   記録・計画:
     診療記録: records.html
     クリニカルパス: pathway.html
+    看護計画・看護サマリー: nursing-care-plan.html
     Questionnaire: questionnaire.html
     DPC 様式1: dpc-form1.html
   管理:

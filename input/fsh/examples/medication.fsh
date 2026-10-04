@@ -257,3 +257,74 @@ Description: "化学療法レジメン適用の例"
 * extension[regimen].extension[bsa].valueDecimal = 1.65
 * extension[regimen].extension[height].valueDecimal = 168.0
 * extension[regimen].extension[weight].valueDecimal = 60.0
+
+Instance: example-insulin-medication-request
+InstanceOf: FC_InjectionMedicationRequest
+Usage: #example
+Title: "注射の薬剤行の例(インスリンの血糖スケール)"
+Description: "注射の薬剤行の例(インスリンの血糖スケールのみ。doseQuantity の代わりに doseRange)"
+* status = #active
+* intent = #order
+* identifier[rpNumber].system = $mhlw-RPGroupNumber
+* identifier[rpNumber].value = "2"
+* identifier[orderInRp].system = $mhlw-MedicationAdministrationIndex
+* identifier[orderInRp].value = "1"
+* basedOn = Reference(ServiceRequest/example-injection-order)
+* subject = Reference(Patient/example-patient)
+* authoredOn = "2026-04-01T12:10:00+09:00"
+* requester = Reference(Practitioner/example-practitioner)
+* medicationCodeableConcept.coding[receiptCode] = $medicine-code#629900101 "インスリン アスパルト注 フレックスペン"
+* medicationCodeableConcept.text = "インスリン アスパルト注 フレックスペン"
+* dosageInstruction.text = "ワンショット 皮下 血糖スケール 〜150: 0単位 / 151〜200: 2単位 / 201〜300: 4単位 / 301〜: 6単位 Dr コール"
+* dosageInstruction.extension[usageType].valueCodeableConcept = http://fhir-client.local/CodeSystem/injection-usage-type#one-shot "ワンショット"
+* dosageInstruction.extension[insulinScale].extension[kind].valueCoding = http://fhir-client.local/CodeSystem/insulin-scale-kind#glucose "血糖"
+* dosageInstruction.extension[insulinScale].extension[row][0].extension[high].valueDecimal = 150
+* dosageInstruction.extension[insulinScale].extension[row][0].extension[dose].valueQuantity = 0 '[iU]' "単位"
+* dosageInstruction.extension[insulinScale].extension[row][1].extension[low].valueDecimal = 151
+* dosageInstruction.extension[insulinScale].extension[row][1].extension[high].valueDecimal = 200
+* dosageInstruction.extension[insulinScale].extension[row][1].extension[dose].valueQuantity = 2 '[iU]' "単位"
+* dosageInstruction.extension[insulinScale].extension[row][2].extension[low].valueDecimal = 201
+* dosageInstruction.extension[insulinScale].extension[row][2].extension[high].valueDecimal = 300
+* dosageInstruction.extension[insulinScale].extension[row][2].extension[dose].valueQuantity = 4 '[iU]' "単位"
+* dosageInstruction.extension[insulinScale].extension[row][3].extension[low].valueDecimal = 301
+* dosageInstruction.extension[insulinScale].extension[row][3].extension[dose].valueQuantity = 6 '[iU]' "単位"
+* dosageInstruction.extension[insulinScale].extension[row][3].extension[note].valueString = "Dr コール"
+* dosageInstruction.timing.event[0] = "2026-04-02T07:30:00+09:00"
+* dosageInstruction.timing.event[1] = "2026-04-02T11:30:00+09:00"
+* dosageInstruction.timing.event[2] = "2026-04-02T17:30:00+09:00"
+* dosageInstruction.route = $JP_route-codes#SC "皮下"
+* dosageInstruction.doseAndRate.doseRange.low = 0 '[iU]' "単位"
+* dosageInstruction.doseAndRate.doseRange.high = 6 '[iU]' "単位"
+
+Instance: example-insulin-medication-administration
+InstanceOf: FC_MedicationAdministration
+Usage: #example
+Title: "インスリンの施用の例(血糖スケール)"
+Description: "インスリンの施用の例(血糖スケール。実施入力で入れた血糖値を supportingInformation で指す)"
+* status = #completed
+* medicationCodeableConcept.coding[0] = $medicine-code#629900101 "インスリン アスパルト注 フレックスペン"
+* medicationCodeableConcept.text = "インスリン アスパルト注 フレックスペン"
+* subject = Reference(Patient/example-patient)
+* effectivePeriod.start = "2026-04-02T07:35:00+09:00"
+* partOf = Reference(Procedure/example-injection-procedure)
+* request = Reference(MedicationRequest/example-insulin-medication-request)
+* dosage.route = $JP_route-codes#SC "皮下"
+* dosage.dose = 2 '[iU]' "単位"
+* performer.actor = Reference(Practitioner/example-nurse)
+* supportingInformation = Reference(Observation/example-capillary-glucose-observation)
+
+Instance: example-capillary-glucose-observation
+InstanceOf: FC_CapillaryGlucoseObservation
+Usage: #example
+Title: "血糖値の例(インスリンの実施入力)"
+Description: "血糖値の例(インスリンの実施入力)"
+* status = #final
+* category = $order-type#nursing "看護指示"
+* code.coding[medis] = $medis-nursing-observation#31000303 "血糖値"
+* code.coding[loinc] = $loinc#41653-7 "Glucose [Mass/volume] in Capillary blood by Glucometer"
+* code.text = "血糖値"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* effectiveDateTime = "2026-04-02T07:35:00+09:00"
+* valueQuantity = 182 'mg/dL' "mg/dL"
+* performer = Reference(Practitioner/example-nurse)

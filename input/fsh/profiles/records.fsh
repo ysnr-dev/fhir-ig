@@ -10,12 +10,15 @@ Description: """診療記録(SOAP 等)。
 - status: preliminary / final / amended(final の記録を編集すると必ず amended)。final 以降は attester(mode legal、time、party)。
 - author 1..*(上流サーバーが必須にする)。title は診療記録タイトルマスタの文字列(既定「診療記録」)。order-department。
 - section: 任意の問題セクション(LOINC 11450-4、entry = Condition)と本文セクション(61150-9 S / 61149-1 O / 51848-0 A / 18776-5 P / 51847-2 A/P / 77599-9 自由記載)。本文は text.status = additional の XHTML で、画像は data URI で埋め込む。
-- テンプレートで書いたセクションは clinical-note-section-questionnaire-response が QuestionnaireResponse を指す(QR・Binary・抽出 Observation は同じ transaction)。"""
+- テンプレートで書いたセクションは clinical-note-section-questionnaire-response が QuestionnaireResponse を指す(QR・Binary・抽出 Observation は同じ transaction)。
+- category = clinical-note-category#nursing は看護職が書いた記録(新規保存のときに付け、編集では保存済みの値を引き継ぐ)。"""
 * insert FCMeta
 * subject 1..1
 * subject only Reference(FC_Patient)
 * type.coding 1..1
 * type.coding.system = $loinc
+* category 0..1
+* category = http://fhir-client.local/CodeSystem/clinical-note-category#nursing
 * author 1..*
 * author only Reference(FC_Practitioner)
 * attester.party only Reference(FC_Practitioner)
@@ -70,6 +73,53 @@ Description: """退院時サマリー。入院(Encounter)ごとに 1 件。
 * section[allergies].entry only Reference(FC_AllergyIntolerance)
 * section.extension contains ClinicalNoteSectionQuestionnaireResponse named questionnaireResponse 0..1
 * extension contains OrderDepartment named orderDepartment 0..1
+
+Profile: FC_NursingSummary
+Parent: Composition
+Id: fc-nursing-summary
+Title: "看護サマリー"
+Description: """看護サマリー(中間・転棟・退院)。受け持ち看護師が作り、病棟の看護職が承認する。器は退院時サマリーと同じ Composition。
+
+- type = document-type#nursing-summary(一致する LOINC を確認できていないのでローカルのコードだけ)。category = 区分(nursing-summary-kind)。title = 「看護サマリー(区分)」。
+- encounter = 入院(必須)。event[0].period = 対象期間(日付のみ)。order-ward = 作成時の病棟(病棟単位の承認一覧はこれで検索する)。
+- 状態: 作成中 = preliminary / 承認待ち = final + attester(legal = 確定した人)/ 承認済 = attester に official(承認者)を足す / 差戻し = preliminary に戻して attester を外し、理由は nursing-summary-returned 通知 Task に持つ。承認待ち以降に作成者が直して確定し直すと amended、承認者が直して承認すると amended で legal を残して official を足す。
+- section は固定で、この順に並ぶ: basic 基本情報 / LOINC 11348-0 既往歴 / conditions 病名(entry = Condition)/ nursing-problems 看護問題・計画(entry = 看護計画 CarePlan、display = 看護問題の要約)/ nursing-course 看護経過 / current-status 現在の状態 / continuing-care 継続看護。本文セクションは text.status = additional(空のセクションは書かない)、entry のセクションは text.status = generated で常に書き、選択が無ければ「なし」。テンプレートで書いた本文セクションは clinical-note-section-questionnaire-response を持つ。"""
+* insert FCMeta
+* subject 1..1
+* subject only Reference(FC_Patient)
+* type = http://fhir-client.local/CodeSystem/document-type#nursing-summary
+* category 1..1
+* category from NursingSummaryKindVS (required)
+* category.coding 1..1
+* encounter 1..1 MS
+* encounter only Reference(FC_InpatientEncounter)
+* event 1..1
+* event.period 1..1
+* author 1..*
+* author only Reference(FC_Practitioner)
+* attester.party only Reference(FC_Practitioner)
+* section ^slicing.discriminator[0].type = #pattern
+* section ^slicing.discriminator[0].path = "code"
+* section ^slicing.rules = #open
+* section contains
+    basic 0..1 and
+    pastHistory 0..1 and
+    conditions 1..1 and
+    nursingProblems 1..1 and
+    course 0..1 and
+    currentStatus 0..1 and
+    continuingCare 0..1
+* section[basic].code = http://fhir-client.local/CodeSystem/nursing-summary-section#basic
+* section[pastHistory].code = $loinc#11348-0
+* section[conditions].code = http://fhir-client.local/CodeSystem/nursing-summary-section#conditions
+* section[conditions].entry only Reference(FC_Problem)
+* section[nursingProblems].code = http://fhir-client.local/CodeSystem/nursing-summary-section#nursing-problems
+* section[nursingProblems].entry only Reference(FC_NursingCarePlan)
+* section[course].code = http://fhir-client.local/CodeSystem/nursing-summary-section#nursing-course
+* section[currentStatus].code = http://fhir-client.local/CodeSystem/nursing-summary-section#current-status
+* section[continuingCare].code = http://fhir-client.local/CodeSystem/nursing-summary-section#continuing-care
+* section.extension contains ClinicalNoteSectionQuestionnaireResponse named questionnaireResponse 0..1
+* extension contains OrderWard named orderWard 0..1 MS
 
 Profile: FC_Questionnaire
 Parent: Questionnaire

@@ -52,6 +52,7 @@ Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
 | endoscopy-critical-finding | 重要所見(内視鏡) | alert(stat) | DiagnosticReport | 検査日 / 検査内容 / 要点 | [FC_EndoscopyCriticalFindingTask](StructureDefinition-fc-endoscopy-critical-finding-task.html) |
 | pathway-variance | パスのバリアンス | caution(urgent) | 評価 Observation | パス名 / 適用 / 病日 / 病日の表示 / 対象日 / アウトカム | [FC_PathwayVarianceTask](StructureDefinition-fc-pathway-variance-task.html) |
 | radiotherapy-review-due | 放射線治療の診察 | info | ServiceRequest | 治療コース / 前回の診察 | [FC_RadiotherapyReviewDueTask](StructureDefinition-fc-radiotherapy-review-due-task.html) |
+| nursing-summary-returned | 看護サマリー差戻し | info | 看護サマリー Composition | 看護サマリ / 理由 | [FC_NursingSummaryReturnedTask](StructureDefinition-fc-nursing-summary-returned-task.html) |
 
 - `status`: requested 未対応 / completed 対応済 / cancelled 取消。`owner` = 宛先の職員、`requester` = 発生させた職員、`basedOn` = 関連するオーダー。`description` = 人が読める要約 1 行、`code.text` = 種別名、`authoredOn` / `lastModified` は常に持ちます。
 - 宛先が決まらないときは `owner` を持ちません: オーダーに紐付かない結果の緊急異常値・検査結果確認、主治医のいない入院の持参薬鑑別済・文書作成の督促、主治医のいない入院や入院外のバリアンス。
@@ -70,4 +71,4 @@ Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
 ### 例
 
 - [オーダーの来歴](Provenance-example-order-provenance.html) / [結果確認の来歴](Provenance-example-review-provenance.html)
-- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [重要所見(生理検査)](Task-example-physio-critical-finding-task.html) / [重要所見(内視鏡)](Task-example-endoscopy-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html)
+- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [重要所見(生理検査)](Task-example-physio-critical-finding-task.html) / [重要所見(内視鏡)](Task-example-endoscopy-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html) / [看護サマリー差戻し](Task-example-nursing-summary-returned-task.html)

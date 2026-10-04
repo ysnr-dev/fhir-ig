@@ -83,7 +83,7 @@ Profile: FC_NursingObservation
 Parent: Observation
 Id: fc-nursing-observation
 Title: "看護観察 記録"
-Description: "看護観察の指示に対する記録。category[0] = order-type#nursing のみ。code = 指示の MEDIS coding(master-nursingObservationKeyCode)に、対応があれば LOINC のバイタルコードを添える(31000001 SpO2 / 31001368 体温 / 31001390 脈拍 / 31001369 呼吸数 / 31000296 体重 / 31000298 身長 / 31002365 血圧)。value = valueQuantity(LOINC に対応するバイタルだけ UCUM の system / code を持ち、他は unit 文字列のみ)/ valueCodeableConcept(nursing-observation-result + text)/ component(2 数値型。code.text のみ)/ valueString。マスタに無い自由記載の指示の記録は code.text のみ + valueString。basedOn = 看護指示、encounter、performer。identifier = nursing-perform-entry。"
+Description: "看護観察の指示に対する記録。category[0] = order-type#nursing のみ。code = 指示の MEDIS coding(master-nursingObservationKeyCode)に、対応があれば LOINC のバイタルコードを添える(31000001 SpO2 / 31001368 体温 / 31001390 脈拍 / 31001369 呼吸数 / 31000296 体重 / 31000298 身長 / 31002365 血圧、31000303 血糖値 → 41653-7 簡易血糖)。value = valueQuantity(LOINC に対応するバイタルだけ UCUM の system / code を持ち、他は unit 文字列のみ)/ valueCodeableConcept(nursing-observation-result + text)/ component(2 数値型。code.text のみ)/ valueString。マスタに無い自由記載の指示の記録は code.text のみ + valueString。basedOn = 看護指示、encounter、performer。identifier = nursing-perform-entry。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"
@@ -101,6 +101,35 @@ Description: "看護観察の指示に対する記録。category[0] = order-type
 * basedOn only Reference(FC_NursingOrder)
 * encounter only Reference(FC_InpatientEncounter)
 * performer only Reference(FC_Practitioner)
+
+Profile: FC_CapillaryGlucoseObservation
+Parent: Observation
+Id: fc-capillary-glucose-observation
+Title: "血糖値(インスリンの実施入力)"
+Description: "インスリンのスケール施用で、直近の記録が無く実施入力で入れた血糖値。看護指示から記録した血糖値(FC_NursingObservation)と同じ category・code にし、経過表・直近値の検索で区別せずに読む。category = order-type#nursing、code = MEDIS 31000303 血糖値 + LOINC 41653-7、text = 血糖値。valueQuantity = mg/dL(UCUM)。basedOn = 有効な血糖測定の看護指示(無ければ付けない)。effectiveDateTime = 施用の開始日時。注射の実施と同じ transaction で書き、MedicationAdministration.supportingInformation が指す。identifier は持たない。"
+* insert FCMeta
+* status = #final
+* subject only Reference(FC_Patient)
+* category 1..1
+* category = $order-type#nursing
+* code.coding ^slicing.discriminator[0].type = #value
+* code.coding ^slicing.discriminator[0].path = "system"
+* code.coding ^slicing.rules = #open
+* code.coding contains
+    medis 1..1 and
+    loinc 1..1
+* code.coding[medis].system = $medis-nursing-observation
+* code.coding[medis].code = #31000303
+* code.coding[loinc].system = $loinc
+* code.coding[loinc].code = #41653-7
+* basedOn 0..1
+* basedOn only Reference(FC_NursingOrder)
+* encounter only Reference(FC_InpatientEncounter)
+* performer only Reference(FC_Practitioner)
+* effective[x] only dateTime
+* value[x] only Quantity
+* valueQuantity.system = $ucum
+* valueQuantity.code = #mg/dL
 
 Profile: FC_MealIntakeObservation
 Parent: Observation

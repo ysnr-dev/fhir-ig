@@ -38,7 +38,8 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
  │  category = injection + 入院・外来区分 + 注射区分 / extension: injection-series-start / injection-series-schedule(Timing)
  ├ MedicationRequest(薬剤行、FC_InjectionMedicationRequest)  basedOn → 1 日分
  │   dosageInstruction[0]: injection-usage-type(点滴 / ワンショット)/ JP_MedicationDosage_Line(injection-line)/ injection-scheduled-period /
- │                         timing.event / route(JP route-codes)/ site(JAMI 部位)/ method(JAMI 手技)/ doseQuantity / rateQuantity(mL/h)
+ │                         insulin-scale / timing.event / route(JP route-codes)/ site(JAMI 部位)/ method(JAMI 手技)/
+ │                         doseQuantity または doseRange / rateQuantity(mL/h)
  ├ Task(injection、FC_InjectionTask)  focus → 1 日分
  ├ MedicationDispense(払出)  authorizingPrescription → 薬剤行
  └ Procedure(実施記録、FC_InjectionProcedure)  basedOn → 1 日分
@@ -46,6 +47,21 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
 ```
 
 実施記録の数が `timing.event` の数に達すると Task が completed になります。
+
+#### インスリン
+
+量の単位が「単位」の薬剤(インスリン)は、オーダーの `doseQuantity` と実施の `dosage.dose` に UCUM の `[iU]` を持ちます(経過表はこれでインスリンの行を作り、輸血製剤の「単位」と区別します)。スケール指示は薬剤行の `insulin-scale` 拡張です。
+
+| 指示 | dosageInstruction[0] |
+|---|---|
+| 単位指定 | `doseAndRate.doseQuantity` |
+| 血糖・食事量・フリースケール | `insulin-scale`(kind = `insulin-scale-kind`、row = 幅 low / high または条件 condition、dose、note)+ `doseAndRate.doseRange`(施行量の最小〜最大) |
+| 単位指定 + スケール | `doseQuantity`(基本量)+ `insulin-scale`(行の dose は基本量への上乗せ) |
+
+- `dose[x]` は choice なので doseQuantity と doseRange は併せ持てません。スケールのみで doseRange を置くのは、単一の量を前提にした読み手(払出数量など)が量を見失わないためです。`text` にはスケールの要約を足します。
+- スケールセット(院内マスタ)から写したまま直していなければ `set`(`insulin-scale-set`)を持ちます。
+- 実施の MedicationAdministration は 0 単位でも `dose` を残し、`supportingInformation` = スケールに使った測定値(血糖値または主食の摂取量の Observation)です。直近の記録が無く実施入力で血糖値を入れたときは、同じ transaction で血糖値の Observation([FC_CapillaryGlucoseObservation](StructureDefinition-fc-capillary-glucose-observation.html))を作って指します。手で入れた主食の摂取量・フリースケールで選んだ行・案内量と変えた理由は `note` に残します。
+- 払出の数量は、スケールの薬剤では施行しうる最大量で数えます。
 
 連日のシリーズを継続するときは、同じ requisition・開始日(`injection-series-start`)・間隔で日を足します。足した日の `injection-series-schedule` だけが新しい終了日(`repeat.boundsPeriod.end`)を持ち、既存の日は書き換えません。
 
@@ -71,5 +87,6 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
 
 - 処方: [ヘッダ](ServiceRequest-example-prescription-order.html) / [薬剤行](MedicationRequest-example-prescription-medication-request.html) / [調剤](MedicationDispense-example-medication-dispense.html) / [与薬記録](Procedure-example-oral-administration-procedure.html) / [投与](MedicationAdministration-example-medication-administration.html) / [Task](Task-example-rx-dispense-task.html)
 - 注射: [1 日分](ServiceRequest-example-injection-order.html) / [薬剤行](MedicationRequest-example-injection-medication-request.html) / [実施記録](Procedure-example-injection-procedure.html) / [Task](Task-example-injection-task.html)
+- インスリン: [薬剤行(血糖スケール)](MedicationRequest-example-insulin-medication-request.html) / [施用](MedicationAdministration-example-insulin-medication-administration.html) / [血糖値](Observation-example-capillary-glucose-observation.html)
 - [持参薬](MedicationStatement-example-brought-medication.html) / [鑑別 Task](Task-example-brought-med-review-task.html)
 - [レジメン適用](ServiceRequest-example-regimen-order.html) / [有害事象](Observation-example-adverse-event-observation.html)

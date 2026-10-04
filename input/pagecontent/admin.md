@@ -84,6 +84,7 @@
 | [FC_Problem](StructureDefinition-fc-problem.html) プロブレム | problem-list-item | `problem-number`(#n)、`problem-parent`、`problem-succeeded-by`。オーダーの reasonReference はこれ |
 | [FC_EncounterDiagnosis](StructureDefinition-fc-encounter-diagnosis.html) 保険病名 | encounter-diagnosis | |
 | [FC_PastHistory](StructureDefinition-fc-past-history.html) 既往歴 | problem-list-item + `condition-category#past-history` | |
+| [FC_NursingProblem](StructureDefinition-fc-nursing-problem.html) 看護問題 | problem-list-item + `condition-category#nursing-problem` | 看護計画の対象([看護計画・看護サマリー](nursing-care-plan.html))。病名・プロブレムの一覧とレセコン送信から外す |
 
 `code.coding` は MEDIS 標準病名マスタ(keyNumber / exCode / masterB / ICD10)、接頭語・接尾語は JP Core の DiseasePrefixModifier / PostfixModifier。「の疑い」で verificationStatus = provisional。
 

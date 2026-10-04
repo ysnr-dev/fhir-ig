@@ -79,6 +79,21 @@ Description: "看護師の例"
 * name[1].given = "ハナコ"
 * active = true
 
+Instance: example-nurse-2
+InstanceOf: FC_Practitioner
+Usage: #example
+Title: "看護師の例(承認者)"
+Description: "看護師の例(看護サマリーの承認者)"
+* name[0].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[0].extension[0].valueCode = #IDE
+* name[0].family = "病棟"
+* name[0].given = "春子"
+* name[1].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[1].extension[0].valueCode = #SYL
+* name[1].family = "ビョウトウ"
+* name[1].given = "ハルコ"
+* active = true
+
 Instance: example-ward
 InstanceOf: FC_Ward
 Usage: #example

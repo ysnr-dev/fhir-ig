@@ -19,11 +19,12 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | orderDetail と code(prr-1) | 処方・注射のヘッダ ServiceRequest は orderDetail(薬剤行への参照)を持つが code を持たないため、FHIR 基本の不変条件 prr-1(orderDetail SHALL only be present if code is present)に反する。 | 例の検証でエラーになる。code.text(例: 処方 / 注射)を付ければ解消する。 |
 | バイタルの LOINC コードを持つ Observation の category | LOINC のバイタルコード(8310-5 / 8867-4 など)を持つ Observation は FHIR 基本の Vital Signs プロファイルで自動検証され、category = vital-signs が必須になる。麻酔チャートのバイタルは category を持たず、看護観察の記録は category[0] = order-type#nursing なので、どちらも準拠しない。 | 例は EtCO2(19889-5)や LOINC 対応の無い観察項目にして回避している。 |
 | JP_Procedure の nurse スライス | JP_Procedure は看護行為の coding の system を medis.or.jp の URL に固定しつつ、ValueSet(JP_ProcedureCodesNurse_VS)は urn:oid:1.2.392.200119.4.701 だけを含むため、どのコードも準拠できない。 | 看護行為の実施記録は base から派生。 |
-| jpfhir-terminology の部分的な CodeSystem | jpfhir-terminology 1.4.0 は J-FAGY(食物 2 件)や MEDIS 看護観察(270 件)などを content = complete で収載しており、アプリが使う実コードが「未知のコード」になる。 | 例は収載されているコードを使う(食事摂取量の 31003419 / 31003420 は例外)。 |
+| jpfhir-terminology の部分的な CodeSystem | jpfhir-terminology 1.4.0 は J-FAGY(食物 2 件)や MEDIS 看護観察(270 件)などを content = complete で収載しており、アプリが使う実コードが「未知のコード」になる。 | 例は収載されているコードを使う(食事摂取量の 31003419 / 31003420 と、インスリンの実施入力で書く血糖値の 31000303 は例外。コードが固定のため)。 |
 | 単一ヘッダの Bundle の fullUrl | 単一ヘッダの transaction でも fullUrl が必須。漏れると来歴とパスの参照が付かない。 | |
 | 処方の用量(doseQuantity)の意味 | 内服(頓用以外)は 1 日量、頓用は 1 回量、外用などは全量。JP Core の処方は 1 回量を基本にしている。持参薬(MedicationStatement)の doseQuantity は 1 回量。 | 読む側は用法コードで意味を判定する。 |
 | questionnaire-itemControl の system | アプリと同梱テンプレートは `http://hl7.org/fhir/CodeSystem/questionnaire-item-control` を使う。HL7 の正式な system は `http://hl7.org/fhir/questionnaire-item-control`。 | 例の検証で未知の CodeSystem の警告になる。 |
 | questionnaire-unit の code | system は UCUM(`http://unitsofmeasure.org`)固定のまま、code に「回」「本/日」など UCUM でない単位文字列を入れる。 | UCUM として解釈できない code がある。 |
+| 看護計画の達成度の display | 看護計画の目標(Goal.achievementStatus)と目標の評価(Observation.valueCodeableConcept)は HL7 の `goal-achievement` に日本語の display(達成 / 改善 / 変化なし / 悪化 / 未達成)を書く。 | 例の検証で display 不一致の警告になる。 |
 | 通知 Task の input | 一覧に出す内容を `Task.input`(type.text をキーにした値)に構造化して持つ。type に coding を持たない。 | プロファイルは type.text でスライスする。 |
 
 ### 2026-10-03 より前に書かれたデータ
@@ -46,6 +47,8 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | 項目 | 古いデータの形 |
 |---|---|
 | 処方ヘッダのオーダー種別 | 処方のヘッダ ServiceRequest は `order-type` の category を持たず、「種別が無い ServiceRequest = 処方」として読んでいた。上流サーバーの migration(`20261004000002_backfill_prescription_order_type`)が現行版の category の先頭に `order-type#prescription` を補ったが、`_history` の旧版は持たない。 |
+| インスリンの量 | 注射の薬剤行の `doseQuantity` と施用の `dosage.dose` は unit「単位」の文字列だけで UCUM の `[iU]` を持たない。経過表のインスリン欄には出ない。 |
+| 看護記録の区分 | 看護職が書いた診療記録も `category`(`clinical-note-category#nursing`)を持たず、看護サマリーの「看護記録」の取り込み候補に出ない。 |
 
 ### 上流サーバーの制約
 

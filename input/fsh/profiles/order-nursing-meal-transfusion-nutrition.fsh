@@ -10,7 +10,8 @@ Description: """看護指示。指示 1 行ごとに 1 件の ServiceRequest で
 - code は MEDIS 看護実践用語標準マスタ(看護行為: master-nursingAction-16digits + urn:oid:1.2.392.200119.4.704 の 8 桁管理番号、看護観察: master-nursingObservationKeyCode)、または text のみ。
 - 同時に入力した指示は requisition(nursing-order-requisition)の uuid で束ねる。
 - occurrenceDateTime = 開始日、nursing-order-end = 終了日、nursing-order-schedule = 頻度(Timing)。orderDetail[0].text = 条件。
-- Task は登録時に requested で作り、指示受けで accepted(owner = 看護師)。"""
+- Task は登録時に requested で作り、指示受けで accepted(owner = 看護師)。
+- 看護計画の行から展開した指示は nursing-care-plan-activity(plan = 看護計画、activity = 行の id)を持ち、reasonReference = 看護問題(FC_NursingProblem)。看護師が自分で出すので Task は最初から accepted(owner = 出した看護師)で作る。"""
 * category[orderType] = $order-type#nursing "看護指示"
 * category[setting] 1..1
 * category[setting] = $prescription-setting#inpatient
@@ -35,7 +36,8 @@ Description: """看護指示。指示 1 行ごとに 1 件の ServiceRequest で
 * orderDetail.text ^short = "条件"
 * extension contains
     NursingOrderEnd named orderEnd 0..1 MS and
-    NursingOrderSchedule named schedule 0..1 MS
+    NursingOrderSchedule named schedule 0..1 MS and
+    NursingCarePlanActivity named planActivity 0..1
 
 Profile: FC_MealOrder
 Parent: FC_OrderHeader

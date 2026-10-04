@@ -128,3 +128,50 @@ Description: "指導記録の QuestionnaireResponse。同じ transaction で登�
 Context: Procedure
 * insert FCMeta
 * value[x] only Reference(QuestionnaireResponse)
+
+Extension: NursingCarePlanActivity
+Id: nursing-care-plan-activity
+Title: "看護計画の行から展開した指示"
+Description: "看護指示がどの看護計画の行から展開されたか。plan = 看護計画の CarePlan、activity = CarePlan.activity.id。basedOn に CarePlan を入れると指示がオーダーのヘッダと見なされなくなるので、指示の側から拡張で指す。"
+Context: ServiceRequest
+* insert FCMeta
+* extension contains
+    plan 1..1 and
+    activity 1..1
+* extension[plan].value[x] only Reference(FC_NursingCarePlan)
+* extension[activity].value[x] only string
+
+Extension: NursingProblemPriority
+Id: nursing-problem-priority
+Title: "看護問題の優先度"
+Description: "看護問題の並び順(1 から)。継続中の看護問題の中で振り直し、番号の変わった Condition だけを PUT する。"
+Context: Condition
+* insert FCMeta
+* value[x] only positiveInt
+
+Extension: NursingCarePlanEntry
+Id: nursing-care-plan-entry
+Title: "看護計画の立案の入口"
+Description: "standard_plan = 標準看護計画から(OP / TP / EP の行)、diagnosis = 看護診断から(看護成果・看護介入で書く)。"
+Context: CarePlan
+* insert FCMeta
+* value[x] only code
+* valueCode from NursingCarePlanEntryVS (required)
+
+Extension: NursingPlanActivityType
+Id: nursing-plan-activity-type
+Title: "看護計画の行の区分(OP / TP / EP)"
+Description: "標準看護計画の入口で書いた行の区分。看護診断の入口で看護介入の行動として書いた行には付かない(nursing-intervention の下にまとめる)。"
+Context: CarePlan.activity
+* insert FCMeta
+* value[x] only code
+* valueCode from NursingPlanActivityTypeVS (required)
+
+Extension: NursingIntervention
+Id: nursing-intervention
+Title: "看護計画の行の看護介入"
+Description: "行が属する看護介入(nursing-intervention CodeSystem)。看護診断の入口では必ず付き、標準看護計画の行はマスタで介入が結びついているときだけ付く。"
+Context: CarePlan.activity
+* insert FCMeta
+* value[x] only Coding
+* valueCoding.system = "http://fhir-client.local/CodeSystem/nursing-intervention"

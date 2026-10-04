@@ -12,8 +12,8 @@ Context: ServiceRequest, MedicationRequest, DiagnosticReport, Composition, Quest
 Extension: OrderWard
 Id: order-ward
 Title: "オーダー時の病棟"
-Description: "入院オーダーを出した時点の病棟(Location)。外来オーダーには付かない。"
-Context: ServiceRequest, MedicationRequest
+Description: "入院オーダーを出した時点の病棟(Location)。外来オーダーには付かない。看護サマリー(Composition)では作成時の病棟で、病棟単位の承認一覧はこれで検索する。"
+Context: ServiceRequest, MedicationRequest, Composition
 * insert FCMeta
 * value[x] only Reference(Location)
 * valueReference only Reference(FC_Ward)

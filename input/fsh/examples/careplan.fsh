@@ -191,3 +191,121 @@ Description: "パス適用の終了の例"
 * statusDate = "2026-04-15"
 * extension[0].url = "http://e-path.jp/fhir/ePath/StructureDefinition/EPathGoalStatusReason"
 * extension[0].valueCodeableConcept = http://e-path.jp/fhir/ePath/CodeSystem/EPathPathClosingTypeCS#1 "終了"
+
+// ---- 看護計画 ----
+
+Instance: example-nursing-problem
+InstanceOf: FC_NursingProblem
+Usage: #example
+Title: "看護問題の例"
+Description: "看護問題の例(標準看護計画「転倒転落予防」から立案)"
+* clinicalStatus = $condition-clinical#active
+* verificationStatus = $condition-ver-status#confirmed
+* category[problem] = $condition-category#problem-list-item "Problem List Item"
+* category[nursingProblem] = http://fhir-client.local/CodeSystem/condition-category#nursing-problem "看護問題"
+* code = http://fhir-client.local/CodeSystem/nursing-diagnosis#L0001 "転倒転落の危険がある状態"
+* code.text = "転倒転落の危険がある状態"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* onsetDateTime = "2026-04-02"
+* recordedDate = "2026-04-02T10:00:00+09:00"
+* recorder = Reference(Practitioner/example-nurse)
+* evidence[0].code = http://fhir-client.local/CodeSystem/nursing-risk-factor#LR0101 "歩行が不安定"
+* evidence[0].code.text = "歩行が不安定"
+* evidence[1].code = http://fhir-client.local/CodeSystem/nursing-risk-factor#LR0103 "夜間の頻尿"
+* evidence[1].code.text = "夜間の頻尿"
+* extension[priority].valuePositiveInt = 1
+
+Instance: example-nursing-care-plan
+InstanceOf: FC_NursingCarePlan
+Usage: #example
+Title: "看護計画の例"
+Description: "看護計画の例(標準看護計画から。OP / TP / EP の行)"
+* text.status = #generated
+* text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>看護計画: 転倒転落の危険がある状態(2026-04-02〜)</p><ul><li>OP: 意識障害の有無</li><li>TP(転倒予防): 低床ベッドへ交換する</li><li>EP: 家族に転倒の危険と予防策を説明する(中止)</li></ul></div>"
+* status = #active
+* intent = #plan
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing "看護計画"
+* title = "転倒転落の危険がある状態"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* period.start = "2026-04-02"
+* created = "2026-04-02T10:00:00+09:00"
+* author = Reference(Practitioner/example-nurse)
+* addresses = Reference(Condition/example-nursing-problem)
+* goal[0] = Reference(Goal/example-nursing-goal)
+* instantiatesUri = "http://fhir-client.local/master/nursing-standard-plans/LSP001"
+* activity[0].id = "6f1c2a3b-4d5e-4f60-8a71-9b0c1d2e3f40"
+* activity[0].extension[type].valueCode = #op
+* activity[0].detail.status = #in-progress
+* activity[0].detail.code = $medis-nursing-observation#31001254 "意識障害"
+* activity[0].detail.code.text = "意識障害の有無"
+* activity[0].detail.description = "意識障害の有無"
+* activity[1].id = "7a2d3b4c-5e6f-4071-8b82-ac1d2e3f4051"
+* activity[1].extension[type].valueCode = #tp
+* activity[1].extension[intervention].valueCoding = http://fhir-client.local/CodeSystem/nursing-intervention#LI001 "転倒予防"
+* activity[1].detail.status = #in-progress
+* activity[1].detail.code.coding[0] = $medis-nursing-action#A001B006C051D031 "低床ベッドへ交換"
+* activity[1].detail.code.coding[1] = $medis-nursing-action-oid#12000956 "低床ベッドへ交換"
+* activity[1].detail.code.text = "低床ベッドへ交換する"
+* activity[1].detail.description = "低床ベッドへ交換する"
+* activity[2].id = "8b3e4c5d-6f70-4182-9c93-bd2e3f405162"
+* activity[2].extension[type].valueCode = #ep
+* activity[2].detail.status = #stopped
+* activity[2].detail.code.text = "家族に転倒の危険と予防策を説明する"
+* activity[2].detail.description = "家族に転倒の危険と予防策を説明する"
+* extension[entry].valueCode = #standard_plan
+
+Instance: example-nursing-goal
+InstanceOf: FC_NursingGoal
+Usage: #example
+Title: "看護計画の目標の例"
+Description: "看護計画の目標の例(評価済み)"
+* lifecycleStatus = #active
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing "看護計画"
+* description = http://fhir-client.local/CodeSystem/nursing-outcome#LO001 "転倒を防ぐ行動"
+* description.text = "移動のときにナースコールを押せる"
+* subject = Reference(Patient/example-patient)
+* startDate = "2026-04-02"
+* addresses = Reference(Condition/example-nursing-problem)
+* target.dueDate = "2026-04-16"
+* statusDate = "2026-04-09"
+* achievementStatus = http://terminology.hl7.org/CodeSystem/goal-achievement#improving "改善"
+* outcomeReference = Reference(Observation/example-nursing-goal-evaluation)
+
+Instance: example-nursing-goal-evaluation
+InstanceOf: FC_NursingEvaluationObservation
+Usage: #example
+Title: "看護計画の評価の例(目標)"
+Description: "看護計画の評価の例(目標ごと)"
+* status = #final
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing "看護計画"
+* code = http://fhir-client.local/CodeSystem/nursing-evaluation#goal "目標の評価"
+* code.text = "移動のときにナースコールを押せる"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* effectiveDateTime = "2026-04-09T15:00:00+09:00"
+* performer = Reference(Practitioner/example-nurse)
+* basedOn = Reference(CarePlan/example-nursing-care-plan)
+* focus = Reference(Goal/example-nursing-goal)
+* valueCodeableConcept = http://terminology.hl7.org/CodeSystem/goal-achievement#improving "改善"
+* note.text = "夜間はナースコールを押せている。日中は単独での移動が残る。"
+* extension[problem].valueReference = Reference(Condition/example-nursing-problem)
+
+Instance: example-nursing-problem-evaluation
+InstanceOf: FC_NursingEvaluationObservation
+Usage: #example
+Title: "看護計画の評価の例(看護問題)"
+Description: "看護計画の評価の例(看護問題単位の判定)"
+* status = #final
+* category = http://fhir-client.local/CodeSystem/care-plan-type#nursing "看護計画"
+* code = http://fhir-client.local/CodeSystem/nursing-evaluation#problem "看護問題の評価"
+* code.text = "転倒転落の危険がある状態"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* effectiveDateTime = "2026-04-09T15:00:00+09:00"
+* performer = Reference(Practitioner/example-nurse)
+* basedOn = Reference(CarePlan/example-nursing-care-plan)
+* focus = Reference(Condition/example-nursing-problem)
+* valueCodeableConcept = http://fhir-client.local/CodeSystem/nursing-evaluation-decision#continue "継続"
+* extension[problem].valueReference = Reference(Condition/example-nursing-problem)

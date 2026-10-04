@@ -304,6 +304,32 @@ Description: "既往歴。category は problem-list-item と、本 IG の condit
 * category[problem] = $condition-category#problem-list-item
 * category[pastHistory] = http://fhir-client.local/CodeSystem/condition-category#past-history
 
+Profile: FC_NursingProblem
+Parent: FC_Condition
+Id: fc-nursing-problem
+Title: "看護問題"
+Description: """看護計画の対象の看護問題。病名と同じ Condition にし、看護計画(CarePlan.addresses)・目標(Goal.addresses)・計画から展開した看護指示(reasonReference)が指す。
+
+- category は problem-list-item と condition-category#nursing-problem の 2 つ。problem-list-item を持つのでレセコン送信の保険病名から外れ、病名・プロブレムの一覧からは nursing-problem で外す(病名の検索は category:not)。
+- code = 看護診断(nursing-diagnosis)+ text = 看護問題名。自由記載は text のみ。
+- evidence = 選んだ診断指標・関連因子・危険因子(nursing-defining-characteristic / nursing-related-factor / nursing-risk-factor。自由記載は system だけの coding + text)。
+- onsetDateTime = 立案日(日付のみ)。nursing-problem-priority = 優先度。新規のときだけ encounter(入院)・recorder・recordedDate を付ける。
+- 解決で clinicalStatus = resolved + abatementDateTime(評価日)、取消で verificationStatus = entered-in-error。"""
+* category 2..2
+* category ^slicing.discriminator[0].type = #pattern
+* category ^slicing.discriminator[0].path = "$this"
+* category ^slicing.rules = #open
+* category contains problem 1..1 and nursingProblem 1..1
+* category[problem] = $condition-category#problem-list-item
+* category[nursingProblem] = http://fhir-client.local/CodeSystem/condition-category#nursing-problem
+* code 1..1
+* code.coding.system = "http://fhir-client.local/CodeSystem/nursing-diagnosis"
+* code.text 1..1
+* onsetDateTime 1..1
+* encounter only Reference(FC_InpatientEncounter)
+* recorder only Reference(FC_Practitioner)
+* extension contains NursingProblemPriority named priority 1..1 MS
+
 Profile: FC_AllergyIntolerance
 Parent: $JP_AllergyIntolerance
 Id: fc-allergy-intolerance

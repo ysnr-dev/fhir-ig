@@ -17,9 +17,11 @@
 | 51847-2 | A/P |
 | 77599-9 | 自由記載 |
 
+看護職(看護師・保健師・助産師)が書いた記録は `category` = `clinical-note-category#nursing` を持ちます(新規保存のときに付け、編集では保存済みの値を引き継ぐ)。看護サマリーの「看護記録」の取り込みはこれで検索します。
+
 本文は `text.status = additional` の XHTML で、画像は data URI で埋め込みます。テンプレートで書いたセクションは `clinical-note-section-questionnaire-response` 拡張が QuestionnaireResponse を指し、QR・Binary・抽出した Observation を同じ transaction で登録します。
 
-カルテの時系列では、Composition を LOINC の type で「診療記録」と「退院時サマリー」に分け、日付未定(最上部)と日付なし(最下部)を別に扱います。
+カルテの時系列では、Composition を type で「診療記録」「退院時サマリー」「看護サマリー」([看護計画・看護サマリー](nursing-care-plan.html))に分け、日付未定(最上部)と日付なし(最下部)を別に扱います。
 
 ### 退院時サマリー
 
@@ -60,6 +62,6 @@
 
 ### 例
 
-- [診療記録](Composition-example-clinical-note.html) / [退院時サマリー](Composition-example-discharge-summary.html) / [督促 Task](Task-example-document-due-task.html)
+- [診療記録](Composition-example-clinical-note.html) / [看護記録](Composition-example-nursing-clinical-note.html) / [退院時サマリー](Composition-example-discharge-summary.html) / [督促 Task](Task-example-document-due-task.html)
 - [血液型](Observation-example-blood-type-observation.html) / [妊娠](Observation-example-pregnancy-observation.html) / [感染症](Observation-example-infection-observation.html) / [バイタル](Observation-example-vital-observation.html)
 - [患者ファイル](DocumentReference-example-patient-file.html) / [文書作成で作った文書](DocumentReference-example-patient-document.html) / [DICOM スタディ](ImagingStudy-example-imaging-study.html)

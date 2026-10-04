@@ -188,7 +188,7 @@ Profile: FC_NursingTask
 Parent: FC_DepartmentTask
 Id: fc-nursing-task
 Title: "看護指示 Task(指示受け)"
-Description: "看護指示の指示受け。登録時に requested で作られ、指示受けで accepted。owner = 指示受けした看護師。"
+Description: "看護指示の指示受け。登録時に requested で作られ、指示受けで accepted。owner = 指示受けした看護師。看護計画から展開した指示は登録時から accepted(owner = 出した看護師)。"
 * code = $task-code#nursing "看護指示"
 * status from FCTaskStatusNursingVS (required)
 * focus only Reference(FC_NursingOrder)
@@ -526,3 +526,21 @@ Description: "治療中の週次診察が期限を迎えたことの通知。foc
 * input[course].value[x] only string
 * input[lastReview].type.text = "前回の診察"
 * input[lastReview].value[x] only date
+
+Profile: FC_NursingSummaryReturnedTask
+Parent: FC_NotificationTask
+Id: fc-nursing-summary-returned-task
+Title: "看護サマリー差戻し 通知"
+Description: "承認者が看護サマリーを却下したときの通知。priority = routine。focus = 看護サマリー、owner = サマリーの作成者(author[0])、requester = 却下した承認者、encounter = 入院。description = 「看護サマリー(区分) 差戻し: 理由」。input: 看護サマリ(valueString。「看護サマリー(区分)」)/ 理由(valueString)。作成者が確定し直すと completed になる(note = 確定し直したこと)。"
+* code = $task-code#nursing-summary-returned "看護サマリー差戻し"
+* priority = #routine
+* focus only Reference(FC_NursingSummary)
+* encounter only Reference(FC_InpatientEncounter)
+* insert TaskInputSlicing
+* input contains
+    summary 0..1 and
+    reason 0..1
+* input[summary].type.text = "看護サマリ"
+* input[summary].value[x] only string
+* input[reason].type.text = "理由"
+* input[reason].value[x] only string

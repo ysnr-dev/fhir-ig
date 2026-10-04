@@ -178,3 +178,32 @@ Id: questionnaire-practitioner-field-vs
 Title: "医療従事者情報の自動入力項目 ValueSet"
 Description: "医療従事者情報の自動入力項目 ValueSet。"
 * insert AllOf(QuestionnairePractitionerFieldCS)
+
+CodeSystem: NursingPlanActivityTypeCS
+Id: nursing-plan-activity-type
+Title: "看護計画の行の区分"
+Description: "CarePlan.activity の nursing-plan-activity-type 拡張(valueCode)。"
+* insert EnumCS
+* #op "OP(観察)"
+* #tp "TP(ケア)"
+* #ep "EP(教育)"
+
+ValueSet: NursingPlanActivityTypeVS
+Id: nursing-plan-activity-type-vs
+Title: "看護計画の行の区分 ValueSet"
+Description: "看護計画の行の区分 ValueSet。"
+* insert AllOf(NursingPlanActivityTypeCS)
+
+CodeSystem: NursingCarePlanEntryCS
+Id: nursing-care-plan-entry
+Title: "看護計画の立案の入口"
+Description: "看護計画 CarePlan の nursing-care-plan-entry 拡張(valueCode)。"
+* insert EnumCS
+* #standard_plan "標準看護計画"
+* #diagnosis "看護診断"
+
+ValueSet: NursingCarePlanEntryVS
+Id: nursing-care-plan-entry-vs
+Title: "看護計画の立案の入口 ValueSet"
+Description: "看護計画の立案の入口 ValueSet。"
+* insert AllOf(NursingCarePlanEntryCS)
