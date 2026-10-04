@@ -114,7 +114,7 @@ Profile: FC_PathwayEvaluationObservation
 Parent: Observation
 Id: fc-pathway-evaluation-observation
 Title: "パスのアウトカム評価"
-Description: "OAT 単位のアウトカム評価。category[0] = care-plan-type#clinical-pathway。code = ePath EPathEvaluationItemCS#judgement(display = 評価、text = アウトカム名)。valueCodeableConcept = 達成状況(ePath EPathStateOfAchievementCS: 1 達成 / 2 未達成 / 3 未評価)。component = S / O / A / P と自由記載の comp-assessment(code = EPathEvaluationItemCS、valueString。テンプレートで書いたときは pathway-evaluation-template)。note[0] = コメント。basedOn = OAT 単位の CarePlan。identifier = ePath observation-evaluation-id(値は OAT 単位の identifier と同じ)。重要アウトカム(EPathCarePlanCriticalIndicator = Y)を未達成にしたときだけ pathway-variance 通知が作られ、未達成でなくなれば通知は cancelled になる。"
+Description: "OAT 単位のアウトカム評価。category[0] = care-plan-type#clinical-pathway。code = ePath EPathEvaluationItemCS#judgement(display = 評価、text = アウトカム名)。valueCodeableConcept = 達成状況(ePath EPathStateOfAchievementCS: 1 達成 / 2 未達成 / 3 未評価)。component = S / O / A / P と自由記載の comp-assessment(code = EPathEvaluationItemCS、valueString。テンプレートで書いたときは pathway-evaluation-template)。note[0] = コメント。basedOn = OAT 単位の CarePlan。identifier = ePath observation-evaluation-id(値は OAT 単位の identifier と同じ)。order-department = 記録した診療科(初回の評価で付け、評価し直しても書き換えない)。重要アウトカム(EPathCarePlanCriticalIndicator = Y)を未達成にしたときだけ pathway-variance 通知が作られ、未達成でなくなれば通知は cancelled になる。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * identifier.system = "http://e-path.jp/fhir/ePath/IdSystem/observation-evaluation-id"
@@ -131,6 +131,7 @@ Description: "OAT 単位のアウトカム評価。category[0] = care-plan-type#
 * basedOn only Reference(FC_PathwayUnitCarePlan)
 * component.code.coding.system = "http://e-path.jp/fhir/ePath/CodeSystem/EPathEvaluationItemCS"
 * component.extension contains PathwayEvaluationTemplate named template 0..1
+* extension contains OrderDepartment named orderDepartment 0..1
 
 Profile: FC_PathwayResultObservation
 Parent: Observation

@@ -7,6 +7,7 @@ Title: "処方オーダー ヘッダの例"
 Description: "処方オーダー ヘッダの例"
 * status = #active
 * intent = #order
+* category[orderType] = $order-type#prescription "処方"
 * category[setting] = $prescription-setting#inpatient "入院"
 * category[prescriptionCategory] = $prescription-category#regular "定期"
 * subject = Reference(Patient/example-patient)

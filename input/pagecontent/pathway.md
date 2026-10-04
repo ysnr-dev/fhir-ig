@@ -45,6 +45,7 @@ CarePlan(適用 = 根、FC_PathwayApplyCarePlan)   partOf 無し(part-of:missing
 
 - `pathway-phase`(病日がどのフェーズか、code = phase_key)と `pathway-phase-note`(分岐を選んだ記録)。フェーズ分岐のあるパスはフェーズ単位で段階的に適用します。
 - `pathway-evaluation-template`(評価の S / O / A / P をテンプレートで記入したときの QuestionnaireResponse、Observation.component 上)。
+- `order-department`(評価を記録した診療科。初回の評価で付け、評価し直しても書き換えない)。
 - パスから出したオーダーのヘッダには `pathway-instance` identifier と `pathway-order` 拡張([オーダーセット・パス適用の印](order-set-pathway.html))。
 
 ### 例

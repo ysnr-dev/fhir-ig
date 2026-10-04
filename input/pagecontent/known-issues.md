@@ -5,7 +5,7 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | 項目 | 内容 | 影響 |
 |---|---|---|
 | 略称の coding | `lab-item-abbreviation` は、オーダー明細では略称文字列そのものを code にし(例: `#CBC`)、検体検査結果では code = 結果項目コード・display = 略称にする。`micro-antimicrobial-abbreviation` は code = JANIS 抗菌薬コード・display = 略号。 | CodeSystem は not-present。同じ system でも code の意味が場所で違う。 |
-| category の先頭ルール | 上流サーバーが category の先頭しか索引しないため、種別を表す coding を必ず先頭に置く。 | プロファイルは `^slicing.ordered = true` で表現。 |
+| category の先頭ルール | 上流サーバーが Procedure・Observation・DiagnosticReport の category を先頭しか索引しないため、種別を表す coding を必ず先頭に置く(ServiceRequest はすべての coding を索引するが、同じ並びにする)。 | プロファイルは `^slicing.ordered = true` で表現。 |
 | QuestionnaireResponse.identifier に system が無い | value = `{施設番号}^{患者ID}^{uuid}`。 | value 必須として定義。 |
 | JSON 文字列の拡張 | `schedule-slot-pattern` は Slot の生成パターンを JSON 文字列で valueString に持つ。 | 拡張の Description に JSON の形を記載。 |
 | 独自 system の observation-category | 有害事象の category は本 IG の `CodeSystem/observation-category#adverse-event` で、HL7 の observation-category ではない。 | 読むときは system で区別する。 |
@@ -41,10 +41,16 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | Observation 抽出カテゴリの拡張 URL | テンプレートが SDC に無い `sdc-observationExtract-category` を使っていた(現在は SDC の `sdc-questionnaire-observation-extract-category`)。アプリは両方を読む。編集して保存し直すと新しい URL になる。 |
 | 持参薬の用法 | 用法を入れなかった持参薬が空の `dosage.timing.code`(`{}`)を持つ。 |
 
+### 2026-10-04 より前に書かれたデータ
+
+| 項目 | 古いデータの形 |
+|---|---|
+| 処方ヘッダのオーダー種別 | 処方のヘッダ ServiceRequest は `order-type` の category を持たず、「種別が無い ServiceRequest = 処方」として読んでいた。上流サーバーの migration(`20261004000002_backfill_prescription_order_type`)が現行版の category の先頭に `order-type#prescription` を補ったが、`_history` の旧版は持たない。 |
+
 ### 上流サーバーの制約
 
 - クライアントが送った `meta.profile` を保存しない(meta.tag 以外の meta を落とし、読み出し時にリソース種別ごとの 1 プロファイルを付ける)。
 - プロファイル検証は既定 warn(`FHIR_PROFILE_VALIDATION`)。未知の拡張は拒否しない。手書きのバリデータ(Observation の status / code / subject、Procedure の status / subject、CarePlan の status / intent / subject、Composition の author、Questionnaire の JASPEHR 不変条件、QuestionnaireResponse の eCS 施設番号拡張)は常に 422 を返す。
-- `category` は先頭要素だけを索引する。ServiceRequest の `occurrence` 検索は occurrenceDateTime だけ(Period は索引しない)。`_elements` は JSON キーの完全一致。未対応の検索パラメータは既定で黙殺される(`Prefer: handling=strict` で拒否)。
+- Procedure・Observation・DiagnosticReport などの `category` は先頭要素だけを索引する(ServiceRequest・CarePlan・Goal はすべての coding)。ServiceRequest の `occurrence` 検索は occurrenceDateTime だけ(Period は索引しない)。`_elements` は JSON キーの完全一致。未対応の検索パラメータは既定で黙殺される(`Prefer: handling=strict` で拒否)。
 - 1 トークンあたり 300 件/分のレート制限。
 - タイムゾーン無しの検索値は Asia/Tokyo で解釈する。

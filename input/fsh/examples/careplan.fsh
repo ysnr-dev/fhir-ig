@@ -156,6 +156,8 @@ Description: "パスのアウトカム評価の例"
 * effectiveDateTime = "2026-04-09T17:00:00+09:00"
 * performer = Reference(Practitioner/example-nurse)
 * valueCodeableConcept = http://e-path.jp/fhir/ePath/CodeSystem/EPathStateOfAchievementCS#2 "未達成（バリアンス）"
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
 * component[0].code = http://e-path.jp/fhir/ePath/CodeSystem/EPathEvaluationItemCS#S "S"
 * component[0].valueString = "痛みが強い"
 

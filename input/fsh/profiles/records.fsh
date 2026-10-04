@@ -103,13 +103,15 @@ Description: """テンプレートの記入。アプリは meta.profile に JASP
 - contained Practitioner(id = practitioner、name.text = 記入者名のみ)を author で参照する。
 - identifier.value = \"{施設番号}^{患者ID}^{uuid}\"(system 無し。既知の非準拠)。
 - basedOn = 関連するオーダー(放射線治療の週次診察など)。
-- questionnaire-response-problem = 対象プロブレム。item の questionnaire-response-annotated-image = シェーマに書き込んだ画像(Binary)。
+- questionnaire-response-problem = 対象プロブレム。order-department = 記録した診療科(カルテ・テンプレートの記入で付く。更新では元の値を引き継ぐ)。item の questionnaire-response-annotated-image = シェーマに書き込んだ画像(Binary)。
 - 診療記録のセクション、オーダーの検査目的・特別指示・臨床情報・術前指示・依頼目的、読影レポート、栄養指導記録、パスの評価から参照される。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * questionnaire 1..1
 * identifier.value 1..1
-* extension contains QuestionnaireResponseProblem named problem 0..1
+* extension contains
+    QuestionnaireResponseProblem named problem 0..1 and
+    OrderDepartment named orderDepartment 0..1
 * item.extension contains QuestionnaireResponseAnnotatedImage named annotatedImage 0..1
 
 Profile: FC_DpcForm1Response

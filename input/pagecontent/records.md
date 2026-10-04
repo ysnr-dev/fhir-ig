@@ -4,7 +4,7 @@
 
 - `type` = LOINC 11506-3 Progress note。他科依頼への回答は 11488-4 Consult note で、`event.code` = `consult-note-event#reply`、`event.detail` = 依頼の ServiceRequest。
 - `status`: preliminary / final / amended。final の記録を編集すると必ず amended になります。final 以降は `attester`(mode = legal)。
-- `author` 1..*(上流サーバーが必須にする)。`title` は診療記録タイトルマスタの文字列(既定「診療記録」)。依頼科は `order-department`。
+- `author` 1..*(上流サーバーが必須にする)。`title` は診療記録タイトルマスタの文字列(既定「診療記録」)。記録した診療科(他科依頼の回答では回答した科)は `order-department`。
 - `section`: 任意の問題セクション(LOINC 11450-4、entry = Condition)と本文セクション。
 
 | section.code(LOINC) | 内容 |
@@ -45,7 +45,7 @@
 | 血液型 | [FC_BloodTypeObservation](StructureDefinition-fc-blood-type-observation.html) | LOINC 883-9(ABO)/ 10331-7(RhD) | `transfusion-abo` / `transfusion-rhd`、method = 情報源 |
 | 妊娠・授乳 | [FC_PregnancyObservation](StructureDefinition-fc-pregnancy-observation.html) | LOINC 82810-3 / 63895-7 | SNOMED CT、component 11778-8 分娩予定日 |
 | 感染症(手入力) | [FC_InfectionObservation](StructureDefinition-fc-infection-observation.html) | `infection-type` + LOINC | `infection-result`、method = 情報源 |
-| バイタル | [FC_VitalObservation](StructureDefinition-fc-vital-observation.html) | LOINC(85354-9 血圧、8310-5 体温、8867-4 脈拍、2708-6 SpO2、9279-1 呼吸数、8302-2 身長、29463-7 体重、39156-5 BMI) | Quantity(UCUM)、identifier = vital-entry、`observation-problem` |
+| バイタル | [FC_VitalObservation](StructureDefinition-fc-vital-observation.html) | LOINC(85354-9 血圧、8310-5 体温、8867-4 脈拍、2708-6 SpO2、9279-1 呼吸数、8302-2 身長、29463-7 体重、39156-5 BMI) | Quantity(UCUM)、identifier = vital-entry、`observation-problem`、記録した診療科 `order-department` |
 | 有害事象(CTCAE) | [FC_AdverseEventObservation](StructureDefinition-fc-adverse-event-observation.html) | text(CTCAE 用語) | valueInteger = Grade、category = 本 IG の `observation-category#adverse-event`、`treatment-context` |
 | テンプレート抽出 | [FC_ExtractedObservation](StructureDefinition-fc-extracted-observation.html) | item.code(`observation-item` など) | derivedFrom = QuestionnaireResponse |
 

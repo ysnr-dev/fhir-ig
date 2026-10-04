@@ -56,6 +56,8 @@ Description: "バイタル(血圧)の例"
 * component[1].code = $loinc#8462-4 "Diastolic blood pressure"
 * component[1].valueQuantity = 78 'mm[Hg]' "mmHg"
 * extension[problem].valueReference = Reference(Condition/example-condition)
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
 
 Instance: example-nursing-observation
 InstanceOf: FC_NursingObservation
@@ -230,6 +232,8 @@ Description: "テンプレートの記入の例"
 * item[1].item[0].linkId = "recorder_name"
 * item[1].item[0].answer.valueString = "山田 一郎"
 * extension[problem].valueReference = Reference(Condition/example-condition)
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
 
 Instance: example-extracted-observation
 InstanceOf: FC_ExtractedObservation

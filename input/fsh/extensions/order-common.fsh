@@ -3,8 +3,8 @@
 Extension: OrderDepartment
 Id: order-department
 Title: "依頼科"
-Description: "依頼科(診療科 Organization)。オーダーのヘッダ ServiceRequest と MedicationRequest、検査報告 DiagnosticReport、診療記録 Composition に付く。標準要素に診療科を持つ場所が無いため拡張で持つ。"
-Context: ServiceRequest, MedicationRequest, DiagnosticReport, Composition
+Description: "依頼科(診療科 Organization)。オーダーのヘッダ ServiceRequest と MedicationRequest、検査報告 DiagnosticReport に付く。診療記録 Composition・テンプレートの記入 QuestionnaireResponse・バイタルとパスの評価の Observation では記録した診療科を表す。標準要素に診療科を持つ場所が無いため拡張で持つ。"
+Context: ServiceRequest, MedicationRequest, DiagnosticReport, Composition, QuestionnaireResponse, Observation
 * insert FCMeta
 * value[x] only Reference(Organization)
 * valueReference only Reference(FC_Department)

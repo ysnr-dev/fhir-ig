@@ -62,7 +62,7 @@ Title: "バイタル測定"
 Description: """バイタル。1 回の測定で入力した項目を identifier(vital-entry の uuid)で束ねる。編集は古い Observation を削除して作り直す。
 
 - category = vital-signs。code = LOINC: 85354-9 血圧パネル(component 8480-6 収縮期 / 8462-4 拡張期、mm[Hg])、8310-5 体温(Cel)、8867-4 脈拍(/min)、2708-6 SpO2(%)、9279-1 呼吸数(/min)、8302-2 身長(cm)、29463-7 体重(kg)、39156-5 BMI(kg/m2)。
-- observation-problem = 対象のプロブレム。
+- observation-problem = 対象のプロブレム。order-department = 記録した診療科(編集では元の値を引き継ぐ)。
 - アプリは meta.profile を付けないが、上流サーバーは読み出し時に JP_Observation_Common を付ける(category の system は HL7 observation-category)。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -75,7 +75,9 @@ Description: """バイタル。1 回の測定で入力した項目を identifier
 * value[x] only Quantity
 * valueQuantity.system = $ucum
 * component.code.coding.system = $loinc
-* extension contains ObservationProblem named problem 0..1
+* extension contains
+    ObservationProblem named problem 0..1 and
+    OrderDepartment named orderDepartment 0..1
 
 Profile: FC_NursingObservation
 Parent: Observation

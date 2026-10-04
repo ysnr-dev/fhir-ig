@@ -32,5 +32,5 @@ fhir-client は、FHIR R4 の JSON を直接組み立てて上流の FHIR サー
 ### 実装上の注意
 
 - 上流サーバーはクライアントが送った `meta.profile` を保存しない(読み出し時にリソース種別ごとに 1 つのプロファイルを付け直す)。本 IG のプロファイル準拠は要素の内容で判定する。
-- 上流サーバーは `category` の先頭要素しか検索索引に載せない。種別を表す coding は必ず先頭に置く。
+- 上流サーバーは Procedure・Observation・DiagnosticReport の `category` を先頭要素しか検索索引に載せない。種別を表す coding は必ず先頭に置く(ServiceRequest も同じ並び)。
 - 詳細は [既知の非準拠・不具合](known-issues.html) を参照。

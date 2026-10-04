@@ -11,7 +11,7 @@ Context: ServiceRequest
 Extension: InjectionSeriesSchedule
 Id: injection-series-schedule
 Title: "注射シリーズの間隔"
-Description: "連日注射の間隔。無ければ毎日。隔日など: repeat.boundsPeriod + period N / periodUnit d。曜日指定: period 1 / periodUnit wk / dayOfWeek。"
+Description: "連日注射の間隔。無ければ毎日。隔日など: repeat.boundsPeriod + period N / periodUnit d。曜日指定: period 1 / periodUnit wk / dayOfWeek。シリーズを継続して日を足したときは、足した日だけが新しい boundsPeriod.end を持つ(既存の日は書き換えない)。"
 Context: ServiceRequest
 * insert FCMeta
 * value[x] only Timing

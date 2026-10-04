@@ -17,31 +17,20 @@ RuleSet: MedicationRequestIdentifierRules
 * identifier[orderInRp] ^short = "RP 内の連番(1 始まり)"
 
 Profile: FC_PrescriptionOrder
-Parent: ServiceRequest
+Parent: FC_OrderHeader
 Id: fc-prescription-order
 Title: "処方オーダー ヘッダ"
 Description: """処方のヘッダ ServiceRequest。
 
-- **order-type の category を持たない**(order-type 無しの ServiceRequest = 処方)。category は入院・外来区分(prescription-setting)と処方区分(prescription-category)。
+- category は prescription + 入院・外来区分(prescription-setting)+ 処方区分(prescription-category)。
 - authoredOn = 処方日(交付日)、occurrenceDateTime = 投与開始日。
 - orderDetail は薬剤行ごとに 1 件(text = \"RP{n}-{m}\"、prescription-medication-request 拡張で MedicationRequest を指す)。
 - encounter は入院処方のみ。
 - 薬剤行の MedicationRequest は basedOn でこのヘッダを指す。削除は `MedicationRequest?based-on=ServiceRequest/{id}` の条件付き削除。
 - レジメンの日オーダーとして出したときは requisition(regimen-instance)と regimen-order 拡張が付く。"""
-* insert FCMeta
-* insert OrderHeaderCommonRules
-* intent = #order
-* category 2..2
-* category ^slicing.discriminator[0].type = #pattern
-* category ^slicing.discriminator[0].path = "$this"
-* category ^slicing.rules = #open
-* category ^slicing.ordered = true
-* category contains
-    setting 1..1 MS and
-    prescriptionCategory 1..1 MS
-* category[setting] from PrescriptionSettingVS (required)
-* category[setting].coding 1..1
-* category[setting].coding.system = "http://fhir-client.local/CodeSystem/prescription-setting"
+* category[orderType] = $order-type#prescription "処方"
+* category[setting] 1..1
+* category contains prescriptionCategory 1..1 MS
 * category[prescriptionCategory] from PrescriptionCategoryVS (required)
 * category[prescriptionCategory].coding 1..1
 * category[prescriptionCategory].coding.system = "http://fhir-client.local/CodeSystem/prescription-category"

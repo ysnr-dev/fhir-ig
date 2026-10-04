@@ -1,8 +1,8 @@
 ### 処方
 
 ```
-ServiceRequest(ヘッダ、FC_PrescriptionOrder)   ※ order-type の category を持たない
- │  category = 入院・外来区分 + 処方区分 / orderDetail[] = "RP{n}-{m}" + prescription-medication-request → MedicationRequest
+ServiceRequest(ヘッダ、FC_PrescriptionOrder)
+ │  category = prescription + 入院・外来区分 + 処方区分 / orderDetail[] = "RP{n}-{m}" + prescription-medication-request → MedicationRequest
  ├ MedicationRequest(薬剤行、FC_PrescriptionMedicationRequest)  basedOn → ヘッダ
  │   identifier = RP 番号 + RP 内連番 / dosageInstruction[0] = 用法・用量・補足用法 / dispenseRequest.expectedSupplyDuration = 日数
  ├ Task(rx-dispense、FC_RxDispenseTask)  focus → ヘッダ   ※ note = 疑義照会
@@ -13,7 +13,7 @@ ServiceRequest(ヘッダ、FC_PrescriptionOrder)   ※ order-type の category �
 
 #### 見分け方
 
-処方のヘッダは **order-type の category を持ちません**。`ServiceRequest.category` に order-type が無いものを処方として読みます。
+処方のヘッダは、ほかのオーダーと同じく `ServiceRequest.category` の先頭にオーダー種別 `order-type#prescription` を持ちます。2026-10-04 より前のヘッダは種別を持たなかったので、`_history` の旧版を読むときは [既知の非準拠・不具合](known-issues.html) を参照してください。
 
 #### 区分
 
@@ -46,6 +46,8 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
 ```
 
 実施記録の数が `timing.event` の数に達すると Task が completed になります。
+
+連日のシリーズを継続するときは、同じ requisition・開始日(`injection-series-start`)・間隔で日を足します。足した日の `injection-series-schedule` だけが新しい終了日(`repeat.boundsPeriod.end`)を持ち、既存の日は書き換えません。
 
 ### 持参薬
 

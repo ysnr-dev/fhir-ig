@@ -3,6 +3,8 @@
 fhir-client は FHIR R4 の JSON をフロントエンドで組み立て、backend のプロキシ(`/fhir/*`)を経由して上流 FHIR サーバーに書き込みます。
 書き込みはほぼすべて transaction Bundle で、新規リソースは `urn:uuid:` の fullUrl で参照し、上流サーバーが実 ID に書き換えます。
 
+既存リソースの更新は楽観ロックです。単体の PUT は `If-Match`(読んだ版の ETag)を付け、transaction の PUT エントリは `request.ifMatch` = `W/"{読んだ時点の meta.versionId}"` を持ちます(同じリソースを 1 つの Bundle で 2 回書くときは最初のエントリだけ)。版が進んでいれば上流サーバーは 412 を返し、transaction 全体が取り消されます。予約枠(Slot)は押さえる(busy)ときだけ `ifMatch` を付けて二重予約を防ぎ、空きに戻すときは付けません。
+
 ### オーダーの共通構造
 
 オーダーは **ServiceRequest** で表します。部門によって「ヘッダ + 明細」の 2 段構造か、単一の ServiceRequest かが違います。
@@ -18,9 +20,9 @@ fhir-client は FHIR R4 の JSON をフロントエンドで組み立て、backe
 
 #### category の順序
 
-`ServiceRequest.category` は次の順で並べます。**上流サーバーは category の先頭要素しか検索索引に載せない**ため、順序を固定しています。
+`ServiceRequest.category` は次の順で並べます。上流サーバーは ServiceRequest の category をすべての coding で索引しますが、実施記録(Procedure)は先頭しか索引しないため、どちらも種別を先頭に置く順序に揃えています。
 
-1. オーダー種別(`http://fhir-client.local/CodeSystem/order-type`)。処方だけはこれを持たない(order-type 無しの ServiceRequest = 処方)。
+1. オーダー種別(`http://fhir-client.local/CodeSystem/order-type`)。処方は `prescription`。
 2. 入院・外来区分(`prescription-setting`)。
 3. 処方区分(`prescription-category`)、注射区分(`injection-category`)など部門固有の区分。
 

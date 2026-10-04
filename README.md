@@ -69,6 +69,7 @@ open output/index.html
 バインドマウント上で IG Publisher を動かすと Docker Desktop for Mac では数万ファイルの書き込みが極端に遅い(2 時間以上)ため、
 `_docker.sh` はリポジトリをコンテナ内のディスクにコピーしてビルドし、`output/` だけホストに書き戻します。
 `IG_HEAP=4g ./_docker.sh` でヒープを変えられます(既定 3g。Jekyll と合わせて Docker Desktop のメモリは 6 GB 以上)。
+fhir-client の開発コンテナと同居させると、長く動いた Vite(frontend)が 1.5 GB ほど使って Jekyll の段階で kill される(exit 137)ことがあります。そのときは `docker compose restart frontend` で空けてから実行します。
 
 ### IG 全体をビルドする(ホスト)
 

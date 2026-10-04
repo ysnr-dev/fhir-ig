@@ -3,7 +3,7 @@
 CodeSystem: OrderTypeCS
 Id: order-type
 Title: "オーダー種別"
-Description: "ServiceRequest.category の先頭要素、および実施記録 Procedure.category.coding の先頭でオーダー種別を識別する。上流サーバーは category の先頭しか索引しないため、必ず先頭に置く。種別を持たない ServiceRequest は処方(prescription)として読む。"
+Description: "ServiceRequest.category の先頭要素、および実施記録 Procedure.category.coding の先頭でオーダー種別を識別する。上流サーバーは Procedure・Observation の category を先頭しか索引しないため、必ず先頭に置く(ServiceRequest も同じ並びにする)。"
 * insert EnumCS
 * #lab "検体検査"
 * #micro "細菌検査"
@@ -23,7 +23,7 @@ Description: "ServiceRequest.category の先頭要素、および実施記録 Pr
 * #injection "注射"
 * #chemo-regimen "化学療法"
 * #anesthesia-chart "麻酔チャート"
-* #prescription "処方" "ServiceRequest には付けない。与薬記録の Procedure / MedicationAdministration の振り分けにだけ使う。"
+* #prescription "処方"
 
 ValueSet: OrderTypeVS
 Id: order-type-vs

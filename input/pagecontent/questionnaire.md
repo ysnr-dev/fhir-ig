@@ -25,7 +25,7 @@
 - `author` は contained Practitioner(`#practitioner`、name.text = 記入者名のみ)。
 - `identifier.value` = `{施設番号}^{患者ID}^{uuid}`(system 無し。[既知の非準拠](known-issues.html))。
 - `basedOn` = 関連するオーダー(放射線治療の週次診察など)。
-- `questionnaire-response-problem` = 対象プロブレム。item の `questionnaire-response-annotated-image` = シェーマに書き込んだ画像(Binary)。
+- `questionnaire-response-problem` = 対象プロブレム。`order-department` = 記録した診療科(更新では元の値を引き継ぐ)。item の `questionnaire-response-annotated-image` = シェーマに書き込んだ画像(Binary)。
 - `sdc-questionnaire-observationExtract` が true の項目からは Observation([FC_ExtractedObservation](StructureDefinition-fc-extracted-observation.html)、category = 抽出カテゴリ、derivedFrom = QR)を同じ transaction で作ります。
 
 QR は診療記録のセクション、オーダーの拡張、読影レポート、栄養指導の実施記録、パスの評価などから参照されます。どこからも参照されない QR だけがカルテの時系列に単独のカードとして出ます。

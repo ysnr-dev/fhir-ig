@@ -17,7 +17,7 @@
 | meal 食事 | 単一 | [FC_MealOrder](StructureDefinition-fc-meal-order.html) | 無し | 無し | 摂取量 Observation | [食事](order-meal.html) |
 | transfusion 輸血 | ヘッダ + 製剤明細 | [FC_TransfusionOrderHeader](StructureDefinition-fc-transfusion-order-header.html) | [FC_TransfusionOrderItem](StructureDefinition-fc-transfusion-order-item.html) | transfusion | Procedure ハブ | [輸血](order-transfusion.html) |
 | nutrition-guidance 栄養指導 | 単一 | [FC_NutritionGuidanceOrder](StructureDefinition-fc-nutrition-guidance-order.html) | 無し | nutrition-guidance | 回ごとの Procedure | [栄養指導](order-nutrition-guidance.html) |
-| (無し)処方 | ヘッダ + 薬剤行 | [FC_PrescriptionOrder](StructureDefinition-fc-prescription-order.html) | [FC_PrescriptionMedicationRequest](StructureDefinition-fc-prescription-medication-request.html) | rx-dispense | 調剤 / 与薬 | [薬剤](medication.html) |
+| prescription 処方 | ヘッダ + 薬剤行 | [FC_PrescriptionOrder](StructureDefinition-fc-prescription-order.html) | [FC_PrescriptionMedicationRequest](StructureDefinition-fc-prescription-medication-request.html) | rx-dispense | 調剤 / 与薬 | [薬剤](medication.html) |
 | injection 注射 | 日ごとのヘッダ + 薬剤行 | [FC_InjectionOrder](StructureDefinition-fc-injection-order.html) | [FC_InjectionMedicationRequest](StructureDefinition-fc-injection-medication-request.html) | injection | 払出 / 実施 | [薬剤](medication.html) |
 | chemo-regimen 化学療法 | 単一(intent = plan) | [FC_RegimenOrder](StructureDefinition-fc-regimen-order.html) | 日オーダーは注射 / 処方 | 無し | 有害事象 Observation | [薬剤](medication.html) |
 
