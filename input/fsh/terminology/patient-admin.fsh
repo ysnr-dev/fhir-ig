@@ -96,6 +96,20 @@ Title: "職種 ValueSet"
 Description: "職種 ValueSet。"
 * insert AllOf(PractitionerRoleCS)
 
+CodeSystem: TraineeLevelCS
+Id: trainee-level
+Title: "研修区分"
+Description: "研修医・学生の区分。Practitioner の trainee-level 拡張(valueCode。system は持たない)と、研修医・学生が自分の指示として行ったオーダーの来歴 Provenance.agent(author).role(system あり、display 無し)に使う。職種は医師などのままで、この区分で指導医のカウンターサインの対象を見分ける。"
+* insert EnumCS
+* #resident "研修医"
+* #student "学生"
+
+ValueSet: TraineeLevelVS
+Id: trainee-level-vs
+Title: "研修区分 ValueSet"
+Description: "研修区分 ValueSet。"
+* insert AllOf(TraineeLevelCS)
+
 CodeSystem: EncounterParticipantRoleCS
 Id: encounter-participant-role
 Title: "入院の担当者区分"

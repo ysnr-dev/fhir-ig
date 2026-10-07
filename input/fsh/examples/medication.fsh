@@ -328,3 +328,22 @@ Description: "血糖値の例(インスリンの実施入力)"
 * effectiveDateTime = "2026-04-02T07:35:00+09:00"
 * valueQuantity = 182 'mg/dL' "mg/dL"
 * performer = Reference(Practitioner/example-nurse)
+
+Instance: example-lot-medication-administration
+InstanceOf: FC_MedicationAdministration
+Usage: #example
+Title: "注射の施用の例(ロット番号)"
+Description: "ロット管理の薬の施用。medication-lot-number にロット番号を持つ。"
+* status = #completed
+* extension[lotNumber].valueString = "NE6-2607B"
+* medicationCodeableConcept.coding[0] = $medicine-code#622200001 "ネスプ注射液６０μｇプラシリンジ　０．５ｍＬ"
+* medicationCodeableConcept.coding[1] = $YJ-code#3999425U1023
+* medicationCodeableConcept.text = "ネスプ注射液６０μｇプラシリンジ　０．５ｍＬ"
+* subject = Reference(Patient/example-patient)
+* effectivePeriod.start = "2026-04-02T10:40:00+09:00"
+* partOf = Reference(Procedure/example-injection-procedure)
+* request = Reference(MedicationRequest/example-injection-medication-request)
+* dosage.route = $JP_route-codes#SC "皮下"
+* dosage.dose.value = 1
+* dosage.dose.unit = "筒"
+* performer.actor = Reference(Practitioner/example-practitioner)

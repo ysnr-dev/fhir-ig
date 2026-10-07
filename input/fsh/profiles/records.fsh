@@ -11,14 +11,15 @@ Description: """診療記録(SOAP 等)。
 - author 1..*(上流サーバーが必須にする)。title は診療記録タイトルマスタの文字列(既定「診療記録」)。order-department。
 - section: 任意の問題セクション(LOINC 11450-4、entry = Condition)と本文セクション(61150-9 S / 61149-1 O / 51848-0 A / 18776-5 P / 51847-2 A/P / 77599-9 自由記載)。本文は text.status = additional の XHTML で、画像は data URI で埋め込む。
 - テンプレートで書いたセクションは clinical-note-section-questionnaire-response が QuestionnaireResponse を指す(QR・Binary・抽出 Observation は同じ transaction)。
-- category = clinical-note-category#nursing は看護職が書いた記録(新規保存のときに付け、編集では保存済みの値を引き継ぐ)。"""
+- category = clinical-note-category#nursing は看護職が書いた記録、#countersign は研修医・学生が書いた記録(どちらも新規保存のときに付け、編集では保存済みの値を引き継ぐ。両方を持つことがある)。
+- カウンターサイン(category = #countersign の記録): 承認待ち = final / amended + attester(legal = 研修医)で professional が無い / 承認済 = attester に professional(指導医、time)を足す(内容は変えない)/ 差戻し = preliminary に戻して attester を外し、理由は note-returned 通知 Task に持つ / 研修医が確定し直すと legal だけになり、また承認待ちになる。承認待ちの通知は note-countersign。"""
 * insert FCMeta
 * subject 1..1
 * subject only Reference(FC_Patient)
 * type.coding 1..1
 * type.coding.system = $loinc
-* category 0..1
-* category = http://fhir-client.local/CodeSystem/clinical-note-category#nursing
+* category 0..2
+* category from ClinicalNoteCategoryVS (required)
 * author 1..*
 * author only Reference(FC_Practitioner)
 * attester.party only Reference(FC_Practitioner)
@@ -153,12 +154,15 @@ Description: """テンプレートの記入。アプリは meta.profile に JASP
 - contained Practitioner(id = practitioner、name.text = 記入者名のみ)を author で参照する。
 - identifier.value = \"{施設番号}^{患者ID}^{uuid}\"(system 無し。既知の非準拠)。
 - basedOn = 関連するオーダー(放射線治療の週次診察など)。
+- encounter = 回答が属する入院(看護プロファイル。施設設定で並べたテンプレートの区画ごとに 1 入院 1 件で、書き直しは同じ回答の更新)。encounter を持つ回答は入院単位の書類として扱い、カルテの時系列には出さない。更新では保存済みの値を引き継ぐ。
 - questionnaire-response-problem = 対象プロブレム。order-department = 記録した診療科(カルテ・テンプレートの記入で付く。更新では元の値を引き継ぐ)。item の questionnaire-response-annotated-image = シェーマに書き込んだ画像(Binary)。
 - 診療記録のセクション、オーダーの検査目的・特別指示・臨床情報・術前指示・依頼目的、読影レポート、栄養指導記録、パスの評価から参照される。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * questionnaire 1..1
 * identifier.value 1..1
+* encounter 0..1 MS
+* encounter only Reference(FC_InpatientEncounter)
 * extension contains
     QuestionnaireResponseProblem named problem 0..1 and
     OrderDepartment named orderDepartment 0..1

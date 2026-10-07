@@ -25,9 +25,10 @@ Profile: FC_Practitioner
 Parent: $JP_Practitioner
 Id: fc-practitioner
 Title: "医療従事者"
-Description: "医療従事者。name は漢字(IDE)とカナ(SYL)。医籍登録番号は qualification.identifier(system = medicalRegistrationNumber)、qualification.code = JP_MedicalLicenseCertificate_CS#medical-registration。"
+Description: "医療従事者。name は漢字(IDE)とカナ(SYL)。医籍登録番号は qualification.identifier(system = medicalRegistrationNumber)、qualification.code = JP_MedicalLicenseCertificate_CS#medical-registration。研修医・学生は trainee-level 拡張(resident / student)を持つ(職種は医師などのまま)。"
 * insert FCMeta
 * name 1..* MS
+* extension contains TraineeLevel named traineeLevel 0..1
 
 Profile: FC_PractitionerBaseRole
 Parent: $JP_PractitionerRole
@@ -363,6 +364,7 @@ Description: """オーダーの登録・変更・取消などの来歴。オー�
 - ログイン中のアカウントに紐付く Practitioner が無いとき、またはヘッダに requester が無いときは来歴を作らない。中止・完了・休止・再開の来歴は、オーダーの更新とは別の transaction で `ServiceRequest/{id}` を target にして作ることがある。
 - activity = v3-DataOperation(CREATE / UPDATE / CANCEL / REACTIVATE / COMPLETE / SUSPEND / RESUME)。
 - agent: author(依頼医)、enterer(ログイン中の職員。onBehalfOf = 依頼医)。enterer ≠ author が代行入力で、オーダー承認の通知 Task が作られる(パス適用の来歴には作らない)。承認時に verifier が加わる。
+- 研修医・学生(Practitioner に trainee-level)が自分を依頼医として入れた活動では、author.role = trainee-level#resident / #student(display 無し)を付ける。これも承認が要る活動で、指導医宛にオーダー承認の通知 Task が作られ、指導医の承認で verifier と signature が付く。代行入力(入力者 ≠ 依頼医)では付けない。
 - signature は承認時のみ(type = urn:iso-astm:E1762-95:2013#1.2.840.10065.1.12.1.5 Verification Signature、when、who。data は無し)。"""
 * insert FCMeta
 * activity 1..1 MS
@@ -370,6 +372,8 @@ Description: """オーダーの登録・変更・取消などの来歴。オー�
 * agent 1..* MS
 * agent.type 1..1
 * agent.type.coding.system = $provenance-participant-type
+* agent.role from TraineeLevelVS (required)
+* agent.role ^short = "研修医・学生の活動の author だけ"
 * agent.who only Reference(FC_Practitioner)
 * agent.onBehalfOf only Reference(FC_Practitioner)
 * signature.type.system = $signature-type

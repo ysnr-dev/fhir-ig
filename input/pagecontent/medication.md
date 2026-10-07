@@ -48,6 +48,8 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
 
 実施記録の数が `timing.event` の数に達すると Task が completed になります。
 
+薬剤付加情報マスタでロット管理にした薬(特定生物由来製剤など)は、施用の MedicationAdministration に `medication-lot-number`(valueString)でロット番号を持ちます。注射のほか、処置・手術・内視鏡・放射線の実施入力で投与した薬剤も同じで、ロット管理画面から後で入れることもあります(拡張だけを付け替える)。`Medication.batch` は使いません。上流サーバーの `lot-number` 検索は、この拡張と輸血の `transfusion-lot-number` の両方を引きます。
+
 #### インスリン
 
 量の単位が「単位」の薬剤(インスリン)は、オーダーの `doseQuantity` と実施の `dosage.dose` に UCUM の `[iU]` を持ちます(経過表はこれでインスリンの行を作り、輸血製剤の「単位」と区別します)。スケール指示は薬剤行の `insulin-scale` 拡張です。
@@ -88,5 +90,6 @@ ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(�
 - 処方: [ヘッダ](ServiceRequest-example-prescription-order.html) / [薬剤行](MedicationRequest-example-prescription-medication-request.html) / [調剤](MedicationDispense-example-medication-dispense.html) / [与薬記録](Procedure-example-oral-administration-procedure.html) / [投与](MedicationAdministration-example-medication-administration.html) / [Task](Task-example-rx-dispense-task.html)
 - 注射: [1 日分](ServiceRequest-example-injection-order.html) / [薬剤行](MedicationRequest-example-injection-medication-request.html) / [実施記録](Procedure-example-injection-procedure.html) / [Task](Task-example-injection-task.html)
 - インスリン: [薬剤行(血糖スケール)](MedicationRequest-example-insulin-medication-request.html) / [施用](MedicationAdministration-example-insulin-medication-administration.html) / [血糖値](Observation-example-capillary-glucose-observation.html)
+- ロット番号: [施用](MedicationAdministration-example-lot-medication-administration.html)
 - [持参薬](MedicationStatement-example-brought-medication.html) / [鑑別 Task](Task-example-brought-med-review-task.html)
 - [レジメン適用](ServiceRequest-example-regimen-order.html) / [有害事象](Observation-example-adverse-event-observation.html)

@@ -139,6 +139,23 @@ Description: "栄養指導 実施記録の例"
 * performer.actor = Reference(Practitioner/example-practitioner)
 * extension[performedMinutes].valueInteger = 30
 
+Instance: example-medication-guidance-procedure
+InstanceOf: FC_MedicationGuidanceProcedure
+Usage: #example
+Title: "服薬指導 実施記録の例"
+Description: "服薬指導 実施記録の例(ハイリスク薬、理解度あり)"
+* status = #completed
+* category.coding[orderType] = $order-type#medication-guidance "服薬指導"
+* code = http://fhir-client.local/CodeSystem/medication-guidance-session-type#high-risk "服薬指導(ハイリスク薬)"
+* code.text = "服薬指導(ハイリスク薬)"
+* subject = Reference(Patient/example-patient)
+* basedOn = Reference(ServiceRequest/example-medication-guidance-order)
+* performedDateTime = "2026-04-03T14:00:00+09:00"
+* performer.actor = Reference(Practitioner/example-pharmacist)
+* performer.actor.display = "薬剤 花子"
+* extension[understanding].valueCoding = http://fhir-client.local/CodeSystem/medication-guidance-understanding#partial "一部理解"
+* note.text = "低血糖時の対応を説明。注入ボタンの押し切りが不十分で再指導予定。"
+
 Instance: example-radiotherapy-fraction-procedure
 InstanceOf: FC_RadiotherapyFractionProcedure
 Usage: #example

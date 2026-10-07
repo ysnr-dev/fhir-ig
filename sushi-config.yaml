@@ -78,6 +78,8 @@ pages:
       title: 輸血
     order-nutrition-guidance.md:
       title: 栄養指導
+    order-medication-guidance.md:
+      title: 服薬指導
     order-set-pathway.md:
       title: オーダーセット・パス適用の印
   medication.md:

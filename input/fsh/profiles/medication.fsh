@@ -206,6 +206,7 @@ Description: """薬剤の投与記録。実施記録の Procedure ハブ(与薬 
 - request = 元の MedicationRequest(オーダーに無い薬剤を投与したときは無し)。
 - effectiveDateTime または effectivePeriod。dosage の route / site / method / rateQuantity はオーダーから複製。dose は投与した量で、与薬では処方の用量(内服は 1 日量)をその枠の 1 回量に割ったもの(不均等投与はその枠の量)。
 - 注射のインスリンは dose に UCUM [iU] を持つ(経過表はこれでインスリンの行を作る)。スケールの薬剤は 0 単位でも dose を残し、supportingInformation = スケールに使った測定値(血糖値または主食の摂取量の Observation)、note = 手入力した主食の摂取量・フリースケールで選んだ行(「スケール: 条件」)・案内量と変えた理由。
+- medication-lot-number = 薬剤のロット番号(薬剤付加情報マスタでロット管理にした薬。注射・処置・手術・内視鏡・放射線の実施入力と、ロット管理画面の後入力)。輸血製剤は transfusion-lot-number。
 - JP_MedicationAdministration は RP 内連番の identifier を必須とするが、アプリは identifier を付けないため base から派生する(既知の非準拠)。"""
 * insert FCMeta
 * subject 1..1
@@ -215,6 +216,7 @@ Description: """薬剤の投与記録。実施記録の Procedure ハブ(与薬 
 * partOf only Reference(FC_ProcedureHub)
 * request only Reference(MedicationRequest)
 * supportingInformation only Reference(Observation)
+* extension contains MedicationLotNumber named lotNumber 0..1
 
 Profile: FC_BroughtMedication
 Parent: MedicationStatement

@@ -20,6 +20,7 @@ Description: "ServiceRequest.category の先頭要素、および実施記録 Pr
 * #meal "食事"
 * #transfusion "輸血"
 * #nutrition-guidance "栄養指導"
+* #medication-guidance "服薬指導"
 * #injection "注射"
 * #chemo-regimen "化学療法"
 * #anesthesia-chart "麻酔チャート"
@@ -85,6 +86,7 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #nursing "看護指示"
 * #transfusion "輸血"
 * #nutrition-guidance "栄養指導"
+* #medication-guidance "服薬指導"
 * #brought-med-review "持参薬鑑別"
 * #order-approval "オーダー承認"
 * #brought-med-identified "持参薬鑑別済"
@@ -97,6 +99,8 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #pathway-variance "パスのバリアンス"
 * #radiotherapy-review-due "放射線治療の診察"
 * #nursing-summary-returned "看護サマリー差戻し"
+* #note-countersign "カルテ承認"
+* #note-returned "カルテ差戻し"
 
 ValueSet: TaskCodeVS
 Id: task-code-vs

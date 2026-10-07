@@ -94,6 +94,37 @@ Description: "看護師の例(看護サマリーの承認者)"
 * name[1].given = "ハルコ"
 * active = true
 
+Instance: example-resident
+InstanceOf: FC_Practitioner
+Usage: #example
+Title: "研修医の例"
+Description: "研修医の例(trainee-level = resident。職種は医師のまま)"
+* extension[traineeLevel].valueCode = #resident
+* name[0].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[0].extension[0].valueCode = #IDE
+* name[0].family = "研修"
+* name[0].given = "太郎"
+* name[1].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[1].extension[0].valueCode = #SYL
+* name[1].family = "ケンシュウ"
+* name[1].given = "タロウ"
+* active = true
+
+Instance: example-pharmacist
+InstanceOf: FC_Practitioner
+Usage: #example
+Title: "薬剤師の例"
+Description: "薬剤師の例(服薬指導の担当)"
+* name[0].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[0].extension[0].valueCode = #IDE
+* name[0].family = "薬剤"
+* name[0].given = "花子"
+* name[1].extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-representation"
+* name[1].extension[0].valueCode = #SYL
+* name[1].family = "ヤクザイ"
+* name[1].given = "ハナコ"
+* active = true
+
 Instance: example-ward
 InstanceOf: FC_Ward
 Usage: #example

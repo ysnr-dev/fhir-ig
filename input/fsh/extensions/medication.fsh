@@ -196,3 +196,11 @@ Context: MedicationRequest.dosageInstruction
 * extension[row].extension[dose].valueQuantity.system = $ucum
 * extension[row].extension[dose].valueQuantity.code = #[iU]
 * extension[row].extension[note].value[x] only string
+
+Extension: MedicationLotNumber
+Id: medication-lot-number
+Title: "薬剤のロット番号"
+Description: "投与した薬剤のロット番号(特定生物由来製剤など、薬剤付加情報マスタでロット管理にした薬)。注射・処置・手術・内視鏡・放射線の実施入力と、ロット管理画面の後入力で付く。値は NFKC で正規化し前後の空白を落とす。Medication.batch は使わない(薬は medicationCodeableConcept に持ち contained Medication を作らないため)。輸血の製剤番号(transfusion-lot-number)と同じ作法で、上流サーバーの lot-number 検索は両方の拡張を引く。"
+Context: MedicationAdministration
+* insert FCMeta
+* value[x] only string

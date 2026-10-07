@@ -428,3 +428,76 @@ Description: "DICOM スタディの例"
 * series[0].numberOfInstances = 120
 * extension[source].extension[institutionName].valueString = "テスト病院"
 * extension[source].extension[patientId].valueString = "00000001"
+
+Instance: example-nursing-profile-response
+InstanceOf: FC_QuestionnaireResponse
+Usage: #example
+Title: "看護プロファイルの記入の例"
+Description: "看護プロファイルの区画(入院時の情報)の記入の例。encounter = 入院で、1 入院 1 区画 1 件。"
+* identifier.value = "1311234567^00000001^c3d4e5f6-a7b8-4c9d-8e0f-1a2b3c4d5e6f"
+* questionnaire = "http://fhir-client.local/Questionnaire/nursing-profile-admission-01|1.0.0"
+* status = #completed
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* authored = "2026-04-01T15:00:00+09:00"
+* contained[0] = example-nursing-profile-response-practitioner
+* author = Reference(example-nursing-profile-response-practitioner)
+* item[0].linkId = "grp_admission"
+* item[0].item[0].linkId = "adm_route"
+* item[0].item[0].answer.valueCoding.code = #01
+* item[0].item[0].answer.valueCoding.display = "外来から"
+* item[0].item[1].linkId = "adm_arrival"
+* item[0].item[1].answer.valueCoding.code = #01
+* item[0].item[1].answer.valueCoding.display = "独歩"
+* item[1].linkId = "grp_life"
+* item[1].item[0].linkId = "key_person"
+* item[1].item[0].answer.valueString = "長女"
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
+
+Instance: example-nursing-profile-response-practitioner
+InstanceOf: Practitioner
+Usage: #inline
+* id = "practitioner"
+* name.text = "看護 花子"
+
+Instance: example-countersign-clinical-note
+InstanceOf: FC_ClinicalNote
+Usage: #example
+Title: "診療記録の例(研修医の記録・承認済)"
+Description: "研修医が書き、指導医がカウンターサインした診療記録(category = clinical-note-category#countersign、attester に legal と professional)。"
+* status = #final
+* type = $loinc#11506-3 "Progress note"
+* category = http://fhir-client.local/CodeSystem/clinical-note-category#countersign "カウンターサイン対象"
+* subject = Reference(Patient/example-patient)
+* date = "2026-04-03T10:00:00+09:00"
+* author = Reference(Practitioner/example-resident)
+* title = "診療記録"
+* attester[0].mode = #legal
+* attester[0].time = "2026-04-03T10:00:00+09:00"
+* attester[0].party = Reference(Practitioner/example-resident)
+* attester[1].mode = #professional
+* attester[1].time = "2026-04-03T17:30:00+09:00"
+* attester[1].party = Reference(Practitioner/example-practitioner)
+* attester[1].party.display = "山田 一郎"
+* section[0].code = $loinc#61150-9 "Subjective"
+* section[0].text.status = #additional
+* section[0].text.div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>咳嗽は軽快。夜間の発熱なし。</p></div>"
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
+
+Instance: example-weight-observation
+InstanceOf: FC_VitalObservation
+Usage: #example
+Title: "バイタル(体重)の例(経過表一括入力)"
+Description: "入院患者一覧の経過表一括入力で書いた体重。encounter = 入院、performer = 測定者。同じ identifier の BMI は最新の身長で求める。"
+* status = #final
+* identifier.system = "http://fhir-client.local/vital-entry"
+* identifier.value = "7c6b5a49-3827-4f16-a5e4-d3c2b1a09f8e"
+* category = $obs-category#vital-signs
+* code = $loinc#29463-7 "Body weight"
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* effectiveDateTime = "2026-04-05T06:00:00+09:00"
+* performer = Reference(Practitioner/example-nurse)
+* valueQuantity = 61.2 'kg' "kg"

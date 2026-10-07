@@ -264,3 +264,28 @@ Description: "栄養指導オーダーの例"
 * extension[targetCondition].valueReference = Reference(Condition/example-condition)
 * extension[targetCondition].valueReference.display = "2型糖尿病"
 * extension[targetDiet].valueCoding = http://fhir-client.local/CodeSystem/meal-type#DM1600 "糖尿病食 1600kcal"
+
+Instance: example-medication-guidance-order
+InstanceOf: FC_MedicationGuidanceOrder
+Usage: #example
+Title: "服薬指導オーダーの例"
+Description: "服薬指導オーダーの例(入院・終了日あり)"
+* status = #active
+* intent = #order
+* category[orderType] = $order-type#medication-guidance "服薬指導"
+* category[setting] = $prescription-setting#inpatient "入院"
+* code = http://fhir-client.local/CodeSystem/medication-guidance-kind#inpatient "服薬指導"
+* code.text = "服薬指導"
+* orderDetail[0] = http://fhir-client.local/CodeSystem/medication-guidance-condition#high-risk "ハイリスク薬"
+* orderDetail[0].text = "ハイリスク薬"
+* orderDetail[1] = http://fhir-client.local/CodeSystem/medication-guidance-condition#device "吸入・自己注射の手技"
+* orderDetail[1].text = "吸入・自己注射の手技"
+* subject = Reference(Patient/example-patient)
+* requester = Reference(Practitioner/example-practitioner)
+* authoredOn = "2026-04-01T10:00:00+09:00"
+* occurrenceDateTime = "2026-04-02"
+* reasonCode.text = "インスリン自己注射の手技確認"
+* note.text = "視力低下あり、拡大鏡を使用"
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderEnd].valueDate = "2026-04-30"
+* extension[targetDrugs].valueString = "インスリン アスパルト注 フレックスペン"

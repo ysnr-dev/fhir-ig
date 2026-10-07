@@ -10,7 +10,7 @@ Description: """オーダーの実施を表す Procedure の共通形(ハブ)。
 - basedOn = オーダーのヘッダ ServiceRequest。subject = 患者。performer.actor = 実施者。
 - 2 件目以降の手技は別の Procedure(partOf = ハブ、basedOn は同じ)。薬剤は MedicationAdministration(partOf = ハブ)、測定値は Observation(partOf = ハブ)。
 - 取消は entered-in-error にせずリソースを削除する(放射線治療の照射済みの記録だけは entered-in-error)。
-- 検査・処置・手術・輸血・注射の実施は同じ transaction で部門 Task を進める。リハビリ・栄養指導・看護行為・与薬・放射線治療の実施記録は Task を変えない。"""
+- 検査・処置・手術・輸血・注射の実施は同じ transaction で部門 Task を進める。リハビリ・栄養指導・服薬指導・看護行為・与薬・放射線治療の実施記録は Task を変えない。"""
 * insert FCMeta
 * ^abstract = true
 * category 1..1 MS
@@ -142,6 +142,23 @@ Description: "栄養指導の 1 回の実施。code = 実施区分(nutrition-gui
 * extension contains
     NutritionGuidancePerformedMinutes named performedMinutes 0..1 and
     NutritionGuidanceRecord named record 0..1
+
+Profile: FC_MedicationGuidanceProcedure
+Parent: FC_ProcedureHub
+Id: fc-medication-guidance-procedure
+Title: "服薬指導 実施記録"
+Description: "服薬指導の 1 回の実施。入院中に週ごとに積み上がる。code = 指導種別(medication-guidance-session-type)、performed[x] = 実施日時(時刻を入れなければ日付のみ)、performer.actor = 指導した薬剤師、medication-guidance-understanding = 患者の理解度、medication-guidance-record = 指導記録の QuestionnaireResponse(同じ transaction)、note = 指導内容。Task は変えない。"
+* category.coding[orderType] = $order-type#medication-guidance "服薬指導"
+* status = #completed
+* basedOn only Reference(FC_MedicationGuidanceOrder)
+* code 1..1
+* code from MedicationGuidanceSessionTypeVS (required)
+* performed[x] only dateTime
+* performer 1..1 MS
+* note 0..1
+* extension contains
+    MedicationGuidanceUnderstanding named understanding 0..1 and
+    MedicationGuidanceRecord named record 0..1
 
 Profile: FC_RadiotherapyFractionProcedure
 Parent: FC_ProcedureHub

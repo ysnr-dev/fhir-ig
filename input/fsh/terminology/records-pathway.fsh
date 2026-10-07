@@ -16,9 +16,10 @@ Description: "Observation のカテゴリ(独自) ValueSet。"
 CodeSystem: ClinicalNoteCategoryCS
 Id: clinical-note-category
 Title: "診療記録の区分"
-Description: "診療記録 Composition.category。nursing = 看護職(看護師・保健師・助産師)が書いた記録で、新規保存のときに付き、編集では保存済みの値を引き継ぐ。看護サマリーの「看護記録」の取り込みはこれで検索する。"
+Description: "診療記録 Composition.category。nursing = 看護職(看護師・保健師・助産師)が書いた記録で、新規保存のときに付き、編集では保存済みの値を引き継ぐ。看護サマリーの「看護記録」の取り込みはこれで検索する。countersign = 研修医・学生が書いた記録で、指導医のカウンターサインの対象(新規保存のときに付き、編集では引き継ぐ。書いた時点の区分なので後から研修を終えても外れない)。両方を持つことがある。"
 * insert EnumCS
 * #nursing "看護記録"
+* #countersign "カウンターサイン対象"
 
 ValueSet: ClinicalNoteCategoryVS
 Id: clinical-note-category-vs

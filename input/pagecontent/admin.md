@@ -12,7 +12,7 @@
 
 ### 医療従事者
 
-- [FC_Practitioner](StructureDefinition-fc-practitioner.html): 漢字・カナの name、医籍登録番号(`qualification.identifier`、code = JP_MedicalLicenseCertificate_CS#medical-registration)。
+- [FC_Practitioner](StructureDefinition-fc-practitioner.html): 漢字・カナの name、医籍登録番号(`qualification.identifier`、code = JP_MedicalLicenseCertificate_CS#medical-registration)。研修医・学生は `trainee-level` 拡張(valueCode = resident / student)を持ちます。職種は医師などのままで、この人が書いた診療記録とオーダーは指導医のカウンターサインの対象になります([診療記録](records.html)・[通知](notifications.html))。指導医グループ(研修医と指導医の組)は backend のマスタで、FHIR には持ちません。
 - [FC_PractitionerBaseRole](StructureDefinition-fc-practitioner-base-role.html): 1 人 1 件。`code` = 職種(`practitioner-role`: HPKI 27 資格 + 事務職員 + 医師事務作業補助者)、`organization` = 所属の施設。職種と所属の少なくとも一方があれば作られます。
 - [FC_PractitionerDepartmentRole](StructureDefinition-fc-practitioner-department-role.html): 所属診療科ごと。`organization` = 診療科、`specialty` = SS-MIX2 診療科コード(コードを持たない院内独自の科では無し)、`practitioner-role-primary-department` 拡張(true = 既定の診療科)。
 
@@ -95,7 +95,7 @@
 
 ### 例
 
-- [患者](Patient-example-patient.html) / [医師](Practitioner-example-practitioner.html) / [職種ロール](PractitionerRole-example-practitioner-base-role.html) / [診療科ロール](PractitionerRole-example-practitioner-department-role.html)
+- [患者](Patient-example-patient.html) / [医師](Practitioner-example-practitioner.html) / [研修医](Practitioner-example-resident.html) / [薬剤師](Practitioner-example-pharmacist.html) / [職種ロール](PractitionerRole-example-practitioner-base-role.html) / [診療科ロール](PractitionerRole-example-practitioner-department-role.html)
 - [施設](Organization-example-organization.html) / [診療科](Organization-example-department.html)
 - [病棟](Location-example-ward.html) / [病室](Location-example-room.html) / [ベッド](Location-example-bed.html) / [診察室](Location-example-outpatient-room.html)
 - [入院](Encounter-example-encounter.html) / [外来受診](Encounter-example-outpatient-encounter.html) / [保険](Coverage-example-coverage.html)

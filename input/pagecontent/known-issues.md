@@ -25,6 +25,7 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | questionnaire-itemControl の system | アプリと同梱テンプレートは `http://hl7.org/fhir/CodeSystem/questionnaire-item-control` を使う。HL7 の正式な system は `http://hl7.org/fhir/questionnaire-item-control`。 | 例の検証で未知の CodeSystem の警告になる。 |
 | questionnaire-unit の code | system は UCUM(`http://unitsofmeasure.org`)固定のまま、code に「回」「本/日」など UCUM でない単位文字列を入れる。 | UCUM として解釈できない code がある。 |
 | 看護計画の達成度の display | 看護計画の目標(Goal.achievementStatus)と目標の評価(Observation.valueCodeableConcept)は HL7 の `goal-achievement` に日本語の display(達成 / 改善 / 変化なし / 悪化 / 未達成)を書く。 | 例の検証で display 不一致の警告になる。 |
+| ePath に無いタスク分類 | クリニカルパスのタスク分類(小)に、ePath の EPathTaskCategoryLv2CS に無い `EGMG`(服薬指導)を同じ system で書く。 | ePath の CodeSystem としては未知のコード。 |
 | 通知 Task の input | 一覧に出す内容を `Task.input`(type.text をキーにした値)に構造化して持つ。type に coding を持たない。 | プロファイルは type.text でスライスする。 |
 
 ### 2026-10-03 より前に書かれたデータ

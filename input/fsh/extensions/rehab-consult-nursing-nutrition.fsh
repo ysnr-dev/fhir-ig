@@ -1,4 +1,4 @@
-// リハビリ・他科依頼・看護指示・栄養指導の拡張。
+// リハビリ・他科依頼・看護指示・栄養指導・服薬指導の拡張。
 
 Extension: RehabOrderEnd
 Id: rehab-order-end
@@ -175,3 +175,36 @@ Context: CarePlan.activity
 * insert FCMeta
 * value[x] only Coding
 * valueCoding.system = "http://fhir-client.local/CodeSystem/nursing-intervention"
+
+Extension: MedicationGuidanceOrderEnd
+Id: medication-guidance-order-end
+Title: "服薬指導の終了日"
+Description: "服薬指導の終了日。無ければ継続中。部門一覧の「終了」と退院時の打ち切りで書き足す。"
+Context: ServiceRequest
+* insert FCMeta
+* value[x] only date
+
+Extension: MedicationGuidanceTargetDrugs
+Id: medication-guidance-target-drugs
+Title: "対象薬剤(服薬指導)"
+Description: "指導の対象薬剤(自由記載)。持参薬・院外の薬も対象になるので処方の参照ではなく文字列で持つ。"
+Context: ServiceRequest
+* insert FCMeta
+* value[x] only string
+
+Extension: MedicationGuidanceUnderstanding
+Id: medication-guidance-understanding
+Title: "患者の理解度(服薬指導)"
+Description: "服薬指導の実施記録での患者の理解度。valueCoding.system = medication-guidance-understanding。"
+Context: Procedure
+* insert FCMeta
+* value[x] only Coding
+* valueCoding from MedicationGuidanceUnderstandingVS (required)
+
+Extension: MedicationGuidanceRecord
+Id: medication-guidance-record
+Title: "指導記録テンプレートの記入(服薬指導)"
+Description: "指導記録の QuestionnaireResponse。同じ transaction で登録する。平文は Procedure.note にも入る。"
+Context: Procedure
+* insert FCMeta
+* value[x] only Reference(QuestionnaireResponse)

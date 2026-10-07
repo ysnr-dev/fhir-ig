@@ -201,3 +201,20 @@ Context: Encounter
 * insert FCMeta
 * value[x] only code
 * valueCode from EncounterPriorHomeCareVS (required)
+
+Extension: TraineeLevel
+Id: trainee-level
+Title: "研修区分"
+Description: "研修医・学生の印(resident / student)。職種(PractitionerRole)は医師などのままにし、この拡張で見分ける。この区分の人が書いた診療記録とオーダーは、指導医グループの指導医のカウンターサインの対象になる。区分の無い人には付かない。"
+Context: Practitioner
+* insert FCMeta
+* value[x] only code
+* valueCode from TraineeLevelVS (required)
+
+Extension: TaskNoteComment
+Id: task-note-comment
+Title: "指導医のコメントの印"
+Description: "カルテ承認(note-countersign)通知 Task の note のうち、指導医が記録に付けたコメント(valueBoolean = true)。対応済みにしたときの note(承認・差戻しの記録)と見分けるために付ける。承認・差戻しで Task を閉じてもコメントは残す。"
+Context: Task.note
+* insert FCMeta
+* value[x] only boolean

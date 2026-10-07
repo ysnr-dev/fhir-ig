@@ -211,6 +211,23 @@ Description: "栄養指導 進捗 Task の例"
 * lastModified = "2026-04-05T10:00:00+09:00"
 * executionPeriod.start = "2026-04-05T10:00:00+09:00"
 
+Instance: example-medication-guidance-task
+InstanceOf: FC_MedicationGuidanceTask
+Usage: #example
+Title: "服薬指導 進捗 Task の例"
+Description: "服薬指導 進捗 Task の例(受付済 = 実施中、担当薬剤師あり)"
+* status = #accepted
+* intent = #filler-order
+* code = $task-code#medication-guidance "服薬指導"
+* code.text = "服薬指導"
+* focus = Reference(ServiceRequest/example-medication-guidance-order)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-pharmacist)
+* owner.display = "薬剤 花子"
+* authoredOn = "2026-04-02T10:00:00+09:00"
+* lastModified = "2026-04-02T10:00:00+09:00"
+* executionPeriod.start = "2026-04-02T10:00:00+09:00"
+
 Instance: example-rx-dispense-task
 InstanceOf: FC_RxDispenseTask
 Usage: #example
@@ -546,3 +563,92 @@ Description: "看護サマリー差戻し 通知の例"
 * input[summary].valueString = "看護サマリー(退院)"
 * input[reason].type.text = "理由"
 * input[reason].valueString = "継続看護に退院後の連絡先を追記してください"
+
+Instance: example-trainee-order-approval-task
+InstanceOf: FC_OrderApprovalTask
+Usage: #example
+Title: "オーダー承認 通知の例(研修医の入力)"
+Description: "研修医が入れたオーダーの、指導医宛の承認依頼(指導医ごとに 1 件)。"
+* status = #requested
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#order-approval "オーダー承認"
+* code.text = "オーダー承認"
+* focus = Reference(Provenance/example-trainee-order-provenance)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* requester = Reference(Practitioner/example-resident)
+* requester.display = "研修 太郎"
+* basedOn = Reference(ServiceRequest/example-lab-order-header)
+* authoredOn = "2026-04-01T11:00:00+09:00"
+* lastModified = "2026-04-01T11:00:00+09:00"
+* description = "検体検査の登録（研修医: 研修 太郎）"
+* input[activity].type.text = "活動"
+* input[activity].valueCode = #CREATE
+* input[kind][0].type.text = "種別"
+* input[kind][0].valueCode = #lab-order
+* input[order][0].type.text = "対象オーダー"
+* input[order][0].valueReference = Reference(ServiceRequest/example-lab-order-header)
+* input[startDate].type.text = "開始日"
+* input[startDate].valueString = "2026-04-02"
+* input[trainee].type.text = "研修医"
+* input[trainee].valueString = "研修 太郎"
+
+Instance: example-note-countersign-task
+InstanceOf: FC_NoteCountersignTask
+Usage: #example
+Title: "カルテ承認 通知の例"
+Description: "研修医の診療記録のカウンターサイン依頼(承認済で対応済み。指導医のコメントは task-note-comment 付きの note)。"
+* status = #completed
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#note-countersign "カルテ承認"
+* code.text = "カルテ承認"
+* focus = Reference(Composition/example-countersign-clinical-note)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* requester = Reference(Practitioner/example-resident)
+* requester.display = "研修 太郎"
+* authoredOn = "2026-04-03T10:00:00+09:00"
+* lastModified = "2026-04-03T17:30:00+09:00"
+* executionPeriod.start = "2026-04-03T10:00:00+09:00"
+* executionPeriod.end = "2026-04-03T17:30:00+09:00"
+* description = "診療記録（2026-04-03） のカウンターサイン（研修医: 研修 太郎）"
+* input[note].type.text = "記録"
+* input[note].valueString = "診療記録（2026-04-03）"
+* input[trainee].type.text = "研修医"
+* input[trainee].valueString = "研修 太郎"
+* note[0].extension[comment].valueBoolean = true
+* note[0].authorReference = Reference(Practitioner/example-practitioner)
+* note[0].authorReference.display = "山田 一郎"
+* note[0].time = "2026-04-03T15:00:00+09:00"
+* note[0].text = "鑑別に肺炎も挙げておくこと"
+* note[1].authorReference = Reference(Practitioner/example-practitioner)
+* note[1].authorReference.display = "山田 一郎"
+* note[1].time = "2026-04-03T17:30:00+09:00"
+* note[1].text = "記録を承認しました。"
+
+Instance: example-note-returned-task
+InstanceOf: FC_NoteReturnedTask
+Usage: #example
+Title: "カルテ差戻し 通知の例"
+Description: "指導医が研修医の診療記録を差し戻したときの、研修医宛の通知。"
+* status = #requested
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#note-returned "カルテ差戻し"
+* code.text = "カルテ差戻し"
+* focus = Reference(Composition/example-countersign-clinical-note)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-resident)
+* requester = Reference(Practitioner/example-practitioner)
+* requester.display = "山田 一郎"
+* authoredOn = "2026-04-03T12:00:00+09:00"
+* lastModified = "2026-04-03T12:00:00+09:00"
+* description = "診療記録（2026-04-03） 差戻し: 身体所見を追記してください"
+* input[note].type.text = "記録"
+* input[note].valueString = "診療記録（2026-04-03）"
+* input[reason].type.text = "理由"
+* input[reason].valueString = "身体所見を追記してください"

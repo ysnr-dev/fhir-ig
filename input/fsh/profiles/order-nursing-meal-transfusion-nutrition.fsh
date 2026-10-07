@@ -126,3 +126,22 @@ Description: "栄養指導の依頼。明細 ServiceRequest は無い。code = �
     NutritionGuidanceTargetDiet named targetDiet 0..1 and
     NutritionGuidancePurposeQuestionnaireResponse named purposeResponse 0..1
 * extension[targetCondition].valueReference only Reference(FC_Condition)
+
+Profile: FC_MedicationGuidanceOrder
+Parent: FC_OrderHeader
+Id: fc-medication-guidance-order
+Title: "服薬指導オーダー"
+Description: "医師から薬剤師への服薬指導の依頼。明細 ServiceRequest は無い。code = 指導区分(服薬指導 / 退院時指導)、orderDetail = 指導条件(複数、ハイリスク薬・麻薬など)、reasonCode[0].text = 指導してほしいこと、note = 薬剤部への連絡事項。occurrenceDateTime = 開始日、medication-guidance-order-end = 終了日(無ければ継続中)、medication-guidance-target-drugs = 対象薬剤。予約は持たない。各回の指導は Procedure(basedOn = このオーダー)。"
+* category[orderType] = $order-type#medication-guidance "服薬指導"
+* code 1..1 MS
+* code from MedicationGuidanceKindVS (required)
+* orderDetail 0..* MS
+* orderDetail from MedicationGuidanceConditionVS (required)
+* occurrenceDateTime 1..1
+* occurrenceDateTime ^short = "開始日"
+* reasonCode 0..1
+* reasonCode.text ^short = "指導してほしいこと"
+* note 0..1
+* extension contains
+    MedicationGuidanceOrderEnd named orderEnd 0..1 MS and
+    MedicationGuidanceTargetDrugs named targetDrugs 0..1

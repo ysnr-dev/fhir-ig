@@ -215,6 +215,22 @@ Description: "オーダーの来歴の例(代行入力)"
 * agent[1].who = Reference(Practitioner/example-nurse)
 * agent[1].onBehalfOf = Reference(Practitioner/example-practitioner)
 
+Instance: example-trainee-order-provenance
+InstanceOf: FC_OrderProvenance
+Usage: #example
+Title: "オーダーの来歴の例(研修医の入力)"
+Description: "研修医が自分を依頼医として入れたオーダーの来歴。author.role = trainee-level#resident で、指導医の承認待ちになる。"
+* target = Reference(ServiceRequest/example-lab-order-header)
+* recorded = "2026-04-01T11:00:00+09:00"
+* activity = $v3-DataOperation#CREATE
+* agent[0].type = $provenance-participant-type#author
+* agent[0].role = http://fhir-client.local/CodeSystem/trainee-level#resident
+* agent[0].who = Reference(Practitioner/example-resident)
+* agent[1].type = $provenance-participant-type#enterer
+* agent[1].who = Reference(Practitioner/example-resident)
+* agent[1].who.display = "研修 太郎"
+* agent[1].onBehalfOf = Reference(Practitioner/example-resident)
+
 Instance: example-review-provenance
 InstanceOf: FC_ReviewProvenance
 Usage: #example

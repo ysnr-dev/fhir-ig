@@ -75,7 +75,7 @@ Description: """オーダー(focus)の部門側の進捗。
 - intent = filler-order。code = Task 種別(task-code)。focus = ヘッダ ServiceRequest(同じ Bundle で登録するときは urn:uuid)。for = 患者。
 - priority / requester はオーダーから複製。authoredOn / lastModified を持つ。
 - executionPeriod: accepted / in-progress / on-hold で start(最初に受け付けた時刻を保つ)、completed で end が加わる。requested / cancelled では持たない。
-- owner は看護指示以外は持たない。businessStatus / input / 拡張は持たない。"""
+- owner は看護指示と服薬指導(担当薬剤師)以外は持たない。businessStatus / input / 拡張は持たない。"""
 * insert FCMeta
 * ^abstract = true
 * intent = #filler-order
@@ -212,6 +212,16 @@ Description: "requested 依頼済 / accepted 実施中 / completed 終了 / canc
 * status from FCTaskStatusBasicVS (required)
 * focus only Reference(FC_NutritionGuidanceOrder)
 
+Profile: FC_MedicationGuidanceTask
+Parent: FC_DepartmentTask
+Id: fc-medication-guidance-task
+Title: "服薬指導 進捗 Task"
+Description: "薬剤部の受け入れ状態。requested 依頼済 / accepted 実施中(期間中ずっとこの状態で指導が積み上がる)/ completed 終了 / cancelled 中止。owner = 担当薬剤師(受け持つ人。実施した人は Procedure.performer で別人のこともある)。担当を決めたときに Task が無ければ requested のまま作る。"
+* code = $task-code#medication-guidance "服薬指導"
+* status from FCTaskStatusBasicVS (required)
+* focus only Reference(FC_MedicationGuidanceOrder)
+* owner 0..1 MS
+
 Profile: FC_RxDispenseTask
 Parent: FC_DepartmentTask
 Id: fc-rx-dispense-task
@@ -304,7 +314,7 @@ Profile: FC_OrderApprovalTask
 Parent: FC_NotificationTask
 Id: fc-order-approval-task
 Title: "オーダー承認 通知"
-Description: "代行入力されたオーダーの承認依頼。focus = オーダーの Provenance、owner = 依頼医(承認者)、requester = 入力者、basedOn = ヘッダ ServiceRequest。input: 活動(valueCode = Provenance.activity)、種別(valueCode、複数)、対象オーダー(valueReference、複数)、開始日 / 依頼 / セット(valueString)。backend の backfill(notifications.rake)も同じ形で作る。"
+Description: "承認(確認)が要るオーダーの承認依頼。代行入力では owner = 依頼医(承認者)の 1 件。研修医・学生が自分の指示として入れたオーダー(来歴の author に trainee-level の role)では、その人が仰ぐ指導医ごとに 1 件ずつ作り(指導医が登録されていなければ作らない)、誰かが承認すると残りを取り下げる(cancelled)。focus = オーダーの Provenance、requester = 入力者、basedOn = ヘッダ ServiceRequest。description = 「種別の活動（入力: 氏名）」、研修医の活動は「（研修医: 氏名）」。input: 活動(valueCode = Provenance.activity)、種別(valueCode、複数)、対象オーダー(valueReference、複数)、開始日 / 依頼 / セット(valueString)、研修医(valueString、研修医・学生の活動だけ)。backend の backfill(notifications.rake)も同じ形で作る。"
 * code = $task-code#order-approval "オーダー承認"
 * focus only Reference(FC_OrderProvenance)
 * basedOn only Reference(ServiceRequest)
@@ -315,7 +325,8 @@ Description: "代行入力されたオーダーの承認依頼。focus = オー�
     order 0..* and
     startDate 0..1 and
     request 0..1 and
-    orderSet 0..1
+    orderSet 0..1 and
+    trainee 0..1
 * input[activity].type.text = "活動"
 * input[activity].value[x] only code
 * input[kind].type.text = "種別"
@@ -328,6 +339,8 @@ Description: "代行入力されたオーダーの承認依頼。focus = オー�
 * input[request].value[x] only string
 * input[orderSet].type.text = "セット"
 * input[orderSet].value[x] only string
+* input[trainee].type.text = "研修医"
+* input[trainee].value[x] only string
 
 Profile: FC_BroughtMedIdentifiedTask
 Parent: FC_NotificationTask
@@ -542,5 +555,41 @@ Description: "承認者が看護サマリーを却下したときの通知。pri
     reason 0..1
 * input[summary].type.text = "看護サマリ"
 * input[summary].value[x] only string
+* input[reason].type.text = "理由"
+* input[reason].value[x] only string
+
+Profile: FC_NoteCountersignTask
+Parent: FC_NotificationTask
+Id: fc-note-countersign-task
+Title: "カルテ承認 通知"
+Description: "研修医・学生が確定した診療記録(category = clinical-note-category#countersign)のカウンターサイン依頼。指導医ごとに 1 件(指導医が登録されていなければ作らない)。priority = routine。focus = 診療記録(新規は同じ transaction の fullUrl)、owner = 指導医、requester = 研修医、encounter = 記録の入院(あれば)。description = 「タイトル（日付） のカウンターサイン（研修医: 氏名）」。input: 記録(valueString。「タイトル（YYYY-MM-DD）」)/ 研修医(valueString)。指導医のコメントは note に積み、task-note-comment 拡張(true)で対応済みの記録と見分ける。誰かが承認・差戻しすると、その人の Task を completed(コメントを残して対応の note を足す)、残りの指導医の Task を cancelled にする。"
+* code = $task-code#note-countersign "カルテ承認"
+* priority = #routine
+* focus only Reference(FC_ClinicalNote)
+* owner only Reference(FC_Practitioner)
+* note.extension contains TaskNoteComment named comment 0..1
+* insert TaskInputSlicing
+* input contains
+    note 0..1 and
+    trainee 0..1
+* input[note].type.text = "記録"
+* input[note].value[x] only string
+* input[trainee].type.text = "研修医"
+* input[trainee].value[x] only string
+
+Profile: FC_NoteReturnedTask
+Parent: FC_NotificationTask
+Id: fc-note-returned-task
+Title: "カルテ差戻し 通知"
+Description: "指導医が研修医・学生の診療記録を差し戻したときの通知。priority = routine。focus = 診療記録、owner = 記録の作成者(author[0])、requester = 差し戻した指導医、encounter = 記録の入院(あれば)。description = 「タイトル（日付） 差戻し: 理由」。input: 記録(valueString)/ 理由(valueString)。研修医が確定し直すと completed になる(note = 確定し直したこと)。"
+* code = $task-code#note-returned "カルテ差戻し"
+* priority = #routine
+* focus only Reference(FC_ClinicalNote)
+* insert TaskInputSlicing
+* input contains
+    note 0..1 and
+    reason 0..1
+* input[note].type.text = "記録"
+* input[note].value[x] only string
 * input[reason].type.text = "理由"
 * input[reason].value[x] only string

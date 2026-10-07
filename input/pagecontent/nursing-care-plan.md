@@ -68,9 +68,19 @@ Observation(評価、FC_NursingEvaluationObservation)   basedOn → CarePlan、f
 
 承認できるのは看護職で、作成者でも確定した人でもない職員です。
 
+### 看護プロファイル
+
+入院時に看護師が聴き取る生活・看護上の状態です。施設設定で並べたテンプレート(区画。同梱は入院時の情報・ADL・転倒転落・褥瘡リスク)ごとに、1 入院 1 件の QuestionnaireResponse([FC_QuestionnaireResponse](StructureDefinition-fc-questionnaire-response.html))で持ちます。
+
+- `encounter` = 入院。区画はテンプレートの `url`(版なし)で引き、`questionnaire` の版は問いません。1 区画に複数あれば `authored` の新しいものを使います。
+- 書き直しは同じ回答の更新で、版の履歴は上流の `_history` に残ります。
+- encounter を持つ回答はカルテの時系列に出ません。看護サマリーの下書きでは、区画の順に回答の平文を「現在の状態」の初期値にします。
+- 施設設定(区画の並び)は backend にあり、FHIR には持ちません。
+
 ### 例
 
 - [看護問題](Condition-example-nursing-problem.html) / [看護計画](CarePlan-example-nursing-care-plan.html) / [目標](Goal-example-nursing-goal.html)
 - [評価(目標)](Observation-example-nursing-goal-evaluation.html) / [評価(看護問題)](Observation-example-nursing-problem-evaluation.html)
 - [計画から展開した看護指示](ServiceRequest-example-nursing-plan-order.html)
 - [看護記録](Composition-example-nursing-clinical-note.html) / [看護サマリー](Composition-example-nursing-summary.html) / [差戻し通知](Task-example-nursing-summary-returned-task.html)
+- [看護プロファイルの記入](QuestionnaireResponse-example-nursing-profile-response.html)

@@ -10,7 +10,7 @@
 - 薬剤は MedicationAdministration(`partOf` → ハブ、`medicationCodeableConcept` = medicine-code + YJ、`dosage.route` = JP Core route-codes)。
 - 測定値は Observation(`partOf` → ハブ)。
 - 取消はリソースを削除します(`entered-in-error` にしない)。放射線治療の照射済みの記録だけは `entered-in-error` にします(照射予定 = preparation の取消は削除)。
-- 検査・処置・手術・輸血・注射の実施は、同じ transaction で部門 Task を進めます(completed など)。リハビリ・栄養指導・看護行為・与薬・放射線治療(照射・治療終了サマリー)は Task を変えません。
+- 検査・処置・手術・輸血・注射の実施は、同じ transaction で部門 Task を進めます(completed など)。リハビリ・栄養指導・服薬指導・看護行為・与薬・放射線治療(照射・治療終了サマリー)は Task を変えません。
 
 ### 種別ごとのプロファイル
 
@@ -24,6 +24,7 @@
 | 麻酔チャート | [FC_AnesthesiaChartProcedure](StructureDefinition-fc-anesthesia-chart-procedure.html) | category = anesthesia-chart、basedOn = 手術オーダー、code.text = 麻酔チャート、in-progress ⇄ completed(確定後に再開できる)、バイタル・イベント Observation と麻酔薬 MedicationAdministration |
 | リハビリ | [FC_RehabProcedure](StructureDefinition-fc-rehab-procedure.html) | 回ごと、code = 療法種別、単位数 |
 | 栄養指導 | [FC_NutritionGuidanceProcedure](StructureDefinition-fc-nutrition-guidance-procedure.html) | 回ごと、code = 実施区分、指導時間、指導記録(QuestionnaireResponse) |
+| 服薬指導 | [FC_MedicationGuidanceProcedure](StructureDefinition-fc-medication-guidance-procedure.html) | 回ごと、code = 指導種別、performer = 薬剤師、理解度、指導記録(QuestionnaireResponse)、note = 指導内容 |
 | 放射線治療 照射 | [FC_RadiotherapyFractionProcedure](StructureDefinition-fc-radiotherapy-fraction-procedure.html) | category に `radiotherapy-procedure#fraction`、status preparation → completed / not-done / entered-in-error、performedPeriod(時刻あり)または performedDateTime(日付のみ)、`radiotherapy-fraction` 拡張(fractionNumber はフェーズ内の回数) |
 | 放射線治療 治療終了サマリー | [FC_RadiotherapyCourseSummaryProcedure](StructureDefinition-fc-radiotherapy-course-summary-procedure.html) | category に `#course-summary`、performedPeriod(日付のみ)、outcome、`radiotherapy-course-summary` 拡張 |
 | 輸血 | [FC_TransfusionProcedure](StructureDefinition-fc-transfusion-procedure.html) | バッグごとの MedicationAdministration(単位数・ロット番号)、輸血副作用 Observation |
