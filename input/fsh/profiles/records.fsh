@@ -177,7 +177,7 @@ Description: """DPC 退院患者調査の様式1。入院 1 件につき 1 つ�
 - questionnaire = `http://fhir-client.local/Questionnaire/dpc-form1`(固定。バージョン無し。対応する Questionnaire リソースは上流に置かず、項目の定義はアプリの定義表が持つ)。encounter = 入院。
 - status: in-progress 下書き / completed 確定 / amended 確定後の修正。提出ファイル(FF1)には completed と amended だけを出す。
 - 新規作成は「その入院の様式1 がまだ無いこと」を条件にした transaction(ifNoneExist = questionnaire + encounter)。
-- item は提出ファイルの行と 1 対 1。先頭の `header` グループ(子は header.facility 施設コード / header.dataId データ識別番号 / header.admitDate 入院年月日 / header.count 回数管理番号 / header.summaryNo 統括診療情報番号 / header.fiscalYear 定義表の年度)に続き、レコードごとに linkId = レコードのコード(A000010 など)、text = レコード名のグループを並べる。連番のあるレコードは同じ linkId のグループを行の数だけ繰り返す。
+- item は提出ファイルの行と 1 対 1。先頭の `header` グループ(子は header.facility 施設コード / header.dataId データ識別番号 / header.admitDate 入院年月日 / header.count 回数管理番号 / header.summaryNo 統括診療情報番号 / header.fiscalYear 使った定義表の版の年度。2026 年度版は 2026-06-01 から)に続き、レコードごとに linkId = レコードのコード(A000010 など)、text = レコード名のグループを並べる。連番のあるレコードは同じ linkId のグループを行の数だけ繰り返す。
 - レコードのグループの子: `{コード}.ver` バージョン / `{コード}.seq` 連番(連番の無いレコードは 0)/ `{コード}.p1`〜`.p9` ペイロード(値のあるものだけ)/ `{コード}.ref` 値の元になったリソース(valueReference)。値はすべて提出ファイルに書く文字列のまま valueString で持つ(日付は YYYYMMDD、選択肢はコード)。
 - identifier・contained Practitioner・meta.profile はテンプレートの記入と同じ。カルテの時系列には出さない。"""
 * questionnaire = "http://fhir-client.local/Questionnaire/dpc-form1"
@@ -187,6 +187,26 @@ Description: """DPC 退院患者調査の様式1。入院 1 件につき 1 つ�
 * item 1..*
 * item.linkId ^short = "header、またはレコードのコード(A000010 など)"
 * item.item.answer.value[x] only string or Reference
+
+Profile: FC_DpcCodingResponse
+Parent: FC_QuestionnaireResponse
+Id: fc-dpc-coding-response
+Title: "DPC 診断群分類の決定"
+Description: """入院の診断群分類(14 桁)を決めた記録。入院 1 件に何件でも追記し、completed のうち authored が最新のものが今の分類、全件が DPC 歴になる。
+
+- questionnaire = `http://fhir-client.local/Questionnaire/dpc-coding`(固定。バージョン無し。対応する Questionnaire リソースは上流に置かない)。encounter = 入院。カルテの時系列には出さない。
+- status: completed で作り、取消は同じリソースを entered-in-error にする(If-Match 付きの PUT)。書き直しはせず、決め直しは新しい記録の追加。
+- 単独の POST、または転棟時・退院時の決定では未対応の DPC 再判定の督促を completed にする entry と同じ transaction。
+- item(linkId): `dpc-code`(valueCoding、dpc-code)/ `edition` 使った点数表の版(valueString、施行日の YYYYMMDD)/ `timing` 決めた時点(valueCoding、dpc-coding-timing)/ `bundled` 包括対象か(valueBoolean)/ `days` 入院期間Ⅰ〜Ⅲの日数 / `points` 期間ごとの 1 日あたり点数(どちらも期間の数だけ answer を並べ、値の無い期間は valueString = \"-\")/ `icd10` 医療資源を最も投入した傷病の ICD-10(valueString、あるときだけ)/ `branch` 分岐ごとのグループ(対象外の分岐は出さない)/ `note` 備考(valueString、あるときだけ)。
+- `branch` の子: `branch.key`(pathology / age / surgery / proc1 / proc2 / comorbidity / 重症度の sev_* など)/ `branch.label` 分岐名 / `branch.value` 選んだ値(あるときだけ)/ `branch.status` 自動・上書き・未確定 / `branch.evidence` 根拠(日付・コード・名称・補足を空白で繋いだ文字列。あるときだけ、根拠の数だけ answer を並べる)。すべて valueString。
+- identifier・meta.profile はテンプレートの記入と同じ。contained Practitioner(決定者)は、職員としてログインしていれば identifier(system = `http://fhir-client.local/Practitioner`、value = 上流の Practitioner の id)を持つ。author は contained への参照に display(決定者名)を添える。"""
+* questionnaire = "http://fhir-client.local/Questionnaire/dpc-coding"
+* subject 1..1
+* encounter 1..1
+* encounter only Reference(FC_InpatientEncounter)
+* author 1..1
+* item 1..*
+* item.linkId ^short = "dpc-code / edition / timing / bundled / days / points / icd10 / branch / note"
 
 Profile: FC_PatientFile
 Parent: DocumentReference

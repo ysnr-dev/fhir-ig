@@ -407,6 +407,67 @@ Description: "DPC 様式1 の例(下書き)"
 * item[2].item[5].linkId = "A006010.ref"
 * item[2].item[5].answer.valueReference = Reference(Condition/example-condition)
 
+Instance: example-dpc-coding-practitioner
+InstanceOf: Practitioner
+Usage: #inline
+* id = "practitioner"
+* identifier.system = "http://fhir-client.local/Practitioner"
+* identifier.value = "example-practitioner"
+* name.text = "山田 一郎"
+
+Instance: example-dpc-coding-response
+InstanceOf: FC_DpcCodingResponse
+Usage: #example
+Title: "DPC 診断群分類の決定の例(入院時)"
+Description: "DPC 診断群分類の決定の例(入院時)"
+* identifier.value = "1311234567^00000001^5e1f0a3b-7c2d-4e8f-9a6b-1c2d3e4f5a6b"
+* questionnaire = "http://fhir-client.local/Questionnaire/dpc-coding"
+* status = #completed
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* authored = "2026-08-27T10:00:00+09:00"
+* contained[0] = example-dpc-coding-practitioner
+* author = Reference(example-dpc-coding-practitioner)
+* author.display = "山田 一郎"
+* item[0].linkId = "dpc-code"
+* item[0].answer.valueCoding = http://fhir-client.local/CodeSystem/dpc-code#060330xx02xxxx "胆嚢疾患（胆嚢結石など） / 腹腔鏡下胆嚢摘出術等"
+* item[1].linkId = "edition"
+* item[1].answer.valueString = "20260601"
+* item[2].linkId = "timing"
+* item[2].answer.valueCoding = http://fhir-client.local/CodeSystem/dpc-coding-timing#admission "入院時"
+* item[3].linkId = "bundled"
+* item[3].answer.valueBoolean = true
+* item[4].linkId = "days"
+* item[4].answer[0].valueInteger = 3
+* item[4].answer[1].valueInteger = 6
+* item[4].answer[2].valueInteger = 30
+* item[5].linkId = "points"
+* item[5].answer[0].valueInteger = 3187
+* item[5].answer[1].valueInteger = 1973
+* item[5].answer[2].valueInteger = 1820
+* item[6].linkId = "icd10"
+* item[6].answer.valueString = "K802"
+* item[7].linkId = "branch"
+* item[7].item[0].linkId = "branch.key"
+* item[7].item[0].answer.valueString = "surgery"
+* item[7].item[1].linkId = "branch.label"
+* item[7].item[1].answer.valueString = "手術"
+* item[7].item[2].linkId = "branch.value"
+* item[7].item[2].answer.valueString = "02"
+* item[7].item[3].linkId = "branch.status"
+* item[7].item[3].answer.valueString = "自動"
+* item[7].item[4].linkId = "branch.evidence"
+* item[7].item[4].answer.valueString = "2026-08-28 K672-2 腹腔鏡下胆嚢摘出術"
+* item[8].linkId = "branch"
+* item[8].item[0].linkId = "branch.key"
+* item[8].item[0].answer.valueString = "proc1"
+* item[8].item[1].linkId = "branch.label"
+* item[8].item[1].answer.valueString = "手術・処置等1"
+* item[8].item[2].linkId = "branch.value"
+* item[8].item[2].answer.valueString = "0"
+* item[8].item[3].linkId = "branch.status"
+* item[8].item[3].answer.valueString = "自動"
+
 Instance: example-imaging-study
 InstanceOf: FC_ImagingStudy
 Usage: #example

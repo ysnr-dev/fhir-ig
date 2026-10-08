@@ -56,10 +56,11 @@ Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
 | nursing-summary-returned | 看護サマリー差戻し | info | 看護サマリー Composition | 看護サマリ / 理由 | [FC_NursingSummaryReturnedTask](StructureDefinition-fc-nursing-summary-returned-task.html) |
 | note-countersign | カルテ承認 | info | 診療記録 Composition | 記録 / 研修医 | [FC_NoteCountersignTask](StructureDefinition-fc-note-countersign-task.html) |
 | note-returned | カルテ差戻し | info | 診療記録 Composition | 記録 / 理由 | [FC_NoteReturnedTask](StructureDefinition-fc-note-returned-task.html) |
+| dpc-recoding-due | DPC再判定 | info | Encounter | 入院 / 転棟日 / 転棟元 / 転棟先 | [FC_DpcRecodingDueTask](StructureDefinition-fc-dpc-recoding-due-task.html) |
 
 - `status`: requested 未対応 / completed 対応済 / cancelled 取消。`owner` = 宛先の職員、`requester` = 発生させた職員、`basedOn` = 関連するオーダー。`description` = 人が読める要約 1 行、`code.text` = 種別名、`authoredOn` / `lastModified` は常に持ちます。
-- 宛先が決まらないときは `owner` を持ちません: オーダーに紐付かない結果の緊急異常値・検査結果確認、主治医のいない入院の持参薬鑑別済・文書作成の督促、主治医のいない入院や入院外のバリアンス。
-- 日付の input は `valueDate` です(退院日 / 期限 / 対象日 / 検体採取日 / 撮影日 / 検査日 / 入院日 / 前回の診察)。
+- 宛先が決まらないときは `owner` を持ちません: オーダーに紐付かない結果の緊急異常値・検査結果確認、主治医のいない入院の持参薬鑑別済・文書作成の督促・DPC 再判定の督促、主治医のいない入院や入院外のバリアンス。
+- 日付の input は `valueDate` です(退院日 / 期限 / 対象日 / 検体採取日 / 撮影日 / 検査日 / 入院日 / 前回の診察 / 転棟日)。
 - 内容が変わると同じ Task を書き換えて未対応に戻します(前の対応記録の `note` / `executionPeriod` は消す)。
 - 検査結果確認は、同じ報告の緊急異常値・重要所見が未対応の間は作りません([検査結果・報告](results.html))。パスのバリアンスは、重要アウトカム(CriticalIndicator = Y)を未達成にしたときだけ作り、未達成でなくなれば cancelled にします。
 - `restriction.period.end` = 期限(日付のみ)。対応済みにすると `executionPeriod` と `note`(authorReference / time / text)が付きます。
@@ -75,4 +76,4 @@ Task は同じ CodeSystem(`task-code`)を使う 2 つの系統があります。
 ### 例
 
 - [オーダーの来歴](Provenance-example-order-provenance.html) / [オーダーの来歴(研修医)](Provenance-example-trainee-order-provenance.html) / [結果確認の来歴](Provenance-example-review-provenance.html)
-- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [重要所見(生理検査)](Task-example-physio-critical-finding-task.html) / [重要所見(内視鏡)](Task-example-endoscopy-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html) / [看護サマリー差戻し](Task-example-nursing-summary-returned-task.html) / [オーダー承認(研修医)](Task-example-trainee-order-approval-task.html) / [カルテ承認](Task-example-note-countersign-task.html) / [カルテ差戻し](Task-example-note-returned-task.html)
+- [オーダー承認](Task-example-order-approval-task.html) / [持参薬鑑別済](Task-example-brought-med-identified-task.html) / [文書作成](Task-example-document-due-task.html) / [緊急異常値](Task-example-lab-panic-task.html) / [検査結果確認](Task-example-result-review-task.html) / [重要所見](Task-example-rad-critical-finding-task.html) / [重要所見(生理検査)](Task-example-physio-critical-finding-task.html) / [重要所見(内視鏡)](Task-example-endoscopy-critical-finding-task.html) / [バリアンス](Task-example-pathway-variance-task.html) / [放射線治療の診察](Task-example-radiotherapy-review-due-task.html) / [看護サマリー差戻し](Task-example-nursing-summary-returned-task.html) / [オーダー承認(研修医)](Task-example-trainee-order-approval-task.html) / [カルテ承認](Task-example-note-countersign-task.html) / [カルテ差戻し](Task-example-note-returned-task.html) / [DPC再判定](Task-example-dpc-recoding-due-task.html)

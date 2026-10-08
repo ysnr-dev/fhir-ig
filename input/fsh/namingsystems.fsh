@@ -135,6 +135,13 @@ Title: "看護実施の入力単位"
 Description: "1 回の看護ラウンドで入力した Observation / Procedure を束ねる identifier の system。値は uuid。"
 * insert FCNamingSystem(NursingPerformEntry, http://fhir-client.local/nursing-perform-entry)
 
+Instance: ns-practitioner-id
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "職員(上流の Practitioner の id)"
+Description: "診断群分類の決定の記録で、contained Practitioner(決定者)の identifier の system。値は上流サーバーの Practitioner の論理 id。職員としてログインしていない(管理者)ときは identifier を持たない。"
+* insert FCNamingSystem(PractitionerId, http://fhir-client.local/Practitioner)
+
 // ---- レセプトコンピュータ連携(backend が書く) ----
 
 Instance: ns-receipt-computer-coverage

@@ -391,6 +391,30 @@ Description: "退院時サマリーなどの文書作成の督促。focus と en
 * input[dueDate].type.text = "期限"
 * input[dueDate].value[x] only date
 
+Profile: FC_DpcRecodingDueTask
+Parent: FC_NotificationTask
+Id: fc-dpc-recoding-due-task
+Title: "DPC 再判定 督促"
+Description: "転棟で病棟が変わったとき、診断群分類を決め直すよう入院の主治医に知らせる(主治医がいなければ owner 無し)。転科・転棟の実施の transaction に入り、その入院に未対応の督促があれば作らない。focus と encounter = 入院。description = 「転棟(転棟日 転棟元 → 転棟先)の診断群分類が未判定」。input: 入院(valueReference)、転棟日(valueDate)、転棟元 / 転棟先(valueString、病棟名)。転棟時・退院時の決定の保存で completed、入院取消で cancelled。"
+* code = $task-code#dpc-recoding-due "DPC再判定"
+* focus only Reference(FC_InpatientEncounter)
+* encounter 1..1
+* encounter only Reference(FC_InpatientEncounter)
+* insert TaskInputSlicing
+* input contains
+    admission 1..1 and
+    transferDate 1..1 and
+    fromWard 1..1 and
+    toWard 1..1
+* input[admission].type.text = "入院"
+* input[admission].value[x] only Reference(Encounter)
+* input[transferDate].type.text = "転棟日"
+* input[transferDate].value[x] only date
+* input[fromWard].type.text = "転棟元"
+* input[fromWard].value[x] only string
+* input[toWard].type.text = "転棟先"
+* input[toWard].value[x] only string
+
 Profile: FC_LabPanicTask
 Parent: FC_NotificationTask
 Id: fc-lab-panic-task

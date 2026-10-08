@@ -87,3 +87,28 @@ Id: pathway-phase
 Title: "パスのフェーズ"
 Description: "code = パス定義の phase_key、display = フェーズ名。病日 CarePlan の pathway-phase 拡張。"
 * insert MasterCS
+
+// ---- DPC の診断群分類 ----
+
+CodeSystem: DpcCodeCS
+Id: dpc-code
+Title: "診断群分類(DPC コード)"
+Description: "診断群分類の 14 桁(060330xx02xxxx など)。backend のマスタ(DPC 電子点数表の診断群分類点数表を版ごとに取込んだもの)にある。display = 傷病名と、手術・処置等1・処置等2・定義副傷病・重症度のうち「なし」でないものの名称を「 / 」で繋いだもの。"
+* insert MasterCS
+
+CodeSystem: DpcCodingTimingCS
+Id: dpc-coding-timing
+Title: "診断群分類を決めた時点"
+Description: "診断群分類の決定の記録の timing。転棟時・退院時の決定を保存すると、その入院の未対応の DPC 再判定の督促が閉じる。"
+* insert EnumCS
+* #admission "入院時"
+* #transfer "転棟時"
+* #monthly "月末"
+* #discharge "退院時"
+* #other "その他"
+
+ValueSet: DpcCodingTimingVS
+Id: dpc-coding-timing-vs
+Title: "診断群分類を決めた時点 ValueSet"
+Description: "診断群分類を決めた時点 ValueSet。"
+* insert AllOf(DpcCodingTimingCS)

@@ -367,6 +367,33 @@ Description: "文書作成 督促の例"
 * input[dueDate].type.text = "期限"
 * input[dueDate].valueDate = "2026-05-04"
 
+Instance: example-dpc-recoding-due-task
+InstanceOf: FC_DpcRecodingDueTask
+Usage: #example
+Title: "DPC 再判定 督促の例"
+Description: "DPC 再判定 督促の例"
+* status = #requested
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#dpc-recoding-due "DPC再判定"
+* code.text = "DPC再判定"
+* focus = Reference(Encounter/example-encounter)
+* encounter = Reference(Encounter/example-encounter)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* authoredOn = "2026-04-08T14:00:00+09:00"
+* lastModified = "2026-04-08T14:00:00+09:00"
+* description = "転棟(2026-04-08 東3階病棟 → 西4階病棟)の診断群分類が未判定"
+* input[admission].type.text = "入院"
+* input[admission].valueReference = Reference(Encounter/example-encounter)
+* input[transferDate].type.text = "転棟日"
+* input[transferDate].valueDate = "2026-04-08"
+* input[fromWard].type.text = "転棟元"
+* input[fromWard].valueString = "東3階病棟"
+* input[toWard].type.text = "転棟先"
+* input[toWard].valueString = "西4階病棟"
+
 Instance: example-lab-panic-task
 InstanceOf: FC_LabPanicTask
 Usage: #example

@@ -101,6 +101,7 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #nursing-summary-returned "看護サマリー差戻し"
 * #note-countersign "カルテ承認"
 * #note-returned "カルテ差戻し"
+* #dpc-recoding-due "DPC再判定"
 
 ValueSet: TaskCodeVS
 Id: task-code-vs

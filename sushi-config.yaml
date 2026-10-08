@@ -97,7 +97,7 @@ pages:
   questionnaire.md:
     title: Questionnaire / QuestionnaireResponse
   dpc-form1.md:
-    title: DPC 様式1
+    title: DPC 様式1・診断群分類
   admin.md:
     title: 患者・管理リソース
   scheduling.md:
@@ -126,7 +126,7 @@ menu:
     クリニカルパス: pathway.html
     看護計画・看護サマリー: nursing-care-plan.html
     Questionnaire: questionnaire.html
-    DPC 様式1: dpc-form1.html
+    DPC 様式1・診断群分類: dpc-form1.html
   管理:
     患者・管理: admin.html
     予約: scheduling.html
