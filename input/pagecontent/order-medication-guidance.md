@@ -1,14 +1,13 @@
 ### 構造
 
-```
-ServiceRequest(依頼、FC_MedicationGuidanceOrder)
- │  code = 指導区分(服薬指導 / 退院時指導) / orderDetail = 指導条件(複数) / reasonCode[0].text = 指導してほしいこと / note = 薬剤部への連絡事項
- │  extension: medication-guidance-order-end / medication-guidance-target-drugs
- ├ Task(medication-guidance、FC_MedicationGuidanceTask)  focus → 依頼、owner = 担当薬剤師
- └ Procedure(回ごとの指導、FC_MedicationGuidanceProcedure)  basedOn → 依頼
-     code = 指導種別(服薬指導 / 服薬指導(ハイリスク薬) / 退院時指導) / performer = 指導した薬剤師 / note = 指導内容
-     extension: medication-guidance-understanding / medication-guidance-record(QuestionnaireResponse)
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> 依頼</td><td><a href="StructureDefinition-fc-medication-guidance-order.html">FC_MedicationGuidanceOrder</a></td><td></td><td><code>code</code> = 指導区分(服薬指導 / 退院時指導)<br><code>orderDetail</code> = 指導条件(複数)<br><code>reasonCode[0].text</code> = 指導してほしいこと<br><code>note</code> = 薬剤部への連絡事項<br><code>extension</code>: medication-guidance-order-end / medication-guidance-target-drugs</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> medication-guidance</td><td><a href="StructureDefinition-fc-medication-guidance-task.html">FC_MedicationGuidanceTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;依頼</span><br><span style="white-space: nowrap;"><code>owner</code>&nbsp;=&nbsp;担当薬剤師</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Procedure</b> 回ごとの指導</td><td><a href="StructureDefinition-fc-medication-guidance-procedure.html">FC_MedicationGuidanceProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;依頼</span></td><td><code>code</code> = 指導種別(服薬指導 / 服薬指導(ハイリスク薬) / 退院時指導)<br><code>performer</code> = 指導した薬剤師<br><code>note</code> = 指導内容<br><code>extension</code>: medication-guidance-understanding / medication-guidance-record(QuestionnaireResponse)</td></tr>
+</tbody>
+</table>
 
 - 医師が薬剤師へ服薬指導を依頼し、薬剤部が受付 → 入院中に週ごとの指導 → 退院時指導 → 終了と進めます。栄養指導と同じ期間継続型で、明細 ServiceRequest と予約は持ちません。
 - `occurrenceDateTime` = 開始日、`medication-guidance-order-end` = 終了日(無ければ継続中)。部門一覧の「終了」と退院時の打ち切りで、ServiceRequest に終了日を書き足します(Task を completed にするだけでは部門一覧の検索に残り続けるため)。

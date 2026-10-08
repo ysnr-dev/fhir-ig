@@ -1,11 +1,12 @@
 ### 構造
 
-```
-ServiceRequest(食事オーダー、FC_MealOrder)
- │  code = 食種(meal-type) / orderDetail = 主食(meal-staple-food)・副食の形態(meal-side-dish-form)+ meal-timing
- │  extension: meal-order-end / meal-skipped-timing(0..3) / meal-fasting-reason / meal-salt-limit / meal-order-link / meal-order-end-reason
- └ Observation(摂取量、FC_MealIntakeObservation)  basedOn → 食事オーダー
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> 食事オーダー</td><td><a href="StructureDefinition-fc-meal-order.html">FC_MealOrder</a></td><td></td><td><code>code</code> = 食種(meal-type)<br><code>orderDetail</code> = 主食(meal-staple-food)・副食の形態(meal-side-dish-form)+ meal-timing<br><code>extension</code>: meal-order-end / meal-skipped-timing(0..3) / meal-fasting-reason / meal-salt-limit / meal-order-link / meal-order-end-reason</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Observation</b> 摂取量</td><td><a href="StructureDefinition-fc-meal-intake-observation.html">FC_MealIntakeObservation</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;食事オーダー</span></td><td></td></tr>
+</tbody>
+</table>
 
 Task はありません。`ServiceRequest.status` は常に active で、有効期間は `occurrenceDateTime` 〜 `meal-order-end`(無ければ継続中)で読みます。取消はリソースを削除します。
 

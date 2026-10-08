@@ -2,16 +2,18 @@
 
 放射線治療は mCODE Radiotherapy を模した設計で、コース処方を 1 件の ServiceRequest に、標的体積とフェーズを複合拡張で持ちます。
 
-```
-ServiceRequest(コース処方、FC_RadiotherapyOrder)
- │  extension: radiotherapy-course(1) / radiotherapy-volume(0..*) / radiotherapy-phase(0..*) / radiotherapy-consult-request
- ├ Task(radiotherapy、FC_RadiotherapyTask)  focus → 処方   ※ ServiceRequest.status と同じ transaction で変える
- ├ Procedure(照射、FC_RadiotherapyFractionProcedure)  basedOn → 処方   ※ 回ごと
- ├ Procedure(コース要約、FC_RadiotherapyCourseSummaryProcedure)  basedOn → 処方
- ├ QuestionnaireResponse(週次診察)  basedOn → 処方
- ├ Observation(有害事象、FC_AdverseEventObservation)  basedOn → 処方
- └ Task(radiotherapy-review-due 通知)  focus → 処方
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> コース処方</td><td><a href="StructureDefinition-fc-radiotherapy-order.html">FC_RadiotherapyOrder</a></td><td></td><td><code>extension</code>: radiotherapy-course(1) / radiotherapy-volume(0..*) / radiotherapy-phase(0..*) / radiotherapy-consult-request</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> radiotherapy</td><td><a href="StructureDefinition-fc-radiotherapy-task.html">FC_RadiotherapyTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;処方</span></td><td>ServiceRequest.status と同じ transaction で変える</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Procedure</b> 照射</td><td><a href="StructureDefinition-fc-radiotherapy-fraction-procedure.html">FC_RadiotherapyFractionProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;処方</span></td><td>回ごと</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Procedure</b> コース要約</td><td><a href="StructureDefinition-fc-radiotherapy-course-summary-procedure.html">FC_RadiotherapyCourseSummaryProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;処方</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>QuestionnaireResponse</b> 週次診察</td><td><a href="StructureDefinition-fc-questionnaire-response.html">FC_QuestionnaireResponse</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;処方</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Observation</b> 有害事象</td><td><a href="StructureDefinition-fc-adverse-event-observation.html">FC_AdverseEventObservation</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;処方</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Task</b> radiotherapy-review-due 通知</td><td><a href="StructureDefinition-fc-radiotherapy-review-due-task.html">FC_RadiotherapyReviewDueTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;処方</span></td><td></td></tr>
+</tbody>
+</table>
 
 ### 処方
 

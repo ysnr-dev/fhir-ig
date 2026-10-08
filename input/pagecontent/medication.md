@@ -1,15 +1,16 @@
 ### 処方
 
-```
-ServiceRequest(ヘッダ、FC_PrescriptionOrder)
- │  category = prescription + 入院・外来区分 + 処方区分 / orderDetail[] = "RP{n}-{m}" + prescription-medication-request → MedicationRequest
- ├ MedicationRequest(薬剤行、FC_PrescriptionMedicationRequest)  basedOn → ヘッダ
- │   identifier = RP 番号 + RP 内連番 / dosageInstruction[0] = 用法・用量・補足用法 / dispenseRequest.expectedSupplyDuration = 日数
- ├ Task(rx-dispense、FC_RxDispenseTask)  focus → ヘッダ   ※ note = 疑義照会
- ├ MedicationDispense(調剤、FC_MedicationDispense)  authorizingPrescription → 薬剤行   ※ 薬剤行ごと、Task と同じ transaction
- └ Procedure(与薬記録、FC_OralAdministrationProcedure)  basedOn → ヘッダ   ※ 服用予定ごと
-     └ MedicationAdministration(FC_MedicationAdministration)  partOf → 与薬記録、request → 薬剤行
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> ヘッダ</td><td><a href="StructureDefinition-fc-prescription-order.html">FC_PrescriptionOrder</a></td><td></td><td><code>category</code> = prescription + 入院・外来区分 + 処方区分<br><code>orderDetail[]</code> = "RP{n}-{m}" + prescription-medication-request → MedicationRequest</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationRequest</b> 薬剤行</td><td><a href="StructureDefinition-fc-prescription-medication-request.html">FC_PrescriptionMedicationRequest</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td><code>identifier</code> = RP 番号 + RP 内連番<br><code>dosageInstruction[0]</code> = 用法・用量・補足用法<br><code>dispenseRequest.expectedSupplyDuration</code> = 日数</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> rx-dispense</td><td><a href="StructureDefinition-fc-rx-dispense-task.html">FC_RxDispenseTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td><code>note</code> = 疑義照会</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationDispense</b> 調剤</td><td><a href="StructureDefinition-fc-medication-dispense.html">FC_MedicationDispense</a></td><td><span style="white-space: nowrap;"><code>authorizingPrescription</code>&nbsp;→&nbsp;薬剤行</span></td><td>薬剤行ごと、Task と同じ transaction</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Procedure</b> 与薬記録</td><td><a href="StructureDefinition-fc-oral-administration-procedure.html">FC_OralAdministrationProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td>服用予定ごと</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  └ </span><b>MedicationAdministration</b></td><td><a href="StructureDefinition-fc-medication-administration.html">FC_MedicationAdministration</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;与薬記録</span><br><span style="white-space: nowrap;"><code>request</code>&nbsp;→&nbsp;薬剤行</span></td><td></td></tr>
+</tbody>
+</table>
 
 #### 見分け方
 
@@ -33,18 +34,17 @@ ServiceRequest(ヘッダ、FC_PrescriptionOrder)
 
 ### 注射
 
-```
-ServiceRequest(1 日分、FC_InjectionOrder)   ※ 連日は日ごとに展開(最大 14 件 / 90 日)、requisition(injection-series)で束ねる
- │  category = injection + 入院・外来区分 + 注射区分 / extension: injection-series-start / injection-series-schedule(Timing)
- ├ MedicationRequest(薬剤行、FC_InjectionMedicationRequest)  basedOn → 1 日分
- │   dosageInstruction[0]: injection-usage-type(点滴 / ワンショット)/ JP_MedicationDosage_Line(injection-line)/ injection-scheduled-period /
- │                         insulin-scale / timing.event / route(JP route-codes)/ site(JAMI 部位)/ method(JAMI 手技)/
- │                         doseQuantity または doseRange / rateQuantity(mL/h)
- ├ Task(injection、FC_InjectionTask)  focus → 1 日分
- ├ MedicationDispense(払出)  authorizingPrescription → 薬剤行
- └ Procedure(実施記録、FC_InjectionProcedure)  basedOn → 1 日分
-     └ MedicationAdministration  partOf → 実施記録、request → 薬剤行(投与時に追加した薬剤は request 無し)
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> 1 日分</td><td><a href="StructureDefinition-fc-injection-order.html">FC_InjectionOrder</a></td><td></td><td><code>category</code> = injection + 入院・外来区分 + 注射区分<br><code>extension</code>: injection-series-start / injection-series-schedule(Timing)<br>連日は日ごとに展開(最大 14 件 / 90 日)、requisition(injection-series)で束ねる</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationRequest</b> 薬剤行</td><td><a href="StructureDefinition-fc-injection-medication-request.html">FC_InjectionMedicationRequest</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;1 日分</span></td><td><code>dosageInstruction[0]</code>: injection-usage-type(点滴 / ワンショット)/ JP_MedicationDosage_Line(injection-line)/ injection-scheduled-period / insulin-scale / timing.event / route(JP route-codes)/ site(JAMI 部位)/ method(JAMI 手技)/ doseQuantity または doseRange / rateQuantity(mL/h)</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> injection</td><td><a href="StructureDefinition-fc-injection-task.html">FC_InjectionTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;1 日分</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationDispense</b> 払出</td><td></td><td><span style="white-space: nowrap;"><code>authorizingPrescription</code>&nbsp;→&nbsp;薬剤行</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Procedure</b> 実施記録</td><td><a href="StructureDefinition-fc-injection-procedure.html">FC_InjectionProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;1 日分</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  └ </span><b>MedicationAdministration</b></td><td><a href="StructureDefinition-fc-medication-administration.html">FC_MedicationAdministration</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;実施記録、request → 薬剤行(投与時に追加した薬剤は request 無し)</span></td><td></td></tr>
+</tbody>
+</table>
 
 実施記録の数が `timing.event` の数に達すると Task が completed になります。
 

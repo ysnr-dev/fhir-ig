@@ -1,16 +1,19 @@
 ### 構造
 
-```
-ServiceRequest(ヘッダ、FC_PathoOrderHeader)
- │  extension: patho-clinical-info / patho-clinical-info-questionnaire-response / patho-report-due / patho-operating-room / patho-schema-image(0..*)
- ├ ServiceRequest(検体明細、FC_PathoOrderItem)  basedOn → ヘッダ
- │   └ contained Specimen(#specimen、FC_PathoOrderSpecimen)
- ├ Binary(シェーマ画像)、QuestionnaireResponse(臨床情報テンプレート)   ※ 同じ transaction
- ├ Task(patho-exam、FC_PathoExamTask)  focus → ヘッダ
- └ DiagnosticReport(病理診断レポート、FC_PathoDiagnosticReport)  basedOn → ヘッダ
-     ├ specimen → Specimen(FC_PathoResultSpecimen)
-     └ result → Observation(セクションごと、FC_PathoFindingObservation)
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> ヘッダ</td><td><a href="StructureDefinition-fc-patho-order-header.html">FC_PathoOrderHeader</a></td><td></td><td><code>extension</code>: patho-clinical-info / patho-clinical-info-questionnaire-response / patho-report-due / patho-operating-room / patho-schema-image(0..*)</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>ServiceRequest</b> 検体明細</td><td><a href="StructureDefinition-fc-patho-order-item.html">FC_PathoOrderItem</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ └ </span><b>Specimen</b> #specimen</td><td><a href="StructureDefinition-fc-patho-order-specimen.html">FC_PathoOrderSpecimen</a></td><td><span style="white-space: nowrap;">親の <code>contained</code></span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Binary</b> シェーマ画像</td><td></td><td></td><td>ヘッダと同じ transaction</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>QuestionnaireResponse</b> 臨床情報テンプレート</td><td><a href="StructureDefinition-fc-questionnaire-response.html">FC_QuestionnaireResponse</a></td><td></td><td>ヘッダと同じ transaction</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> patho-exam</td><td><a href="StructureDefinition-fc-patho-exam-task.html">FC_PathoExamTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>DiagnosticReport</b> 病理診断レポート</td><td><a href="StructureDefinition-fc-patho-diagnostic-report.html">FC_PathoDiagnosticReport</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  ├ </span><b>Specimen</b></td><td><a href="StructureDefinition-fc-patho-result-specimen.html">FC_PathoResultSpecimen</a></td><td><span style="white-space: nowrap;">親の <code>specimen</code> から参照</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  └ </span><b>Observation</b> セクションごと</td><td><a href="StructureDefinition-fc-patho-finding-observation.html">FC_PathoFindingObservation</a></td><td><span style="white-space: nowrap;">親の <code>result</code> から参照</span></td><td></td></tr>
+</tbody>
+</table>
 
 ### オーダー
 

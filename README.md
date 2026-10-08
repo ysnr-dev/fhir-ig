@@ -99,3 +99,4 @@ QA に残るエラーは、アプリ側の既知の非準拠(`known-issues.md` �
 - CodeSystem の display はアプリのコードにある表示名と一字一句合わせる(pattern に display を入れると `display-warnings` でも救われない)。
 - 例で名前付きスライスの拡張と URL 直書きの拡張を混ぜるときは、名前付きを先に書き、直書きは `extension[1]` から番号を振る(`extension[0]` や `[+]` は名前付きスライスと衝突する)。
 - 入れ子の `Questionnaire.item.item` には親プロファイルのスライス名が効かないので、拡張は URL 直書きにする。
+- オーダーなどのリソース構造は、罫線の木(``` ブロック)ではなく階層付きの HTML 表(`<table class="grid" style="clear: both;">`、列は リソース / プロファイル / 参照 / 主な要素・備考)で書く。1 列目は灰色の罫線(`├` `└` `│`)で字下げし、プロファイルは `StructureDefinition-<Id>.html` へのリンク、要素名は `<code>` にする。参照は 1 件ずつ `<span style="white-space: nowrap;">` で包み、`<code>` の後ろの空白は `&nbsp;` にする(テンプレートの `table code { white-space: normal; }` で `code` の直後から折り返すため)。既存のページの表を写して書き足す。

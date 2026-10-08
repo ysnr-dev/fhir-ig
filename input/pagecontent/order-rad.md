@@ -1,18 +1,21 @@
 ### 構造
 
-```
-ServiceRequest(ヘッダ、FC_RadOrderHeader)
- ├ ServiceRequest(明細 = 撮影項目、FC_RadOrderItem)  basedOn → ヘッダ
- │   └ ServiceRequest(セットの子項目)  basedOn → セットの明細
- ├ Appointment(予約、FC_Appointment)  basedOn → ヘッダ(予約が必要な項目のみ、同じ transaction)
- ├ Task(rad-exam、FC_RadExamTask)  focus → ヘッダ
- ├ Procedure(実施記録ハブ、FC_RadProcedure)  basedOn → ヘッダ
- │   ├ Procedure(2 件目以降の手技)  partOf → ハブ
- │   ├ MedicationAdministration(造影剤)  partOf → ハブ
- │   └ Observation(線量、FC_RadDoseObservation)  partOf → ハブ
- └ DiagnosticReport(読影レポート、FC_RadDiagnosticReport)  basedOn → ヘッダ
-     └ result → Observation(所見、FC_RadFindingsObservation)
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> ヘッダ</td><td><a href="StructureDefinition-fc-rad-order-header.html">FC_RadOrderHeader</a></td><td></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>ServiceRequest</b> 明細 = 撮影項目</td><td><a href="StructureDefinition-fc-rad-order-item.html">FC_RadOrderItem</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ └ </span><b>ServiceRequest</b> セットの子項目</td><td></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;セットの明細</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Appointment</b> 予約</td><td><a href="StructureDefinition-fc-appointment.html">FC_Appointment</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ(予約が必要な項目のみ、同じ transaction)</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> rad-exam</td><td><a href="StructureDefinition-fc-rad-exam-task.html">FC_RadExamTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Procedure</b> 実施記録ハブ</td><td><a href="StructureDefinition-fc-rad-procedure.html">FC_RadProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ ├ </span><b>Procedure</b> 2 件目以降の手技</td><td></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;ハブ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ ├ </span><b>MedicationAdministration</b> 造影剤</td><td><a href="StructureDefinition-fc-medication-administration.html">FC_MedicationAdministration</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;ハブ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ └ </span><b>Observation</b> 線量</td><td><a href="StructureDefinition-fc-rad-dose-observation.html">FC_RadDoseObservation</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;ハブ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>DiagnosticReport</b> 読影レポート</td><td><a href="StructureDefinition-fc-rad-diagnostic-report.html">FC_RadDiagnosticReport</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  └ </span><b>Observation</b> 所見</td><td><a href="StructureDefinition-fc-rad-findings-observation.html">FC_RadFindingsObservation</a></td><td><span style="white-space: nowrap;">親の <code>result</code> から参照</span></td><td></td></tr>
+</tbody>
+</table>
 
 ### オーダー
 

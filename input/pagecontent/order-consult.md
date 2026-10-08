@@ -1,13 +1,13 @@
 ### 構造
 
-```
-ServiceRequest(依頼、FC_ConsultOrder)
- │  code = 依頼の種類 / performer[0] = 依頼先の診療科 / performer[1] = 依頼先の医師 / reasonCode[0].text = 目的
- │  extension: consult-purpose-questionnaire-response / consult-reply
- ├ Task(consult、FC_ConsultTask)  focus → 依頼
- └ Composition(回答、FC_ClinicalNote)   ※ consult-reply 拡張がこれを指す
-     type = LOINC 11488-4 Consult note / event.code = consult-note-event#reply / event.detail → 依頼
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> 依頼</td><td><a href="StructureDefinition-fc-consult-order.html">FC_ConsultOrder</a></td><td></td><td><code>code</code> = 依頼の種類<br><code>performer[0]</code> = 依頼先の診療科<br><code>performer[1]</code> = 依頼先の医師<br><code>reasonCode[0].text</code> = 目的<br><code>extension</code>: consult-purpose-questionnaire-response / consult-reply</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> consult</td><td><a href="StructureDefinition-fc-consult-task.html">FC_ConsultTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;依頼</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Composition</b> 回答</td><td><a href="StructureDefinition-fc-clinical-note.html">FC_ClinicalNote</a></td><td><span style="white-space: nowrap;">event.detail → 依頼</span></td><td><code>type</code> = LOINC 11488-4 Consult note<br><code>event.code</code> = consult-note-event#reply<br>consult-reply 拡張がこれを指す</td></tr>
+</tbody>
+</table>
 
 - `status` は Task と連動して active → completed(回答済)/ revoked(取消)。
 - `occurrenceDateTime` = 希望日。日付軸ではなく status で絞る運用です。

@@ -2,14 +2,15 @@
 
 看護指示は指示 1 行ごとに 1 件の ServiceRequest で、ヘッダ・明細の区別がありません。
 
-```
-ServiceRequest(指示行、FC_NursingOrder)   ※ 同時入力した指示は requisition(nursing-order-requisition)で束ねる
- │  code = MEDIS 看護行為(master-nursingAction-16digits + 8 桁管理番号)または看護観察(master-nursingObservationKeyCode)、または text
- │  orderDetail[0].text = 条件 / extension: nursing-order-end / nursing-order-schedule(Timing)/ nursing-care-plan-activity(計画から展開)
- ├ Task(nursing、FC_NursingTask)  focus → 指示   ※ 登録時に requested で作られ、指示受けで accepted(owner = 看護師)
- ├ Observation(看護観察の記録、FC_NursingObservation)  basedOn → 指示
- └ Procedure(看護行為の実施、FC_NursingActionProcedure)  basedOn → 指示
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> 指示行</td><td><a href="StructureDefinition-fc-nursing-order.html">FC_NursingOrder</a></td><td></td><td><code>code</code> = MEDIS 看護行為(master-nursingAction-16digits + 8 桁管理番号)または看護観察(master-nursingObservationKeyCode)、または text<br><code>orderDetail[0].text</code> = 条件<br><code>extension</code>: nursing-order-end / nursing-order-schedule(Timing)/ nursing-care-plan-activity(計画から展開)<br>同時入力した指示は requisition(nursing-order-requisition)で束ねる</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> nursing</td><td><a href="StructureDefinition-fc-nursing-task.html">FC_NursingTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;指示</span></td><td>登録時に requested で作られ、指示受けで accepted(owner = 看護師)</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Observation</b> 看護観察の記録</td><td><a href="StructureDefinition-fc-nursing-observation.html">FC_NursingObservation</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;指示</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Procedure</b> 看護行為の実施</td><td><a href="StructureDefinition-fc-nursing-action-procedure.html">FC_NursingActionProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;指示</span></td><td></td></tr>
+</tbody>
+</table>
 
 - `category` は nursing + inpatient(常に入院)。`encounter` = 入院 Encounter(入院中でない患者にオーダーセット・パスから適用したときは付かない)。
 - `occurrenceDateTime` = 開始日、`nursing-order-end` = 終了日、`nursing-order-schedule` = 頻度(付いていない指示は随時)。

@@ -4,17 +4,20 @@
 
 ### 木の構造
 
-```
-CarePlan(適用 = 根、FC_PathwayApplyCarePlan)   partOf 無し(part-of:missing = true)
- ├ CarePlan(病日、FC_PathwayEventCarePlan)   partOf = [適用]
- │   ├ CarePlan(OAT 単位、FC_PathwayUnitCarePlan)   partOf = [適用, 病日]   goal → アウトカム Goal
- │   │   ├ CarePlan(アセスメント、FC_PathwayAssessmentCarePlan)   partOf = [適用, 病日, 単位]   goal → アセスメント Goal
- │   │   │   ├ Procedure(タスク、FC_PathwayTaskProcedure)   basedOn = [アセスメント, 出したオーダーのヘッダ]
- │   │   │   └ Observation(実測値、FC_PathwayResultObservation)   basedOn → アセスメント
- │   │   └ Observation(アウトカム評価、FC_PathwayEvaluationObservation)   basedOn → 単位
- │   │       └ Task(pathway-variance 通知)   focus → 評価、basedOn → 単位   ※ 重要アウトカムが未達成のとき
- └ Goal(適用の終了、FC_PathwayApplyGoal)   ※ 終了 / 中止のとき
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>CarePlan</b> 適用 = 根</td><td><a href="StructureDefinition-fc-pathway-apply-care-plan.html">FC_PathwayApplyCarePlan</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;無し(part-of:missing&nbsp;= true)</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>CarePlan</b> 病日</td><td><a href="StructureDefinition-fc-pathway-event-care-plan.html">FC_PathwayEventCarePlan</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;=&nbsp;[適用]</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ ├ </span><b>CarePlan</b> OAT 単位</td><td><a href="StructureDefinition-fc-pathway-unit-care-plan.html">FC_PathwayUnitCarePlan</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;=&nbsp;[適用, 病日]</span><br><span style="white-space: nowrap;"><code>goal</code>&nbsp;→&nbsp;アウトカム Goal</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ │ ├ </span><b>CarePlan</b> アセスメント</td><td><a href="StructureDefinition-fc-pathway-assessment-care-plan.html">FC_PathwayAssessmentCarePlan</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;=&nbsp;[適用, 病日, 単位]</span><br><span style="white-space: nowrap;"><code>goal</code>&nbsp;→&nbsp;アセスメント Goal</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ │ │ ├ </span><b>Procedure</b> タスク</td><td><a href="StructureDefinition-fc-pathway-task-procedure.html">FC_PathwayTaskProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;=&nbsp;[アセスメント, 出したオーダーのヘッダ]</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ │ │ └ </span><b>Observation</b> 実測値</td><td><a href="StructureDefinition-fc-pathway-result-observation.html">FC_PathwayResultObservation</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;アセスメント</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ │ └ </span><b>Observation</b> アウトカム評価</td><td><a href="StructureDefinition-fc-pathway-evaluation-observation.html">FC_PathwayEvaluationObservation</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;単位</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ │   └ </span><b>Task</b> pathway-variance 通知</td><td><a href="StructureDefinition-fc-pathway-variance-task.html">FC_PathwayVarianceTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;評価</span><br><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;単位</span></td><td>重要アウトカムが未達成のとき</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Goal</b> 適用の終了</td><td><a href="StructureDefinition-fc-pathway-apply-goal.html">FC_PathwayApplyGoal</a></td><td></td><td>終了 / 中止のとき</td></tr>
+</tbody>
+</table>
 
 - `partOf` は根から自分の親までの祖先すべてを持ちます(上流の `part-of` 検索で木を引くため)。
 - `category[0]` は 1 つの CodeableConcept に coding を 2 つ持ちます: `care-plan-type#clinical-pathway`(パスの印)と階層(`pathway-level`: apply / event / oat-unit / assessment)。display は付けません。OAT 単位とアセスメントは `category[1]` 以降に ePath の分類を追加で持ちます。

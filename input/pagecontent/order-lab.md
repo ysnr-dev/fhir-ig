@@ -1,16 +1,19 @@
 ### 構造
 
-```
-ServiceRequest(ヘッダ、FC_LabOrderHeader)
- ├ ServiceRequest(明細 = 項目、FC_LabOrderItem)  basedOn → ヘッダ
- │   ├ contained Specimen(#specimen、FC_LabOrderSpecimen)
- │   └ ServiceRequest(パネルの子項目)  basedOn → パネルの明細
- ├ Task(lab-exam、FC_LabExamTask)  focus → ヘッダ
- ├ Specimen(検体ラベル、採血管ごと、FC_LabLabelSpecimen)  request → ヘッダ   ※ backend が作る
- └ DiagnosticReport(結果報告、FC_LabDiagnosticReport)  basedOn → ヘッダ
-     ├ result → Observation(項目ごと、FC_LabResultObservation)
-     └ specimen → 検体ラベルの Specimen
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> ヘッダ</td><td><a href="StructureDefinition-fc-lab-order-header.html">FC_LabOrderHeader</a></td><td></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>ServiceRequest</b> 明細 = 項目</td><td><a href="StructureDefinition-fc-lab-order-item.html">FC_LabOrderItem</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ ├ </span><b>Specimen</b> #specimen</td><td><a href="StructureDefinition-fc-lab-order-specimen.html">FC_LabOrderSpecimen</a></td><td><span style="white-space: nowrap;">親の <code>contained</code></span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ └ </span><b>ServiceRequest</b> パネルの子項目</td><td></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;パネルの明細</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> lab-exam</td><td><a href="StructureDefinition-fc-lab-exam-task.html">FC_LabExamTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Specimen</b> 検体ラベル、採血管ごと</td><td><a href="StructureDefinition-fc-lab-label-specimen.html">FC_LabLabelSpecimen</a></td><td><span style="white-space: nowrap;"><code>request</code>&nbsp;→&nbsp;ヘッダ</span></td><td>backend が作る</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>DiagnosticReport</b> 結果報告</td><td><a href="StructureDefinition-fc-lab-diagnostic-report.html">FC_LabDiagnosticReport</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  ├ </span><b>Observation</b> 項目ごと</td><td><a href="StructureDefinition-fc-lab-result-observation.html">FC_LabResultObservation</a></td><td><span style="white-space: nowrap;">親の <code>result</code> から参照</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  └ </span><b>Specimen</b> 検体ラベル。上の Specimen と同じもの</td><td></td><td><span style="white-space: nowrap;">親の <code>specimen</code> から参照</span></td><td></td></tr>
+</tbody>
+</table>
 
 ### オーダー
 

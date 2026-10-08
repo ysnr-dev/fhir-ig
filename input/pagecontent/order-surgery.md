@@ -1,21 +1,21 @@
 ### 構造
 
-```
-ServiceRequest(ヘッダ = 申込、FC_SurgeryOrderHeader)
- │  extension: surgery-room / surgery-department / surgery-duration / surgery-position / surgery-estimated-blood-loss /
- │             surgery-staff(0..*) / surgery-anesthesia-method(0..*) / surgery-anesthesia-management / surgery-blood-preparation /
- │             surgery-equipment(0..*) / surgery-specimen-plan(0..*) / surgery-consent(0..*) / surgery-preop-instruction(-questionnaire-response)
- ├ ServiceRequest(術式明細、FC_SurgeryOrderItem、identifier 1 = 主術式)  basedOn → ヘッダ
- ├ Task(surgery、FC_SurgeryTask)  focus → ヘッダ
- ├ Procedure(実施記録ハブ、FC_SurgeryProcedure)  basedOn → ヘッダ
- │   ├ Procedure(2 件目以降の術式)  partOf → ハブ
- │   ├ MedicationAdministration(薬剤)  partOf → ハブ
- │   └ Observation(出血量 / 尿量 / 輸血量、FC_SurgeryObservation)  partOf → ハブ
- └ Procedure(麻酔チャート、FC_AnesthesiaChartProcedure)  basedOn → ヘッダ
-     ├ Observation(バイタル、FC_AnesthesiaVitalObservation)  partOf → 麻酔チャート
-     ├ Observation(イベント、FC_AnesthesiaEventObservation)  partOf → 麻酔チャート
-     └ MedicationAdministration(麻酔薬)  partOf → 麻酔チャート
-```
+<table class="grid" style="clear: both;">
+<thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
+<tbody>
+<tr><td style="white-space: nowrap;"><b>ServiceRequest</b> ヘッダ = 申込</td><td><a href="StructureDefinition-fc-surgery-order-header.html">FC_SurgeryOrderHeader</a></td><td></td><td><code>extension</code>: surgery-room / surgery-department / surgery-duration / surgery-position / surgery-estimated-blood-loss / surgery-staff(0..*) / surgery-anesthesia-method(0..*) / surgery-anesthesia-management / surgery-blood-preparation / surgery-equipment(0..*) / surgery-specimen-plan(0..*) / surgery-consent(0..*) / surgery-preop-instruction(-questionnaire-response)</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>ServiceRequest</b> 術式明細、identifier 1 = 主術式</td><td><a href="StructureDefinition-fc-surgery-order-item.html">FC_SurgeryOrderItem</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> surgery</td><td><a href="StructureDefinition-fc-surgery-task.html">FC_SurgeryTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Procedure</b> 実施記録ハブ</td><td><a href="StructureDefinition-fc-surgery-procedure.html">FC_SurgeryProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ ├ </span><b>Procedure</b> 2 件目以降の術式</td><td></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;ハブ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ ├ </span><b>MedicationAdministration</b> 薬剤</td><td><a href="StructureDefinition-fc-medication-administration.html">FC_MedicationAdministration</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;ハブ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">│ └ </span><b>Observation</b> 出血量 / 尿量 / 輸血量</td><td><a href="StructureDefinition-fc-surgery-observation.html">FC_SurgeryObservation</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;ハブ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">└ </span><b>Procedure</b> 麻酔チャート</td><td><a href="StructureDefinition-fc-anesthesia-chart-procedure.html">FC_AnesthesiaChartProcedure</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  ├ </span><b>Observation</b> バイタル</td><td><a href="StructureDefinition-fc-anesthesia-vital-observation.html">FC_AnesthesiaVitalObservation</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;麻酔チャート</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  ├ </span><b>Observation</b> イベント</td><td><a href="StructureDefinition-fc-anesthesia-event-observation.html">FC_AnesthesiaEventObservation</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;麻酔チャート</span></td><td></td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">  └ </span><b>MedicationAdministration</b> 麻酔薬</td><td><a href="StructureDefinition-fc-medication-administration.html">FC_MedicationAdministration</a></td><td><span style="white-space: nowrap;"><code>partOf</code>&nbsp;→&nbsp;麻酔チャート</span></td><td></td></tr>
+</tbody>
+</table>
 
 ### 申込
 
