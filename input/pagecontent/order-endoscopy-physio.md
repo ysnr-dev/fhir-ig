@@ -27,7 +27,7 @@
 | 特別指示テンプレート | `endoscopy-remarks-questionnaire-response` | `physio-remarks-questionnaire-response` |
 | 明細番号 | `IdSystem/endoscopy-order-item-number` | `IdSystem/physio-order-item-number` |
 
-`priority` は routine / urgent / asap。分割と予約は放射線検査と同じです。
+`priority` は routine / urgent / asap。分割・予約・日付未定(`occurrenceDateTime` を持たないオーダーと、部門一覧からの予約)は[放射線検査](order-rad.html)と同じです。
 
 ### 実施記録
 

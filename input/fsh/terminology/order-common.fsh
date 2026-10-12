@@ -16,6 +16,7 @@ Description: "ServiceRequest.category の先頭要素、および実施記録 Pr
 * #treatment "処置"
 * #rehab "リハビリ"
 * #consult "他科依頼"
+* #team-request "チーム依頼"
 * #nursing "看護指示"
 * #meal "食事"
 * #transfusion "輸血"
@@ -83,6 +84,7 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #treatment "処置"
 * #rehab "リハビリ"
 * #consult "他科依頼"
+* #team-request "チーム依頼"
 * #nursing "看護指示"
 * #transfusion "輸血"
 * #nutrition-guidance "栄養指導"
@@ -102,6 +104,8 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #note-countersign "カルテ承認"
 * #note-returned "カルテ差戻し"
 * #dpc-recoding-due "DPC再判定"
+* #rx-inquiry "疑義照会"
+* #rx-inquiry-answered "疑義照会回答"
 
 ValueSet: TaskCodeVS
 Id: task-code-vs

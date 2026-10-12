@@ -3,6 +3,7 @@
 診療記録は **Composition**([FC_ClinicalNote](StructureDefinition-fc-clinical-note.html))です。
 
 - `type` = LOINC 11506-3 Progress note。他科依頼への回答は 11488-4 Consult note で、`event.code` = `consult-note-event#reply`、`event.detail` = 依頼の ServiceRequest。
+- チーム依頼の回診記録は Progress note のまま `category` = `clinical-note-category#team-round`、`event.code` = `consult-note-event#round`、`event.detail` = チーム依頼の ServiceRequest です([チーム医療・褥瘡](care-team.html))。
 - `status`: preliminary / final / amended。final の記録を編集すると必ず amended になります。final 以降は `attester`(mode = legal)。
 - `author` 1..*(上流サーバーが必須にする)。`title` は診療記録タイトルマスタの文字列(既定「診療記録」)。記録した診療科(他科依頼の回答では回答した科)は `order-department`。
 - `section`: 任意の問題セクション(LOINC 11450-4、entry = Condition)と本文セクション。

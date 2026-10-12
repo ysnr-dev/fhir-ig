@@ -20,7 +20,7 @@
 ### オーダー
 
 - `priority` は routine / urgent / asap(事後 = 実施後に登録)。
-- `occurrenceDateTime` は撮影日。時刻を指定したときはオフセット付きの dateTime。
+- `occurrenceDateTime` は撮影日。時刻を指定したときはオフセット付きの dateTime。日付未定で出したオーダー(至急・事後では使わない)はヘッダも明細も `occurrenceDateTime` を持ちません。
 - 明細の `code.coding`: 院内項目コード(`rad-order-item`)、JJ1017 32 桁(`jj1017-32`、全 0 なら省略)、前半 16 桁(`jj1017-16m`)、後半 16 桁(`jj1017-16s`)、略称。
 - 明細の `category` = モダリティ(`jj1017-modality`)、`bodySite` = 部位(`jj1017p`)+ 左右(`jj1017-laterality`)。
 - 検査目的・特別指示のテンプレート記入は `rad-exam-purpose*` / `rad-remarks-questionnaire-response` 拡張。
@@ -28,6 +28,8 @@
 #### 分割と予約
 
 グループ化できない項目(単純撮影以外など、マスタの `groupable = false`)は項目ごとに別のヘッダ + 明細に分割し、1 つの transaction で登録します。予約が必要な項目は Appointment と Slot(busy への PUT)を同じ transaction に含めます。
+
+日付未定のオーダーは予約を含めずに登録します。後で部門一覧から予約を取ると、Appointment と Slot に加えて、ヘッダと明細の `occurrenceDateTime` を予約枠の開始日時(オフセット付き)にして PUT する 1 つの transaction になります(一覧で読んだ版を `If-Match` に添える)。上流の検索では `occurrence:missing=true` で日付未定のヘッダを引きます。
 
 ### 実施記録
 

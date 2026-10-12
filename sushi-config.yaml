@@ -70,6 +70,8 @@ pages:
       title: リハビリ
     order-consult.md:
       title: 他科依頼
+    care-team.md:
+      title: チーム医療・褥瘡
     order-nursing.md:
       title: 看護指示
     order-meal.md:
@@ -94,6 +96,8 @@ pages:
     title: クリニカルパス
   nursing-care-plan.md:
     title: 看護計画・看護サマリー
+  nursing-acuity.md:
+    title: 重症度、医療・看護必要度
   questionnaire.md:
     title: Questionnaire / QuestionnaireResponse
   dpc-form1.md:
@@ -125,6 +129,7 @@ menu:
     診療記録: records.html
     クリニカルパス: pathway.html
     看護計画・看護サマリー: nursing-care-plan.html
+    重症度、医療・看護必要度: nursing-acuity.html
     Questionnaire: questionnaire.html
     DPC 様式1・診断群分類: dpc-form1.html
   管理:

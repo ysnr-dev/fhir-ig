@@ -243,8 +243,6 @@ Description: "調剤 進捗 Task の例(調剤済)"
 * authoredOn = "2026-04-01T12:00:00+09:00"
 * lastModified = "2026-04-01T15:00:00+09:00"
 * executionPeriod.start = "2026-04-01T12:00:00+09:00"
-* note.time = "2026-04-01T13:00:00+09:00"
-* note.text = "用量確認済み"
 
 Instance: example-injection-task
 InstanceOf: FC_InjectionTask
@@ -679,3 +677,89 @@ Description: "指導医が研修医の診療記録を差し戻したときの、
 * input[note].valueString = "診療記録（2026-04-03）"
 * input[reason].type.text = "理由"
 * input[reason].valueString = "身体所見を追記してください"
+
+Instance: example-rx-inquiry-task
+InstanceOf: FC_RxInquiryTask
+Usage: #example
+Title: "疑義照会 通知の例(回答済み)"
+Description: "薬剤部が処方医に送った疑義照会に、処方医が「処方を変更する」と回答した後の通知。"
+* status = #completed
+* intent = #filler-order
+* priority = #urgent
+* code = $task-code#rx-inquiry "疑義照会"
+* code.text = "疑義照会"
+* focus = Reference(ServiceRequest/example-prescription-order)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* requester = Reference(Practitioner/example-pharmacist)
+* requester.display = "薬剤 花子"
+* basedOn = Reference(ServiceRequest/example-prescription-order)
+* authoredOn = "2026-04-01T13:00:00+09:00"
+* lastModified = "2026-04-01T13:30:00+09:00"
+* description = "疑義照会: eGFR 28 のためメトホルミンの継続可否をご確認ください"
+* input[question].type.text = "照会内容"
+* input[question].valueString = "eGFR 28 のためメトホルミンの継続可否をご確認ください"
+* input[orderKind].type.text = "オーダー種別"
+* input[orderKind].valueString = "prescription"
+* input[orderLabel].type.text = "オーダー"
+* input[orderLabel].valueString = "処方 2026-04-02 メトホルミン塩酸塩錠250mg"
+* executionPeriod.start = "2026-04-01T13:00:00+09:00"
+* executionPeriod.end = "2026-04-01T13:30:00+09:00"
+* note.authorReference = Reference(Practitioner/example-practitioner)
+* note.authorReference.display = "山田 一郎"
+* note.time = "2026-04-01T13:30:00+09:00"
+* note.text = "回答しました。"
+* output[answer].type.text = "回答区分"
+* output[answer].valueCodeableConcept = $rx-inquiry-answer#order-change "処方を変更する"
+* output[answerText].type.text = "回答"
+* output[answerText].valueString = "中止して処方し直します"
+
+Instance: example-rx-inquiry-answered-task
+InstanceOf: FC_RxInquiryAnsweredTask
+Usage: #example
+Title: "疑義照会回答 通知の例"
+Description: "処方医の回答を、照会した薬剤師に知らせる通知。"
+* status = #requested
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#rx-inquiry-answered "疑義照会回答"
+* code.text = "疑義照会回答"
+* focus = Reference(ServiceRequest/example-prescription-order)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-pharmacist)
+* owner.display = "薬剤 花子"
+* requester = Reference(Practitioner/example-practitioner)
+* requester.display = "山田 一郎"
+* basedOn = Reference(ServiceRequest/example-prescription-order)
+* authoredOn = "2026-04-01T13:30:00+09:00"
+* lastModified = "2026-04-01T13:30:00+09:00"
+* description = "疑義照会の回答: 処方を変更する 中止して処方し直します"
+* input[question].type.text = "照会内容"
+* input[question].valueString = "eGFR 28 のためメトホルミンの継続可否をご確認ください"
+* input[orderKind].type.text = "オーダー種別"
+* input[orderKind].valueString = "prescription"
+* input[orderLabel].type.text = "オーダー"
+* input[orderLabel].valueString = "処方 2026-04-02 メトホルミン塩酸塩錠250mg"
+* input[answer].type.text = "回答区分"
+* input[answer].valueString = "処方を変更する"
+* input[answerText].type.text = "回答"
+* input[answerText].valueString = "中止して処方し直します"
+
+Instance: example-rx-dispense-task-on-hold
+InstanceOf: FC_RxDispenseTask
+Usage: #example
+Title: "調剤 進捗 Task の例(処方変更待ち)"
+Description: "疑義照会に「処方を変更する」と回答があり、処方医がオーダーを保存し直すまで止めている調剤の進捗。"
+* status = #on-hold
+* statusReason = $rx-hold-reason#order-change "処方変更待ち"
+* statusReason.text = "処方変更待ち"
+* intent = #filler-order
+* code = $task-code#rx-dispense "調剤"
+* code.text = "調剤"
+* focus = Reference(ServiceRequest/example-prescription-order)
+* for = Reference(Patient/example-patient)
+* requester = Reference(Practitioner/example-practitioner)
+* authoredOn = "2026-04-01T12:00:00+09:00"
+* lastModified = "2026-04-01T13:30:00+09:00"
+* executionPeriod.start = "2026-04-01T12:00:00+09:00"

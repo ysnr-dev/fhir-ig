@@ -13,6 +13,7 @@
 | treatment 処置 | ヘッダ + 明細 | [FC_TreatmentOrderHeader](StructureDefinition-fc-treatment-order-header.html) | [FC_TreatmentOrderItem](StructureDefinition-fc-treatment-order-item.html) | treatment | Procedure ハブ | [処置](order-treatment.html) |
 | rehab リハビリ | 単一 | [FC_RehabOrder](StructureDefinition-fc-rehab-order.html) | 無し | rehab | 回ごとの Procedure | [リハビリ](order-rehab.html) |
 | consult 他科依頼 | 単一 | [FC_ConsultOrder](StructureDefinition-fc-consult-order.html) | 無し | consult | 回答 Composition | [他科依頼](order-consult.html) |
+| team-request チーム依頼 | 単一 | [FC_TeamRequestOrder](StructureDefinition-fc-team-request-order.html) | 無し | team-request | 回診記録 Composition | [チーム医療・褥瘡](care-team.html) |
 | nursing 看護指示 | 指示行ごとに単一 | [FC_NursingOrder](StructureDefinition-fc-nursing-order.html) | 無し | nursing | 看護観察 Observation / 看護行為 Procedure | [看護指示](order-nursing.html) |
 | meal 食事 | 単一 | [FC_MealOrder](StructureDefinition-fc-meal-order.html) | 無し | 無し | 摂取量 Observation | [食事](order-meal.html) |
 | transfusion 輸血 | ヘッダ + 製剤明細 | [FC_TransfusionOrderHeader](StructureDefinition-fc-transfusion-order-header.html) | [FC_TransfusionOrderItem](StructureDefinition-fc-transfusion-order-item.html) | transfusion | Procedure ハブ | [輸血](order-transfusion.html) |

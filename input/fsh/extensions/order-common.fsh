@@ -12,11 +12,11 @@ Context: ServiceRequest, MedicationRequest, DiagnosticReport, Composition, Quest
 Extension: OrderWard
 Id: order-ward
 Title: "オーダー時の病棟"
-Description: "入院オーダーを出した時点の病棟(Location)。外来オーダーには付かない。看護サマリー(Composition)では作成時の病棟で、病棟単位の承認一覧はこれで検索する。"
-Context: ServiceRequest, MedicationRequest, Composition
+Description: "入院オーダーを出した時点の病棟(Location)。外来オーダーには付かない。看護サマリー(Composition)では作成時の病棟で、病棟単位の承認一覧はこれで検索する。看護必要度の評価(Observation)では評価した日の届出単位で、病室単位の届出(ICU など)なら病室を指す。"
+Context: ServiceRequest, MedicationRequest, Composition, Observation
 * insert FCMeta
 * value[x] only Reference(Location)
-* valueReference only Reference(FC_Ward)
+* valueReference only Reference(FC_Ward or FC_HospitalRoom)
 
 Extension: OrderSet
 Id: order-set

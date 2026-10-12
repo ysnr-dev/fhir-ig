@@ -4,13 +4,13 @@ Profile: FC_EndoscopyOrderHeader
 Parent: FC_OrderHeader
 Id: fc-endoscopy-order-header
 Title: "内視鏡オーダー ヘッダ"
-Description: "内視鏡オーダーのヘッダ。分割・予約は放射線検査と同じ。"
+Description: "内視鏡オーダーのヘッダ。分割・予約・日付未定は放射線検査と同じ。"
 * category[orderType] = $order-type#endoscopy "内視鏡"
 * priority 1..1 MS
 * priority from FCPriorityExamVS (required)
 * code 0..0
-* occurrenceDateTime 1..1
-* occurrenceDateTime ^short = "実施日(時)"
+* occurrenceDateTime 0..1 MS
+* occurrenceDateTime ^short = "実施日(時)。日付未定のオーダーでは無し"
 
 Profile: FC_EndoscopyOrderItem
 Parent: FC_OrderItem
@@ -41,13 +41,13 @@ Profile: FC_PhysioOrderHeader
 Parent: FC_OrderHeader
 Id: fc-physio-order-header
 Title: "生理検査オーダー ヘッダ"
-Description: "生理検査オーダーのヘッダ。分割・予約は放射線検査と同じ。"
+Description: "生理検査オーダーのヘッダ。分割・予約・日付未定は放射線検査と同じ。"
 * category[orderType] = $order-type#physio "生理検査"
 * priority 1..1 MS
 * priority from FCPriorityExamVS (required)
 * code 0..0
-* occurrenceDateTime 1..1
-* occurrenceDateTime ^short = "実施日(時)"
+* occurrenceDateTime 0..1 MS
+* occurrenceDateTime ^short = "実施日(時)。日付未定のオーダーでは無し"
 
 Profile: FC_PhysioOrderItem
 Parent: FC_OrderItem

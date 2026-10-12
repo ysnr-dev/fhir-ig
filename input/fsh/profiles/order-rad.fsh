@@ -4,13 +4,13 @@ Profile: FC_RadOrderHeader
 Parent: FC_OrderHeader
 Id: fc-rad-order-header
 Title: "放射線検査オーダー ヘッダ"
-Description: "放射線検査オーダーのヘッダ。occurrenceDateTime は撮影日(時刻を指定したときは時刻付き)。グループ化できない項目(単純撮影以外など)は項目ごとにヘッダ + 明細に分割し、1 つの transaction で登録する。予約が必要な項目は Appointment / Slot を同じ transaction に含める。"
+Description: "放射線検査オーダーのヘッダ。occurrenceDateTime は撮影日(時刻を指定したときは時刻付き)。日付未定のオーダー(通常の至急区分だけ)は occurrenceDateTime を持たず、予約も含めない。部門一覧から予約を取ると、同じ transaction でヘッダと明細に予約枠の開始日時を入れる。グループ化できない項目(単純撮影以外など)は項目ごとにヘッダ + 明細に分割し、1 つの transaction で登録する。予約が必要な項目は Appointment / Slot を同じ transaction に含める。"
 * category[orderType] = $order-type#rad "放射線検査"
 * priority 1..1 MS
 * priority from FCPriorityExamVS (required)
 * code 0..0
-* occurrenceDateTime 1..1
-* occurrenceDateTime ^short = "撮影日(時)"
+* occurrenceDateTime 0..1 MS
+* occurrenceDateTime ^short = "撮影日(時)。日付未定のオーダーでは無し"
 
 Profile: FC_RadOrderItem
 Parent: FC_OrderItem

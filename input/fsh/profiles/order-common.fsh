@@ -66,7 +66,7 @@ Description: """各部門オーダーのヘッダ ServiceRequest の共通形。
 
 - basedOn を持たない ServiceRequest がヘッダ。明細は basedOn でヘッダを指す。
 - category の先頭がオーダー種別(order-type)。実施記録(Procedure)と同じく順序を固定する(上流サーバーは ServiceRequest の category をすべての coding で索引する)。
-- authoredOn は登録日時(システム時刻、更新しても変えない)。occurrenceDateTime はオーダー開始日(実施予定日)。occurrencePeriod は使わない(上流が索引しない)。
+- authoredOn は登録日時(システム時刻、更新しても変えない)。occurrenceDateTime はオーダー開始日(実施予定日)。日程未定の手術と、日付未定で出した放射線・生理・内視鏡は持たない。occurrencePeriod は使わない(上流が索引しない)。
 - requester は依頼医(Practitioner)。依頼科と病棟は拡張で持つ。
 - 対象の問題は reasonReference(Condition)、コメントは note[0].text。"""
 * insert FCMeta

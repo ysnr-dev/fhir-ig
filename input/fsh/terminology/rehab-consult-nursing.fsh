@@ -51,9 +51,10 @@ Description: "他科依頼の種類 ValueSet。"
 CodeSystem: ConsultNoteEventCS
 Id: consult-note-event
 Title: "診療記録のイベント(他科依頼)"
-Description: "他科依頼への回答の Composition.event.code。event.detail が依頼の ServiceRequest を指す。"
+Description: "他科依頼への回答・チーム依頼の回診記録の Composition.event.code。event.detail が依頼の ServiceRequest を指す。"
 * insert EnumCS
 * #reply "他科依頼への回答"
+* #round "チーム依頼の回診"
 
 ValueSet: ConsultNoteEventVS
 Id: consult-note-event-vs

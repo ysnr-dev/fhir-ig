@@ -35,6 +35,18 @@ Description: "requested 処方済 / accepted 計画中 / in-progress 治療中 /
 * $task-status#completed
 * $task-status#cancelled
 
+ValueSet: FCTaskStatusRxVS
+Id: fc-task-status-rx-vs
+Title: "調剤・注射 Task の状態"
+Description: "調剤・注射の進捗 Task の状態。作業中(in-progress)に加えて、疑義照会の間の on-hold(照会中・処方変更待ち)がある。"
+* insert FCMeta
+* $task-status#requested
+* $task-status#accepted
+* $task-status#on-hold
+* $task-status#in-progress
+* $task-status#completed
+* $task-status#cancelled
+
 ValueSet: FCTaskStatusNursingVS
 Id: fc-task-status-nursing-vs
 Title: "看護指示 Task の状態"
@@ -226,22 +238,25 @@ Profile: FC_RxDispenseTask
 Parent: FC_DepartmentTask
 Id: fc-rx-dispense-task
 Title: "調剤 進捗 Task"
-Description: "処方の調剤進捗。requested 依頼済 / accepted 受付済(処方箋発行)/ in-progress 調剤済 / completed 実施済 / cancelled 中止。note[] に疑義照会(時刻付き)。executionPeriod.start は最初に受付または調剤した時刻で、end は completed のときだけ持つ(調剤済 in-progress では start だけ)。statusReason.text = レジメンの日オーダーを中止した理由(cancelled のときだけ)。"
+Description: "処方の調剤進捗。requested 依頼済 / accepted 受付済(処方箋発行)/ on-hold 照会中・処方変更待ち / in-progress 調剤済 / completed 実施済 / cancelled 中止。疑義照会は通知 Task(rx-inquiry)で持ち、回答を待つ間は on-hold にする(statusReason = rx-hold-reason)。executionPeriod.start は最初に受付または調剤した時刻で、end は completed のときだけ持つ(受付済・照会中・調剤済では start だけ)。statusReason.text = レジメンの日オーダーを中止した理由(cancelled のとき)。"
 * code = $task-code#rx-dispense "調剤"
-* status from FCTaskStatusInProgressVS (required)
+* status from FCTaskStatusRxVS (required)
 * focus only Reference(FC_PrescriptionOrder)
-* note ^short = "疑義照会"
-* statusReason.text ^short = "レジメンの日オーダーを中止した理由(cancelled のときだけ。中止取消で消える)"
+* note ^short = "疑義照会の記録(疑義照会の通知を使う前に書かれたもの。読むだけ)"
+* statusReason ^short = "on-hold では止めている理由(rx-hold-reason)、cancelled ではレジメンの日オーダーを中止した理由(text だけ。中止取消で消える)"
+* statusReason.coding from RxHoldReasonVS (required)
 
 Profile: FC_InjectionTask
 Parent: FC_DepartmentTask
 Id: fc-injection-task
 Title: "注射 進捗 Task"
-Description: "注射(1 日分の ServiceRequest)の進捗。requested 依頼済 / accepted 受付済 / in-progress 払出済 / completed 実施済 / cancelled 中止。実施記録の数が timing.event の数に達したら completed。statusReason.text = レジメンの日オーダーを中止した理由(cancelled のときだけ)。"
+Description: "注射(1 日分の ServiceRequest)の進捗。requested 依頼済 / accepted 受付済 / on-hold 照会中・処方変更待ち / in-progress 払出済 / completed 実施済 / cancelled 中止。実施記録の数が timing.event の数に達したら completed。疑義照会の回答を待つ間は on-hold(statusReason = rx-hold-reason)。statusReason.text = レジメンの日オーダーを中止した理由(cancelled のとき)。"
 * code = $task-code#injection "注射"
-* status from FCTaskStatusInProgressVS (required)
+* status from FCTaskStatusRxVS (required)
 * focus only Reference(FC_InjectionOrder)
-* statusReason.text ^short = "レジメンの日オーダーを中止した理由(cancelled のときだけ。中止取消で消える)"
+* note ^short = "疑義照会の記録(疑義照会の通知を使う前に書かれたもの。読むだけ)"
+* statusReason ^short = "on-hold では止めている理由(rx-hold-reason)、cancelled ではレジメンの日オーダーを中止した理由(text だけ。中止取消で消える)"
+* statusReason.coding from RxHoldReasonVS (required)
 
 Profile: FC_BroughtMedReviewTask
 Parent: Task
@@ -617,3 +632,62 @@ Description: "指導医が研修医・学生の診療記録を差し戻したと
 * input[note].value[x] only string
 * input[reason].type.text = "理由"
 * input[reason].value[x] only string
+
+Profile: FC_RxInquiryTask
+Parent: FC_NotificationTask
+Id: fc-rx-inquiry-task
+Title: "疑義照会 通知"
+Description: "薬剤部から処方医への疑義照会(処方・注射)。照会 1 件が通知 1 件。priority = urgent(回答があるまで調剤・払出を止めるため)。focus と basedOn = オーダーのヘッダ ServiceRequest、owner = オーダーの依頼医、requester = 照会した薬剤師。description = 「疑義照会: 照会内容」。input: 照会内容 / オーダー種別(prescription / injection)/ オーダー(一覧に出す要約)(いずれも valueString)。処方医が回答すると completed になり、output に回答区分(rx-inquiry-answer)と回答(文があるときだけ)が付く(note = 回答したこと)。薬剤部が取り下げると cancelled。同じ transaction で進捗 Task(rx-dispense / injection)を on-hold にし、回答で受付済へ戻す(「処方を変更する」なら処方医がオーダーを保存するまで on-hold のまま)。"
+* code = $task-code#rx-inquiry "疑義照会"
+* priority = #urgent
+* focus only Reference(FC_PrescriptionOrder or FC_InjectionOrder)
+* basedOn only Reference(FC_PrescriptionOrder or FC_InjectionOrder)
+* insert TaskInputSlicing
+* input contains
+    question 1..1 and
+    orderKind 1..1 and
+    orderLabel 1..1
+* input[question].type.text = "照会内容"
+* input[question].value[x] only string
+* input[orderKind].type.text = "オーダー種別"
+* input[orderKind].value[x] only string
+* input[orderLabel].type.text = "オーダー"
+* input[orderLabel].value[x] only string
+* output ^slicing.discriminator[0].type = #value
+* output ^slicing.discriminator[0].path = "type.text"
+* output ^slicing.rules = #open
+* output contains
+    answer 0..1 and
+    answerText 0..1
+* output[answer].type.text = "回答区分"
+* output[answer].value[x] only CodeableConcept
+* output[answer].valueCodeableConcept from RxInquiryAnswerVS (required)
+* output[answerText].type.text = "回答"
+* output[answerText].value[x] only string
+
+Profile: FC_RxInquiryAnsweredTask
+Parent: FC_NotificationTask
+Id: fc-rx-inquiry-answered-task
+Title: "疑義照会回答 通知"
+Description: "処方医が疑義照会に回答したときの、照会した薬剤師宛の通知。priority = routine。focus と basedOn = オーダーのヘッダ ServiceRequest、owner = 照会した薬剤師(照会の requester)、requester = 回答した医師。description = 「疑義照会の回答: 回答区分 回答」。input: 照会内容 / オーダー種別 / オーダー / 回答区分(表示名)/ 回答(文があるときだけ)(いずれも valueString)。調剤登録・払出登録で completed になる(note = 回答を受けて調剤したこと)。"
+* code = $task-code#rx-inquiry-answered "疑義照会回答"
+* priority = #routine
+* focus only Reference(FC_PrescriptionOrder or FC_InjectionOrder)
+* basedOn only Reference(FC_PrescriptionOrder or FC_InjectionOrder)
+* insert TaskInputSlicing
+* input contains
+    question 1..1 and
+    orderKind 1..1 and
+    orderLabel 1..1 and
+    answer 1..1 and
+    answerText 0..1
+* input[question].type.text = "照会内容"
+* input[question].value[x] only string
+* input[orderKind].type.text = "オーダー種別"
+* input[orderKind].value[x] only string
+* input[orderLabel].type.text = "オーダー"
+* input[orderLabel].value[x] only string
+* input[answer].type.text = "回答区分"
+* input[answer].value[x] only string
+* input[answerText].type.text = "回答"
+* input[answerText].value[x] only string

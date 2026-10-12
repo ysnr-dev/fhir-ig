@@ -105,3 +105,32 @@ Id: insulin-scale-set
 Title: "インスリンスケールセット(院内マスタ)"
 Description: "code = backend のスケールセットの id、display = セット名。insulin-scale 拡張の set(セットから写したまま行を直していないときだけ付く)。"
 * insert MasterCS
+
+CodeSystem: RxInquiryAnswerCS
+Id: rx-inquiry-answer
+Title: "疑義照会の回答区分"
+Description: "疑義照会 Task(rx-inquiry)の output「回答区分」。"
+* insert EnumCS
+* #as-ordered "処方どおり"
+* #pharmacy-change "薬剤部で変更してよい"
+* #order-change "処方を変更する"
+
+ValueSet: RxInquiryAnswerVS
+Id: rx-inquiry-answer-vs
+Title: "疑義照会の回答区分 ValueSet"
+Description: "疑義照会の回答区分 ValueSet。"
+* insert AllOf(RxInquiryAnswerCS)
+
+CodeSystem: RxHoldReasonCS
+Id: rx-hold-reason
+Title: "調剤・注射の進捗を止めている理由"
+Description: "調剤・注射の進捗 Task が on-hold のときの statusReason。inquiry = 疑義照会の回答待ち、order-change = 回答を受けた処方の変更待ち。"
+* insert EnumCS
+* #inquiry "照会中"
+* #order-change "処方変更待ち"
+
+ValueSet: RxHoldReasonVS
+Id: rx-hold-reason-vs
+Title: "調剤・注射の進捗を止めている理由 ValueSet"
+Description: "調剤・注射の進捗を止めている理由 ValueSet。"
+* insert AllOf(RxHoldReasonCS)

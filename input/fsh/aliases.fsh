@@ -107,3 +107,5 @@ Alias: $jaspehr-questionnaireresponse = http://www.hosp.ncgm.go.jp/JASPEHR/fhir/
 Alias: $ePath-sd = http://e-path.jp/fhir/ePath/StructureDefinition
 Alias: $ePath-cs = http://e-path.jp/fhir/ePath/CodeSystem
 Alias: $ePath-id = http://e-path.jp/fhir/ePath/IdSystem
+Alias: $rx-inquiry-answer = http://fhir-client.local/CodeSystem/rx-inquiry-answer
+Alias: $rx-hold-reason = http://fhir-client.local/CodeSystem/rx-hold-reason

@@ -7,6 +7,7 @@ Title: "診療記録"
 Description: """診療記録(SOAP 等)。
 
 - type = LOINC 11506-3 Progress note。他科依頼への回答は 11488-4 Consult note で、event.code = consult-note-event#reply、event.detail = 依頼の ServiceRequest。
+- チーム依頼の回診記録は Progress note のまま category = clinical-note-category#team-round、event.code = consult-note-event#round、event.detail = チーム依頼の ServiceRequest。
 - status: preliminary / final / amended(final の記録を編集すると必ず amended)。final 以降は attester(mode legal、time、party)。
 - author 1..*(上流サーバーが必須にする)。title は診療記録タイトルマスタの文字列(既定「診療記録」)。order-department。
 - section: 任意の問題セクション(LOINC 11450-4、entry = Condition)と本文セクション(61150-9 S / 61149-1 O / 51848-0 A / 18776-5 P / 51847-2 A/P / 77599-9 自由記載)。本文は text.status = additional の XHTML で、画像は data URI で埋め込む。
@@ -18,13 +19,13 @@ Description: """診療記録(SOAP 等)。
 * subject only Reference(FC_Patient)
 * type.coding 1..1
 * type.coding.system = $loinc
-* category 0..2
+* category 0..3
 * category from ClinicalNoteCategoryVS (required)
 * author 1..*
 * author only Reference(FC_Practitioner)
 * attester.party only Reference(FC_Practitioner)
 * event.code.coding.system = "http://fhir-client.local/CodeSystem/consult-note-event"
-* event.detail only Reference(FC_ConsultOrder)
+* event.detail only Reference(FC_ConsultOrder or FC_TeamRequestOrder)
 * section.code.coding.system = $loinc
 * section.entry only Reference(FC_Condition)
 * section.extension contains ClinicalNoteSectionQuestionnaireResponse named questionnaireResponse 0..1
