@@ -116,6 +116,30 @@ Description: "外来受診の例"
 * location[0].location = Reference(Location/example-outpatient-room)
 * location[0].status = #completed
 
+Instance: example-outpatient-encounter-paused
+InstanceOf: FC_OutpatientEncounter
+Usage: #example
+Title: "外来受診の例(一時終了)"
+Description: "診察の途中で採血を受けに診察室を離れ(一時終了)、戻って診察を再開し、再び一時終了にしたところ。"
+* status = #onleave
+* class = $v3-ActCode#AMB "ambulatory"
+* subject = Reference(Patient/example-patient)
+* appointment = Reference(Appointment/example-appointment)
+* period.start = "2026-04-03T09:05:00+09:00"
+* participant[0].type = $v3-ParticipationType#ATND "attender"
+* participant[0].individual = Reference(Practitioner/example-practitioner)
+* location[0].location = Reference(Location/example-outpatient-room)
+* location[0].status = #active
+* statusHistory[0].status = #in-progress
+* statusHistory[0].period.start = "2026-04-03T09:05:00+09:00"
+* statusHistory[0].period.end = "2026-04-03T09:12:00+09:00"
+* statusHistory[1].status = #onleave
+* statusHistory[1].period.start = "2026-04-03T09:12:00+09:00"
+* statusHistory[1].period.end = "2026-04-03T10:05:00+09:00"
+* statusHistory[2].status = #in-progress
+* statusHistory[2].period.start = "2026-04-03T10:05:00+09:00"
+* statusHistory[2].period.end = "2026-04-03T10:10:00+09:00"
+
 Instance: example-coverage
 InstanceOf: FC_Coverage
 Usage: #example

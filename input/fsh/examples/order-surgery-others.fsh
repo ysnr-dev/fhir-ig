@@ -205,6 +205,41 @@ Description: "食事オーダーの例"
 * extension[saltLimit].valueQuantity = 6 'g' "g"
 * extension[link].extension[kind].valueCode = #start
 
+Instance: example-meal-order-pattern
+InstanceOf: FC_MealOrder
+Usage: #example
+Title: "パターン食から展開した食事オーダーの例"
+Description: "術後食上げ(5 段階)の 2 段階目。前の段階からの変更で、終了日時を持つ。"
+* status = #active
+* intent = #order
+* category[orderType] = $order-type#meal "食事"
+* category[setting] = $prescription-setting#inpatient "入院"
+* code = http://fhir-client.local/CodeSystem/meal-type#A00125 "三分粥食800kcal"
+* code.text = "三分粥食800kcal"
+* orderDetail[staple][0] = http://fhir-client.local/CodeSystem/meal-staple-food#105AN "三分粥"
+* orderDetail[staple][0].text = "三分粥"
+* orderDetail[staple][0].extension[timing].valueCode = #breakfast
+* orderDetail[staple][1] = http://fhir-client.local/CodeSystem/meal-staple-food#105AN "三分粥"
+* orderDetail[staple][1].text = "三分粥"
+* orderDetail[staple][1].extension[timing].valueCode = #lunch
+* orderDetail[staple][2] = http://fhir-client.local/CodeSystem/meal-staple-food#105AN "三分粥"
+* orderDetail[staple][2].text = "三分粥"
+* orderDetail[staple][2].extension[timing].valueCode = #dinner
+* subject = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* requester = Reference(Practitioner/example-practitioner)
+* authoredOn = "2026-04-03T09:00:00+09:00"
+* occurrenceDateTime = "2026-04-05T08:00:00+09:00"
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderWard].valueReference = Reference(Location/example-ward)
+* extension[orderEnd].valueDateTime = "2026-04-06T18:00:00+09:00"
+* extension[link].extension[kind].valueCode = #change
+* extension[pattern].extension[code].valueCode = #P00001
+* extension[pattern].extension[name].valueString = "術後食上げ"
+* extension[pattern].extension[step].valueInteger = 2
+* extension[pattern].extension[count].valueInteger = 5
+* supportingInfo = Reference(AllergyIntolerance/example-allergy-intolerance) "そば"
+
 Instance: example-transfusion-order-header
 InstanceOf: FC_TransfusionOrderHeader
 Usage: #example

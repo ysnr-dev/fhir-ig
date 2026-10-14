@@ -35,7 +35,7 @@
 ### 入院・外来・救急
 
 - [FC_InpatientEncounter](StructureDefinition-fc-inpatient-encounter.html): class = IMP。status planned(入院予定)/ in-progress / finished / entered-in-error / cancelled。`location` は現在のベッド(active)と過去のベッド(completed)、入院予定では病棟・病室・ベッド(planned + physicalType)。`serviceProvider` = 診療科、`participant` = 担当医(ATND)と担当看護師(`encounter-participant-role#nurse`)。拡張: `encounter-note`、`encounter-leave`(外出・外泊、0..*)、`encounter-transfer-plan`、`encounter-discharge-plan`。退院先は `hospitalization.dischargeDisposition`(退院の実施と退院時サマリーの確定で書く)。
-- [FC_OutpatientEncounter](StructureDefinition-fc-outpatient-encounter.html): class = AMB。`appointment[0]` = 受付の Appointment、`location` = 診察室。診察終了で Appointment を fulfilled にします。
+- [FC_OutpatientEncounter](StructureDefinition-fc-outpatient-encounter.html): class = AMB。`appointment[0]` = 受付の Appointment、`location` = 診察室。status は in-progress 診察中 / onleave 一時終了 / finished 診察終了 / entered-in-error。当日の検査を受けに診察室を離れるときは一時終了にし、戻って診察を再開すると in-progress に戻ります。そのたびに過ぎた status と期間を `statusHistory` に 1 件積みます。一時終了の間も Appointment は checked-in のままで、診察終了で Appointment を fulfilled にします。
 - [FC_EmergencyEncounter](StructureDefinition-fc-emergency-encounter.html): class = EMER。予約(Appointment)を持たず、来院した時点で 1 件建てます。入院・外来とは class で分かれるので、それぞれの一覧には混ざりません。
 
 #### 入院の経緯(入院経路など)
@@ -98,6 +98,6 @@
 - [患者](Patient-example-patient.html) / [医師](Practitioner-example-practitioner.html) / [研修医](Practitioner-example-resident.html) / [薬剤師](Practitioner-example-pharmacist.html) / [職種ロール](PractitionerRole-example-practitioner-base-role.html) / [診療科ロール](PractitionerRole-example-practitioner-department-role.html)
 - [施設](Organization-example-organization.html) / [診療科](Organization-example-department.html)
 - [病棟](Location-example-ward.html) / [病室](Location-example-room.html) / [ベッド](Location-example-bed.html) / [診察室](Location-example-outpatient-room.html)
-- [入院](Encounter-example-encounter.html) / [外来受診](Encounter-example-outpatient-encounter.html) / [保険](Coverage-example-coverage.html)
+- [入院](Encounter-example-encounter.html) / [外来受診](Encounter-example-outpatient-encounter.html) / [外来受診(一時終了)](Encounter-example-outpatient-encounter-paused.html) / [保険](Coverage-example-coverage.html)
 - [救急受診](Encounter-example-emergency-encounter.html) / [トリアージ](Observation-example-triage-observation.html) / [救急の処置ベッド](Location-example-emergency-bed.html) / [救急からの入院予定](Encounter-example-planned-admission-from-emergency.html) / [身元不明の患者](Patient-example-patient-unidentified.html)
 - [プロブレム](Condition-example-condition.html) / [保険病名](Condition-example-encounter-diagnosis.html) / [既往歴](Condition-example-past-history.html) / [アレルギー](AllergyIntolerance-example-allergy-intolerance.html) / [注意情報](Flag-example-flag.html)

@@ -74,3 +74,19 @@ Context: ServiceRequest
 * extension[reason].valueCode from MealOrderEndReasonVS (required)
 * extension[leave].value[x] only string
 * extension[previousEnd].value[x] only dateTime
+
+Extension: MealPattern
+Id: meal-pattern
+Title: "パターン食の段階"
+Description: "パターン食(術後の食上げなど)から展開したオーダーのパターンと段階。code = パターン食マスタのコード、name = パターン名、step = 段階(1 始まり)、count = 段階数。展開後は段階ごとに独立した食事オーダーで、表示のためだけに持つ。"
+Context: ServiceRequest
+* insert FCMeta
+* extension contains
+    code 1..1 and
+    name 1..1 and
+    step 1..1 and
+    count 1..1
+* extension[code].value[x] only code
+* extension[name].value[x] only string
+* extension[step].value[x] only integer
+* extension[count].value[x] only integer

@@ -691,3 +691,28 @@ Description: "処方医が疑義照会に回答したときの、照会した薬
 * input[answer].value[x] only string
 * input[answerText].type.text = "回答"
 * input[answerText].value[x] only string
+
+Profile: FC_MealAllergyCheckTask
+Parent: FC_NotificationTask
+Id: fc-meal-allergy-check-task
+Title: "食事のアレルギー確認 通知"
+Description: "食物アレルギーが登録(または有効化)されたとき、進行中の食事オーダーがそのアレルギーを写していなければ、オーダーの依頼医に知らせる。アレルギーの保存と同じ transaction で、オーダー 1 件 × アレルギー 1 件につき 1 通知。priority = stat(重篤化リスクが高いアレルギー)/ urgent(それ以外)。focus と basedOn = 食事オーダー、encounter = オーダーの入院(あるときだけ)、owner = オーダーの依頼医、requester = アレルギーを登録した職員。description = 「食物アレルギー「アレルゲン」が登録されました。食事オーダー(食種 開始〜)に反映されていません」。input: アレルギー(valueReference)、アレルゲン / 食事オーダー(valueString)、開始日(valueDate、オーダーに開始日時があるときだけ)。食事オーダーを保存し直してアレルギーが写ると completed、アレルギーが解消・否定・削除されると cancelled。"
+* code = $task-code#meal-allergy-check "食事のアレルギー確認"
+* priority from FCPriorityStatUrgentVS (required)
+* focus only Reference(FC_MealOrder)
+* basedOn only Reference(FC_MealOrder)
+* encounter only Reference(FC_InpatientEncounter)
+* insert TaskInputSlicing
+* input contains
+    allergy 1..1 and
+    allergen 1..1 and
+    order 1..1 and
+    startDate 0..1
+* input[allergy].type.text = "アレルギー"
+* input[allergy].value[x] only Reference(FC_AllergyIntolerance)
+* input[allergen].type.text = "アレルゲン"
+* input[allergen].value[x] only string
+* input[order].type.text = "食事オーダー"
+* input[order].value[x] only string
+* input[startDate].type.text = "開始日"
+* input[startDate].value[x] only date

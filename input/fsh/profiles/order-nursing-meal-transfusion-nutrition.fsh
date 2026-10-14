@@ -49,7 +49,9 @@ Description: """食事オーダー。明細 ServiceRequest も Task も無い。
 - occurrenceDateTime = 開始日時(朝 08:00 / 昼 12:00 / 夕 18:00)、meal-order-end = 終了日時。
 - code = 食種(meal-type)。orderDetail = 主食(meal-staple-food)と副食の形態(meal-side-dish-form)で、それぞれ meal-timing 拡張で朝 / 昼 / 夕を持つ。
 - 欠食(1 食だけ出さない)は meal-skipped-timing(最大 3 件)。meal-fasting-reason は欠食と、食止めの食種で出したオーダーの理由。塩分制限は meal-salt-limit。
-- 変更・再開・外泊食止めのつながりは meal-order-link、終了理由は meal-order-end-reason。入院の外出・外泊や退院の変更と同じ transaction で作られる。"""
+- 変更・再開・外泊食止めのつながりは meal-order-link、終了理由は meal-order-end-reason。入院の外出・外泊や退院の変更と同じ transaction で作られる。
+- パターン食から展開したオーダーは meal-pattern でパターンと段階を持つ。
+- supportingInfo = オーダーを出した時点の有効な食物アレルギー(AllergyIntolerance、display に名称)。SS-MIX2 の AL1 にあたる。"""
 * category[orderType] = $order-type#meal "食事"
 * category[setting] 1..1
 * category[setting] = $prescription-setting#inpatient
@@ -76,7 +78,11 @@ Description: """食事オーダー。明細 ServiceRequest も Task も無い。
     MealFastingReason named fastingReason 0..1 and
     MealOrderEnd named orderEnd 0..1 MS and
     MealOrderLink named link 0..1 and
-    MealOrderEndReason named endReason 0..1
+    MealOrderEndReason named endReason 0..1 and
+    MealPattern named pattern 0..1
+* supportingInfo MS
+* supportingInfo only Reference(FC_AllergyIntolerance)
+* supportingInfo.display 1..1
 
 Profile: FC_TransfusionOrderHeader
 Parent: FC_OrderHeader

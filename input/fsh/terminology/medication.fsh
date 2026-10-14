@@ -134,3 +134,17 @@ Id: rx-hold-reason-vs
 Title: "調剤・注射の進捗を止めている理由 ValueSet"
 Description: "調剤・注射の進捗を止めている理由 ValueSet。"
 * insert AllOf(RxHoldReasonCS)
+
+CodeSystem: SubstitutionNotAllowedReasonCS
+Id: substitution-not-allowed-reason
+Title: "後発品変更不可の理由"
+Description: "処方の薬剤行 MedicationRequest.substitution.reason。処方箋(様式第2号)の「変更不可(医療上必要)」と「患者希望」の列のどちらか。substitution.allowedCodeableConcept は JP Core の変更可否コード 1(後発品変更不可)で、理由をこちらで区別する。"
+* insert EnumCS
+* #medical-necessity "医療上必要"
+* #patient-request "患者希望"
+
+ValueSet: SubstitutionNotAllowedReasonVS
+Id: substitution-not-allowed-reason-vs
+Title: "後発品変更不可の理由 ValueSet"
+Description: "後発品変更不可の理由 ValueSet。"
+* insert AllOf(SubstitutionNotAllowedReasonCS)

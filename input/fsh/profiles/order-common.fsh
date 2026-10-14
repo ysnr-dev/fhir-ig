@@ -8,6 +8,14 @@ Description: "routine 通常 / urgent 至急"
 * $request-priority#routine
 * $request-priority#urgent
 
+ValueSet: FCPriorityStatUrgentVS
+Id: fc-priority-stat-urgent-vs
+Title: "優先度(緊急 / 至急)"
+Description: "stat 緊急 / urgent 至急"
+* insert FCMeta
+* $request-priority#stat
+* $request-priority#urgent
+
 ValueSet: FCPriorityExamVS
 Id: fc-priority-exam-vs
 Title: "優先度(通常 / 至急 / 事後)"

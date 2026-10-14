@@ -27,6 +27,7 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | 看護計画の達成度の display | 看護計画の目標(Goal.achievementStatus)と目標の評価(Observation.valueCodeableConcept)は HL7 の `goal-achievement` に日本語の display(達成 / 改善 / 変化なし / 悪化 / 未達成)を書く。 | 例の検証で display 不一致の警告になる。 |
 | ePath に無いタスク分類 | クリニカルパスのタスク分類(小)に、ePath の EPathTaskCategoryLv2CS に無い `EGMG`(服薬指導)を同じ system で書く。 | ePath の CodeSystem としては未知のコード。 |
 | 通知 Task の input | 一覧に出す内容を `Task.input`(type.text をキーにした値)に構造化して持つ。type に coding を持たない。 | プロファイルは type.text でスライスする。 |
+| 調剤指示の display | 処方の調剤指示(`JP_MedicationRequest_DispenseRequest_InstructionForDispense`)は JAMI 調剤方法コード(`http://jami.jp/CodeSystem/DrugDispensePreparationMethod`)の display を画面の表示名(一包化 / 粉砕 / 別包化 / 混合)で書く。CodeSystem の display は「一包化指示」「粉砕指示」など「指示」付き。 | 例の検証で display 不一致の警告になる。 |
 
 ### 2026-10-03 より前に書かれたデータ
 

@@ -50,6 +50,54 @@ Description: "処方の薬剤行の例"
 * extension[orderDepartment].valueReference = Reference(Organization/example-department)
 * extension[orderWard].valueReference = Reference(Location/example-ward)
 
+Instance: example-outpatient-prescription-order
+InstanceOf: FC_PrescriptionOrder
+Usage: #example
+Title: "処方オーダー ヘッダの例(外来・院外)"
+Description: "外来の院外処方。薬剤行に後発品変更不可と調剤指示がある。"
+* status = #active
+* intent = #order
+* category[orderType] = $order-type#prescription "処方"
+* category[setting] = $prescription-setting#outpatient "外来"
+* category[prescriptionCategory] = $prescription-category#external "院外"
+* subject = Reference(Patient/example-patient)
+* requester = Reference(Practitioner/example-practitioner)
+* authoredOn = "2026-04-10T10:30:00+09:00"
+* occurrenceDateTime = "2026-04-10"
+* orderDetail[0].text = "RP1-1"
+* orderDetail[0].extension[medicationRequest].valueReference = Reference(MedicationRequest/example-outpatient-prescription-medication-request)
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+
+Instance: example-outpatient-prescription-medication-request
+InstanceOf: FC_PrescriptionMedicationRequest
+Usage: #example
+Title: "処方の薬剤行の例(後発品変更不可・調剤指示)"
+Description: "銘柄を指定した外来処方の行。後発品変更不可(患者希望)と、RP の調剤指示(一包化・粉砕)を持つ。"
+* status = #active
+* intent = #order
+* identifier[rpNumber].system = $mhlw-RPGroupNumber
+* identifier[rpNumber].value = "1"
+* identifier[orderInRp].system = $mhlw-MedicationAdministrationIndex
+* identifier[orderInRp].value = "1"
+* basedOn = Reference(ServiceRequest/example-outpatient-prescription-order)
+* subject = Reference(Patient/example-patient)
+* authoredOn = "2026-04-10T10:30:00+09:00"
+* requester = Reference(Practitioner/example-practitioner)
+* medicationCodeableConcept.coding[receiptCode] = $medicine-code#622000000 "メトホルミン塩酸塩錠250mg"
+* medicationCodeableConcept.coding[yjCode] = $YJ-code#3962002F1080
+* medicationCodeableConcept.text = "メトホルミン塩酸塩錠250mg"
+* dosageInstruction.timing.code.coding[usage] = $medicine-usage#1013044400000000 "1日3回朝昼夕食後"
+* dosageInstruction.timing.code.coding[basicCategory] = $medicine-usage-basic-category#1 "内服"
+* dosageInstruction.timing.code.text = "1日3回朝昼夕食後"
+* dosageInstruction.doseAndRate.doseQuantity.value = 3
+* dosageInstruction.doseAndRate.doseQuantity.unit = "錠"
+* dispenseRequest.expectedSupplyDuration = 28 'd' "日"
+* dispenseRequest.extension[instructionForDispense][0].valueCodeableConcept = $JAMI-DispensePreparationMethod#OP "一包化"
+* dispenseRequest.extension[instructionForDispense][1].valueCodeableConcept = $JAMI-DispensePreparationMethod#C "粉砕"
+* substitution.allowedCodeableConcept = $mhlw-SubstitutionProhibitted#1 "後発品変更不可"
+* substitution.reason = http://fhir-client.local/CodeSystem/substitution-not-allowed-reason#patient-request "患者希望"
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+
 Instance: example-prescription-medication-request-supplementary
 InstanceOf: FC_PrescriptionMedicationRequest
 Usage: #example

@@ -4,7 +4,7 @@
 <thead><tr><th>リソース</th><th>プロファイル</th><th>参照</th><th>主な要素・備考</th></tr></thead>
 <tbody>
 <tr><td style="white-space: nowrap;"><b>ServiceRequest</b> ヘッダ</td><td><a href="StructureDefinition-fc-prescription-order.html">FC_PrescriptionOrder</a></td><td></td><td><code>category</code> = prescription + 入院・外来区分 + 処方区分<br><code>orderDetail[]</code> = "RP{n}-{m}" + prescription-medication-request → MedicationRequest</td></tr>
-<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationRequest</b> 薬剤行</td><td><a href="StructureDefinition-fc-prescription-medication-request.html">FC_PrescriptionMedicationRequest</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td><code>identifier</code> = RP 番号 + RP 内連番<br><code>dosageInstruction[0]</code> = 用法・用量・補足用法<br><code>dispenseRequest.expectedSupplyDuration</code> = 日数</td></tr>
+<tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationRequest</b> 薬剤行</td><td><a href="StructureDefinition-fc-prescription-medication-request.html">FC_PrescriptionMedicationRequest</a></td><td><span style="white-space: nowrap;"><code>basedOn</code>&nbsp;→&nbsp;ヘッダ</span></td><td><code>identifier</code> = RP 番号 + RP 内連番<br><code>dosageInstruction[0]</code> = 用法・用量・補足用法<br><code>dispenseRequest.expectedSupplyDuration</code> = 日数<br><code>dispenseRequest.extension</code> = 調剤指示<br><code>substitution</code> = 後発品変更不可</td></tr>
 <tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> rx-dispense</td><td><a href="StructureDefinition-fc-rx-dispense-task.html">FC_RxDispenseTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td>疑義照会の回答待ちは <code>on-hold</code></td></tr>
 <tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>Task</b> rx-inquiry</td><td><a href="StructureDefinition-fc-rx-inquiry-task.html">FC_RxInquiryTask</a></td><td><span style="white-space: nowrap;"><code>focus</code>&nbsp;→&nbsp;ヘッダ</span></td><td>疑義照会(処方医宛の通知)</td></tr>
 <tr><td style="white-space: nowrap;"><span style="white-space: pre; color: #888;">├ </span><b>MedicationDispense</b> 調剤</td><td><a href="StructureDefinition-fc-medication-dispense.html">FC_MedicationDispense</a></td><td><span style="white-space: nowrap;"><code>authorizingPrescription</code>&nbsp;→&nbsp;薬剤行</span></td><td>薬剤行ごと、Task と同じ transaction</td></tr>
@@ -31,6 +31,8 @@
 - `additionalInstruction[]` = JAMI 補足用法コード(`urn:oid:1.2.392.200250.2.2.20.22`: I 日数間隔 / W 曜日 / D 日付 / C 期間内回数、不均等投与 V)と用法コメント(text のみ)。
 - 頓用は用法コードの 3 桁目が 5 で、`asNeededBoolean = true`、`timing.repeat.count` = 回数。用法マスタに「頓服」区分はありません。
 - `dispenseRequest.expectedSupplyDuration` = 投与日数(内服・非頓用のみ、UCUM d)。
+- `dispenseRequest.extension` = 調剤指示(JP Core の `JP_MedicationRequest_DispenseRequest_InstructionForDispense`、`valueCodeableConcept` は JAMI 調剤方法コード `http://jami.jp/CodeSystem/DrugDispensePreparationMethod` の OP 一包化 / C 粉砕 / SP 別包化 / MX 混合)。RP 単位で選び、RP 内の全行に同じものを書きます。
+- `substitution` = 後発品変更不可。銘柄を指定した外来処方の行だけに付きます(一般名処方と入院処方には付きません)。`allowedCodeableConcept` = JP Core の変更可否コード `MedicationSubstitutionProhibittedCategory#1`「後発品変更不可」、`reason` = `substitution-not-allowed-reason`(medical-necessity 医療上必要 / patient-request 患者希望。処方箋の「変更不可」「患者希望」の列)。変更可なら `substitution` を持ちません。
 - 持参薬の継続から作った行は `supportingInformation` が MedicationStatement を指します。
 
 ### 注射
@@ -100,7 +102,7 @@
 
 ### 例
 
-- 処方: [ヘッダ](ServiceRequest-example-prescription-order.html) / [薬剤行](MedicationRequest-example-prescription-medication-request.html) / [調剤](MedicationDispense-example-medication-dispense.html) / [与薬記録](Procedure-example-oral-administration-procedure.html) / [投与](MedicationAdministration-example-medication-administration.html) / [Task](Task-example-rx-dispense-task.html)
+- 処方: [ヘッダ](ServiceRequest-example-prescription-order.html) / [薬剤行](MedicationRequest-example-prescription-medication-request.html) / [外来のヘッダ](ServiceRequest-example-outpatient-prescription-order.html) / [後発品変更不可・調剤指示のある薬剤行](MedicationRequest-example-outpatient-prescription-medication-request.html) / [調剤](MedicationDispense-example-medication-dispense.html) / [与薬記録](Procedure-example-oral-administration-procedure.html) / [投与](MedicationAdministration-example-medication-administration.html) / [Task](Task-example-rx-dispense-task.html)
 - 注射: [1 日分](ServiceRequest-example-injection-order.html) / [薬剤行](MedicationRequest-example-injection-medication-request.html) / [実施記録](Procedure-example-injection-procedure.html) / [Task](Task-example-injection-task.html)
 - 疑義照会: [照会](Task-example-rx-inquiry-task.html) / [回答の通知](Task-example-rx-inquiry-answered-task.html) / [処方変更待ちの調剤 Task](Task-example-rx-dispense-task-on-hold.html)
 - インスリン: [薬剤行(血糖スケール)](MedicationRequest-example-insulin-medication-request.html) / [施用](MedicationAdministration-example-insulin-medication-administration.html) / [血糖値](Observation-example-capillary-glucose-observation.html)

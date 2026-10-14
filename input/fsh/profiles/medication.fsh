@@ -59,6 +59,8 @@ Description: """処方の薬剤 1 行。JP Core の JP_MedicationRequest を意�
 - additionalInstruction は 補足用法 → 不均等投与(服用順)→ 用法コメント(text のみ)の順。補足用法・不均等投与は JAMI 補足用法コード(urn:oid:1.2.392.200250.2.2.20.22、8 桁)の coding + 同じ文言の text: 日数間隔 `I{服用日数}{休薬日数}00000`、曜日 `W` + 日〜土の 0/1 を 7 桁、日付 `D{月(0 = 毎月)}{日…}`(1 コード 6 日まで)、期間内回数 `C{Y|M|W}{回数}00000`、不均等投与 `V{n 回目}{量}` を N で 8 桁に埋める(例 V13.5NNN)。
 -頓用(用法コード 3 桁目 = 5)は asNeededBoolean = true、timing.repeat.count = 回数。
 - dispenseRequest.expectedSupplyDuration = 投与日数(内服・非頓用のみ、UCUM d)。
+- dispenseRequest.extension = 調剤指示(JP Core の InstructionForDispense、JAMI 調剤方法コード OP 一包化 / C 粉砕 / SP 別包化 / MX 混合)。RP 単位で選び、RP 内の全行に同じものを書く。
+- substitution = 後発品変更不可(銘柄を指定した外来処方の行だけ)。allowedCodeableConcept = JP Core の変更可否コード 1「後発品変更不可」、reason = 医療上必要 / 患者希望(substitution-not-allowed-reason)。変更可なら substitution を持たない。
 - note = 薬剤コメント。supportingInformation = 元になった持参薬 MedicationStatement。
 - requester / order-department / order-ward はヘッダと同じ。レジメンの日オーダーでは regimen-dose 拡張。"""
 * insert FCMeta
@@ -90,6 +92,14 @@ Description: """処方の薬剤 1 行。JP Core の JP_MedicationRequest を意�
 * dosageInstruction.timing.code.coding[basicCategory].system = $medicine-usage-basic-category
 * dosageInstruction.additionalInstruction.coding.system = $JAMI-supplementary-usage
 * dosageInstruction.asNeeded[x] only boolean
+* dispenseRequest.extension contains $JP_MedicationRequest_DispenseRequest_InstructionForDispense named instructionForDispense 0..4
+* dispenseRequest.extension[instructionForDispense].valueCodeableConcept.coding 1..1
+* dispenseRequest.extension[instructionForDispense].valueCodeableConcept.coding.system = $JAMI-DispensePreparationMethod
+* substitution.allowed[x] only CodeableConcept
+* substitution.allowedCodeableConcept.coding 1..1
+* substitution.allowedCodeableConcept.coding = $mhlw-SubstitutionProhibitted#1
+* substitution.reason 1..1
+* substitution.reason from SubstitutionNotAllowedReasonVS (required)
 * requester only Reference(FC_Practitioner)
 * supportingInformation only Reference(FC_BroughtMedication)
 * extension contains

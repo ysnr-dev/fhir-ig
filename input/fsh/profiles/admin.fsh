@@ -194,7 +194,7 @@ Profile: FC_OutpatientEncounter
 Parent: $JP_Encounter
 Id: fc-outpatient-encounter
 Title: "外来受診"
-Description: "外来の診察。class = v3-ActCode#AMB。status: in-progress / finished / entered-in-error。appointment[0] = 受付の Appointment。location = 診察室。診察終了時に Appointment を fulfilled にする。serviceProvider は持たない。"
+Description: "外来の診察。class = v3-ActCode#AMB。status: in-progress 診察中 / onleave 一時終了(当日の検査を受けに診察室を離れている)/ finished 診察終了 / entered-in-error。statusHistory = 一時終了をはさんだときの、過ぎた診察中・一時終了の期間(一時終了・診察再開のたびに 1 件積む)。appointment[0] = 受付の Appointment(一時終了の間も checked-in のまま)。location = 診察室。診察終了時に Appointment を fulfilled にする。serviceProvider は持たない。"
 * insert FCMeta
 * class = $v3-ActCode#AMB
 * subject 1..1

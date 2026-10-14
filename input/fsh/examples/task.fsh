@@ -763,3 +763,33 @@ Description: "疑義照会に「処方を変更する」と回答があり、処
 * authoredOn = "2026-04-01T12:00:00+09:00"
 * lastModified = "2026-04-01T13:30:00+09:00"
 * executionPeriod.start = "2026-04-01T12:00:00+09:00"
+
+Instance: example-meal-allergy-check-task
+InstanceOf: FC_MealAllergyCheckTask
+Usage: #example
+Title: "食事のアレルギー確認 通知の例"
+Description: "重篤化リスクが高い食物アレルギーを登録したとき、それを写していない食事オーダーの依頼医に出る通知。"
+* status = #requested
+* intent = #filler-order
+* priority = #stat
+* code = $task-code#meal-allergy-check "食事のアレルギー確認"
+* code.text = "食事のアレルギー確認"
+* focus = Reference(ServiceRequest/example-meal-order)
+* for = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* requester = Reference(Practitioner/example-nurse)
+* requester.display = "看護 花子"
+* basedOn = Reference(ServiceRequest/example-meal-order)
+* authoredOn = "2026-04-02T10:00:00+09:00"
+* lastModified = "2026-04-02T10:00:00+09:00"
+* description = "食物アレルギー「そば」が登録されました。食事オーダー(糖尿病食 1600kcal 4/1 夕〜)に反映されていません"
+* input[allergy].type.text = "アレルギー"
+* input[allergy].valueReference = Reference(AllergyIntolerance/example-allergy-intolerance) "そば"
+* input[allergen].type.text = "アレルゲン"
+* input[allergen].valueString = "そば"
+* input[order].type.text = "食事オーダー"
+* input[order].valueString = "糖尿病食 1600kcal 4/1 夕〜"
+* input[startDate].type.text = "開始日"
+* input[startDate].valueDate = "2026-04-01"

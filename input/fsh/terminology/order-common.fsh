@@ -106,6 +106,7 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #dpc-recoding-due "DPC再判定"
 * #rx-inquiry "疑義照会"
 * #rx-inquiry-answered "疑義照会回答"
+* #meal-allergy-check "食事のアレルギー確認"
 
 ValueSet: TaskCodeVS
 Id: task-code-vs
