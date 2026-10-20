@@ -716,3 +716,102 @@ Description: "食物アレルギーが登録(または有効化)されたとき�
 * input[order].value[x] only string
 * input[startDate].type.text = "開始日"
 * input[startDate].value[x] only date
+
+Profile: FC_EwsAlertTask
+Parent: FC_NotificationTask
+Id: fc-ews-alert-task
+Title: "早期警告 通知"
+Description: "入院中の患者のバイタル測定から算出した NEWS2 の区分が、施設設定の下限(既定は中)以上になったとき、入院の主治医に知らせる。測定の transaction で作り、同じ入院に未対応の通知があれば同じ Task を書き換えて出し直す(新しい Task は増やさない)。下限を下回る・算出できない測定では未対応の通知を cancelled にする。priority = stat(区分が高)/ urgent(中・低〜中)。focus = NEWS2 の Observation(同じ transaction の urn:uuid。測定セットは保存のたびに作り直すので、出し直しのたびに新しい NEWS2 を指す)、encounter = 入院、owner = 入院の主治医(いなければ無し)、requester = 測定者。description = 「NEWS2 合計点(区分) 点数のある項目 欠測: 項目」。input: 合計(valueInteger)、区分(valueCode = early-warning-band)、項目(valueString、点数のある項目があるときだけ)、欠測(valueString、欠測があるときだけ)、測定日時(valueDateTime)。確認すると completed(note = 早期警告を確認しました。)。"
+* code = $task-code#ews-alert "早期警告"
+* priority from FCPriorityStatUrgentVS (required)
+* focus only Reference(FC_EarlyWarningObservation)
+* encounter 1..1
+* encounter only Reference(FC_InpatientEncounter)
+* insert TaskInputSlicing
+* input contains
+    total 1..1 and
+    band 1..1 and
+    items 0..1 and
+    missing 0..1 and
+    measuredAt 1..1
+* input[total].type.text = "合計"
+* input[total].value[x] only integer
+* input[band].type.text = "区分"
+* input[band].value[x] only code
+* input[band].valueCode from EarlyWarningBandVS (required)
+* input[items].type.text = "項目"
+* input[items].value[x] only string
+* input[missing].type.text = "欠測"
+* input[missing].value[x] only string
+* input[measuredAt].type.text = "測定日時"
+* input[measuredAt].value[x] only dateTime
+
+Profile: FC_AntimicrobialNotificationTask
+Parent: FC_NotificationTask
+Id: fc-antimicrobial-notification-task
+Title: "特定抗菌薬の届出 通知"
+Description: "届出制・許可制の特定抗菌薬(薬剤マスタの抗菌薬区分。backend のマスタで、FHIR には持たない)を含む処方・注射を登録したとき、依頼医に届出書の提出を求める。オーダーの登録・更新と同じ transaction で、処方は 1 オーダーに 1 件、注射は同じ束(requisition)の日オーダーに 1 件作る(同じオーダー・束の Task が状態を問わず既にあれば作らない)。priority = urgent。focus = 最も早いオーダー、basedOn = 束のオーダーすべて(実施日時順)、owner と requester = オーダーの依頼医、encounter = オーダーの入院(あるときだけ)。description = 「特定抗菌薬(届出制 / 許可制) 薬剤名、…」。input: 区分(valueCode = notify 届出制 / approve 許可制。1 剤でも許可制なら approve)、薬剤 / 種別(処方 / 注射)(valueString)、開始日(valueDate、オーダーに実施日時があるときだけ)、束(valueString、注射だけ)。届出書(AST_NOTIFY_01 の QuestionnaireResponse、basedOn = focus のオーダー)を保存する transaction で input に 届出書(valueReference)を足し、届出制は completed(note = 届出書を提出しました。)、許可制は requested のまま(許可待ち)。AST の構成員が許可すると completed(note = 特定抗菌薬の使用を許可しました。)。オーダーを削除すると一緒に消える。"
+* code = $task-code#antimicrobial-notification "特定抗菌薬の届出"
+* priority = #urgent
+* focus only Reference(FC_PrescriptionOrder or FC_InjectionOrder)
+* basedOn 1..* MS
+* basedOn only Reference(FC_PrescriptionOrder or FC_InjectionOrder)
+* encounter only Reference(Encounter)
+* insert TaskInputSlicing
+* input contains
+    category 1..1 and
+    medicines 1..1 and
+    orderKind 1..1 and
+    startDate 0..1 and
+    series 0..1 and
+    form 0..1
+* input[category].type.text = "区分"
+* input[category].value[x] only code
+* input[category].valueCode from AntimicrobialCategoryVS (required)
+* input[medicines].type.text = "薬剤"
+* input[medicines].value[x] only string
+* input[orderKind].type.text = "種別"
+* input[orderKind].value[x] only string
+* input[startDate].type.text = "開始日"
+* input[startDate].value[x] only date
+* input[series].type.text = "束"
+* input[series].value[x] only string
+* input[form].type.text = "届出書"
+* input[form].value[x] only Reference(FC_QuestionnaireResponse)
+
+Profile: FC_FollowUpRecommendationTask
+Parent: FC_NotificationTask
+Id: fc-followup-recommendation-task
+Title: "フォロー推奨 通知"
+Description: "放射線・生理検査・内視鏡の所見レポートにフォロー推奨(rad-follow-up / physio-follow-up / endoscopy-follow-up)が書かれたとき、依頼医の台帳(検査結果フォロー)に載せる。通知のベルには出さない。レポートの保存と同じ transaction で、報告が確定(final / amended / corrected)していて推奨と期限があれば作る(取り消した Task があれば書き換えて戻す)。推奨・期限が変わると書き換えて未対応に戻し(output / note / executionPeriod を消す)、推奨を外すと未対応なら cancelled(対応済は残す)。レポートを削除すると未対応なら cancelled。priority = routine。focus = DiagnosticReport(新規は同じ transaction の urn:uuid)、basedOn = オーダー(あるときだけ)、owner = オーダーの依頼医(あるときだけ)。requester と encounter は持たない。description = 「検査日 検査内容 推奨 期限 期限日」。restriction.period.end = 期限。input: 種別(valueString、rad / physio / endoscopy)、検査日(valueDate)、検査内容 / 推奨(valueString)。対応すると completed になり、output に 対応(followup-resolution)と 対応オーダー(valueReference、オーダーを選んだときだけ)、note(メモ、無ければ「フォロー推奨に対応しました。」)が付く。対応を取り消すと requested に戻し、output / note / executionPeriod を消す。"
+* code = $task-code#followup-recommendation "フォロー推奨"
+* priority = #routine
+* focus only Reference(FC_RadDiagnosticReport or FC_PhysioDiagnosticReport or FC_EndoscopyDiagnosticReport)
+* basedOn 0..1
+* basedOn only Reference(ServiceRequest)
+* restriction.period.end 1..1
+* insert TaskInputSlicing
+* input contains
+    kind 1..1 and
+    examDate 0..1 and
+    examContent 0..1 and
+    recommendation 1..1
+* input[kind].type.text = "種別"
+* input[kind].value[x] only string
+* input[examDate].type.text = "検査日"
+* input[examDate].value[x] only date
+* input[examContent].type.text = "検査内容"
+* input[examContent].value[x] only string
+* input[recommendation].type.text = "推奨"
+* input[recommendation].value[x] only string
+* output ^slicing.discriminator[0].type = #value
+* output ^slicing.discriminator[0].path = "type.text"
+* output ^slicing.rules = #open
+* output contains
+    resolution 0..1 and
+    order 0..1
+* output[resolution].type.text = "対応"
+* output[resolution].value[x] only CodeableConcept
+* output[resolution].valueCodeableConcept from FollowUpResolutionVS (required)
+* output[order].type.text = "対応オーダー"
+* output[order].value[x] only Reference(ServiceRequest)

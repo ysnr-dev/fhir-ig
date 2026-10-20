@@ -207,3 +207,17 @@ Id: nursing-care-plan-entry-vs
 Title: "看護計画の立案の入口 ValueSet"
 Description: "看護計画の立案の入口 ValueSet。"
 * insert AllOf(NursingCarePlanEntryCS)
+
+CodeSystem: AntimicrobialCategoryCS
+Id: antimicrobial-category
+Title: "特定抗菌薬の区分"
+Description: "特定抗菌薬の届出の Task.input「区分」のコード。薬剤マスタ(backend)の抗菌薬区分。"
+* insert EnumCS
+* #notify "届出制"
+* #approve "許可制"
+
+ValueSet: AntimicrobialCategoryVS
+Id: antimicrobial-category-vs
+Title: "特定抗菌薬の区分 ValueSet"
+Description: "特定抗菌薬の区分 ValueSet。"
+* insert AllOf(AntimicrobialCategoryCS)

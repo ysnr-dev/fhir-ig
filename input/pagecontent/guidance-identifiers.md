@@ -33,6 +33,7 @@ fhir-client が `identifier.system` / `accessionIdentifier.system` / `requisitio
 |---|---|---|
 | `http://fhir-client.local/vital-entry` | バイタル Observation.identifier | 1 回の測定で入力した項目を束ねる uuid |
 | `http://fhir-client.local/nursing-perform-entry` | 看護観察 Observation / 看護行為 Procedure の identifier | 1 回のラウンドの記録を束ねる uuid |
+| `http://fhir-client.local/oral-exam-snapshot` | 口腔診査情報 Observation.identifier | 1 回の診査の見出し・歯・口腔全体を束ねる uuid |
 
 #### 職員
 

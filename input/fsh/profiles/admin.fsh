@@ -378,6 +378,28 @@ Description: """オーダーの登録・変更・取消などの来歴。オー�
 * agent.onBehalfOf only Reference(FC_Practitioner)
 * signature.type.system = $signature-type
 
+Profile: FC_AdvisoryOverrideProvenance
+Parent: Provenance
+Id: fc-advisory-override-provenance
+Title: "警告の確認の来歴"
+Description: """オーダーの警告(薬剤のアレルギー・重複・相互作用・用量・特定抗菌薬、造影剤・MRI の注意、レジメンの適応基準・体重・重複適用、CDS Hooks のカードなど)のうち、確認を要するものを理由を添えて無視して登録・更新したときの来歴。処方・注射・放射線・生理検査・内視鏡・放射線治療・レジメン適用・食事の登録で、オーダーの来歴(FC_OrderProvenance)と同じ transaction に別の 1 件として付く(オーダーの来歴が作られないときは作らない)。
+
+- target = オーダーの来歴と同じ(ヘッダ ServiceRequest と同じ Bundle の MedicationRequest)。
+- activity = provenance-activity#override「警告の確認」。
+- agent = enterer(無視した本人 = ログイン中の職員)だけ。author は持たない(代行入力の承認待ちと見分けるため)。
+- reason = 無視した警告 1 件につき 1 要素。coding = 理由(advisory-override-reason。CDS Hooks のカードが理由を示したときはサービスの system と code)、text = 「警告の種類: 警告の文（補足）」。"""
+* insert FCMeta
+* activity 1..1
+* activity = ProvenanceActivityCS#override
+* reason 1..* MS
+* reason.coding 1..1
+* reason.text 1..1
+* agent 1..1
+* agent.type 1..1
+* agent.type = $provenance-participant-type#enterer
+* agent.who only Reference(FC_Practitioner)
+* signature 0..0
+
 Profile: FC_ReviewProvenance
 Parent: Provenance
 Id: fc-review-provenance

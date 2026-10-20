@@ -7,6 +7,7 @@ Description: "チーム医療のチームの区分。CareTeam.category と、チ
 * insert EnumCS
 * #nst "栄養サポート(NST)"
 * #ict "感染対策(ICT)"
+* #ast "抗菌薬適正使用(AST)"
 * #pressure-ulcer "褥瘡対策"
 * #palliative "緩和ケア"
 * #dementia "認知症ケア"

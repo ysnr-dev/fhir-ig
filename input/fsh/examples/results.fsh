@@ -169,6 +169,8 @@ Description: "放射線 読影レポートの例"
 * conclusion = "右下葉結節。肺癌の可能性があり精査を推奨。"
 * extension[orderDepartment].valueReference = Reference(Organization/example-department)
 * extension[criticalFinding].valueString = "右下葉に腫瘤影。精査を要する。"
+* extension[followUp].extension[recommendation].valueString = "3 か月後に胸部 CT で再評価"
+* extension[followUp].extension[due].valueDate = "2026-07-03"
 
 // ---- 生理検査 所見 ----
 

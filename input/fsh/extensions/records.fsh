@@ -77,6 +77,15 @@ Context: QuestionnaireResponse
 * insert FCMeta
 * value[x] only Reference(Condition)
 
+Extension: IntakeSource
+Id: intake-source
+Title: "回答の出どころ(Web 問診)"
+Description: "患者が自分の端末で Web 問診に答え、職員が確認して取り込んだ記入に付く(valueCode = patient)。authored は患者が答えた日時。"
+Context: QuestionnaireResponse
+* insert FCMeta
+* value[x] only code
+* valueCode = #patient
+
 Extension: QuestionnaireResponseAnnotatedImage
 Id: questionnaire-response-annotated-image
 Title: "注釈付き画像(記入)"

@@ -34,6 +34,7 @@
 
 - `result` = 所見 Observation(category imaging、`rad-report-item#findings`、valueString)、`conclusion` = 診断、`resultsInterpreter` = 読影医。
 - 画像は `rad-report-image`(source / annotated、Binary)、重要所見は `rad-critical-finding`(通知 Task)、テンプレート記入は `rad-report-findings-response` / `rad-report-conclusion-response`。
+- フォロー推奨は `rad-follow-up`(複合拡張: recommendation = 推奨の内容、due = 期限)。報告が確定(final / amended / corrected)していて推奨と期限があれば、依頼医宛のフォロー推奨 Task(`followup-recommendation`、restriction.period.end = 期限)を同じ transaction で作り、検査結果フォローの台帳に載せます(通知のベルには出しません)。推奨・期限を変えると未対応に戻し、推奨を外すかレポートを削除すると未対応の Task を cancelled にします(対応済みは残す)。対応すると completed になり、output に対応の区分(`followup-resolution`: ordered / referred / declined / not-needed)と、出したオーダー(あるとき)が付きます(生理検査・内視鏡も同じ)。
 - 重要所見の通知は暫定報告でも出します。要点を書き換えると通知を未対応に戻し、要点を外すと未対応の通知を cancelled にします。レポートを削除すると、未対応の重要所見・検査結果確認の通知を cancelled にします(生理検査・内視鏡も同じ)。
 
 ### 生理検査・内視鏡 所見
@@ -43,7 +44,7 @@
 - category の 1 つ目はオーダー種別(`order-type#physio` / `#endoscopy`、実施記録 Procedure.category と同じ coding)で、`DiagnosticReport?category=` で種別ごとに引けます。2 つ目の v2-0074 は `OTH` に固定しています。
 - code は生理検査が施設コード `exam-report#physio`(心電図・超音波・呼吸機能…と文書の種類が分かれるため)、内視鏡が LOINC 18751-8。`code.text` = 検査内容。
 - `result` = 所見 Observation([FC_PhysioFindingsObservation](StructureDefinition-fc-physio-findings-observation.html) / [FC_EndoscopyFindingsObservation](StructureDefinition-fc-endoscopy-findings-observation.html)、category procedure、`physio-report-item#findings` / `endoscopy-report-item#findings`、valueString)、`conclusion` = 判定(生理検査)/ 診断(内視鏡)、`resultsInterpreter` = 記載医。
-- 画像は `<接頭辞>-report-image`、重要所見は `<接頭辞>-critical-finding`(通知 Task `physio-critical-finding` / `endoscopy-critical-finding`)、テンプレート記入は `<接頭辞>-report-findings-response` / `<接頭辞>-report-conclusion-response`。
+- 画像は `<接頭辞>-report-image`、重要所見は `<接頭辞>-critical-finding`(通知 Task `physio-critical-finding` / `endoscopy-critical-finding`)、フォロー推奨は `<接頭辞>-follow-up`、テンプレート記入は `<接頭辞>-report-findings-response` / `<接頭辞>-report-conclusion-response`。
 
 ### 病理診断
 
@@ -59,7 +60,7 @@
 
 - 検体検査: [報告](DiagnosticReport-example-lab-diagnostic-report.html) / [結果項目](Observation-example-lab-result-observation.html) / [緊急異常値の通知](Task-example-lab-panic-task.html)
 - 細菌検査: [報告](DiagnosticReport-example-micro-diagnostic-report.html) / [分離菌](Observation-example-micro-isolate-observation.html) / [感受性](Observation-example-micro-susceptibility-observation.html)
-- 放射線: [読影レポート](DiagnosticReport-example-rad-diagnostic-report.html) / [重要所見の通知](Task-example-rad-critical-finding-task.html)
+- 放射線: [読影レポート](DiagnosticReport-example-rad-diagnostic-report.html) / [重要所見の通知](Task-example-rad-critical-finding-task.html) / [フォロー推奨](Task-example-followup-recommendation-task.html)
 - 生理検査: [所見レポート](DiagnosticReport-example-physio-diagnostic-report.html) / [所見](Observation-example-physio-findings-observation.html) / [重要所見の通知](Task-example-physio-critical-finding-task.html)
 - 内視鏡: [所見レポート](DiagnosticReport-example-endoscopy-diagnostic-report.html) / [所見](Observation-example-endoscopy-findings-observation.html) / [重要所見の通知](Task-example-endoscopy-critical-finding-task.html)
 - 病理: [レポート](DiagnosticReport-example-patho-diagnostic-report.html)

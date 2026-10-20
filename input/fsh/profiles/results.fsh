@@ -210,7 +210,7 @@ Description: """読影レポート。
 - category = [LOINC LP29684-5 Radiology, v2-0074#RAD, 入院・外来区分]。code = JP_DocumentCodes_CS#18748-4 画像検査報告書(text = 検査内容)。
 - status: preliminary / final / amended。effectiveDateTime = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、issued、performer = 自院 Organization、resultsInterpreter = 読影医、conclusion = 診断。order-department = 依頼科。
 - basedOn = 放射線検査オーダーのヘッダ。result = 所見 Observation(category imaging、code rad-report-item#findings、valueString)。
-- 画像は rad-report-image(Binary は同じ transaction)、重要所見は rad-critical-finding(通知 Task が作られる。暫定報告でも出す)、テンプレート記入は rad-report-findings-response / rad-report-conclusion-response。
+- 画像は rad-report-image(Binary は同じ transaction)、フォロー推奨は rad-follow-up(確定した報告で依頼医宛のフォロー推奨 Task が作られる)、重要所見は rad-critical-finding(通知 Task が作られる。暫定報告でも出す)、テンプレート記入は rad-report-findings-response / rad-report-conclusion-response。
 - レポートが付いたオーダーは取消・削除できない。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -239,6 +239,7 @@ Description: """読影レポート。
     OrderDepartment named orderDepartment 0..1 and
     RadReportImage named image 0..* and
     RadCriticalFinding named criticalFinding 0..1 MS and
+    RadFollowUp named followUp 0..1 MS and
     RadReportFindingsResponse named findingsResponse 0..1 and
     RadReportConclusionResponse named conclusionResponse 0..1
 
@@ -279,7 +280,7 @@ Description: """生理検査の所見レポート。読影レポート(FC_RadDia
 - category = [order-type#physio, v2-0074#OTH, 入院・外来区分]。1 つ目の order-type で種別を判定する(`DiagnosticReport?category=`)。code = exam-report#physio 生理検査報告書(text = 検査内容)。
 - status: preliminary / final / amended。effectiveDateTime = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 判定。order-department = 依頼科。
 - basedOn = 生理検査オーダーのヘッダ。result = 所見 Observation(category procedure、code physio-report-item#findings、valueString)。
-- 画像は physio-report-image(Binary は同じ transaction)、重要所見は physio-critical-finding(通知 Task が作られる)、テンプレート記入は physio-report-findings-response / physio-report-conclusion-response。
+- 画像は physio-report-image(Binary は同じ transaction)、フォロー推奨は physio-follow-up(確定した報告で依頼医宛のフォロー推奨 Task が作られる)、重要所見は physio-critical-finding(通知 Task が作られる)、テンプレート記入は physio-report-findings-response / physio-report-conclusion-response。
 - レポートが付いたオーダーは取消・削除できない。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -308,6 +309,7 @@ Description: """生理検査の所見レポート。読影レポート(FC_RadDia
     OrderDepartment named orderDepartment 0..1 and
     PhysioReportImage named image 0..* and
     PhysioCriticalFinding named criticalFinding 0..1 MS and
+    PhysioFollowUp named followUp 0..1 MS and
     PhysioReportFindingsResponse named findingsResponse 0..1 and
     PhysioReportConclusionResponse named conclusionResponse 0..1
 
@@ -334,7 +336,7 @@ Description: """内視鏡の所見レポート。読影レポート(FC_RadDiagno
 - category = [order-type#endoscopy, v2-0074#OTH, 入院・外来区分]。1 つ目の order-type で種別を判定する(`DiagnosticReport?category=`)。code = LOINC 18751-8 Endoscopy study(text = 検査内容)。
 - status: preliminary / final / amended。effectiveDateTime = 検査日時(実施記録の日時。無ければオーダーの実施予定日)、issued、performer = 自院 Organization、resultsInterpreter = 記載医、conclusion = 診断。order-department = 依頼科。
 - basedOn = 内視鏡オーダーのヘッダ。result = 所見 Observation(category procedure、code endoscopy-report-item#findings、valueString)。
-- 画像は endoscopy-report-image(Binary は同じ transaction)、重要所見は endoscopy-critical-finding(通知 Task が作られる)、テンプレート記入は endoscopy-report-findings-response / endoscopy-report-conclusion-response。
+- 画像は endoscopy-report-image(Binary は同じ transaction)、フォロー推奨は endoscopy-follow-up(確定した報告で依頼医宛のフォロー推奨 Task が作られる)、重要所見は endoscopy-critical-finding(通知 Task が作られる)、テンプレート記入は endoscopy-report-findings-response / endoscopy-report-conclusion-response。
 - レポートが付いたオーダーは取消・削除できない。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -363,6 +365,7 @@ Description: """内視鏡の所見レポート。読影レポート(FC_RadDiagno
     OrderDepartment named orderDepartment 0..1 and
     EndoscopyReportImage named image 0..* and
     EndoscopyCriticalFinding named criticalFinding 0..1 MS and
+    EndoscopyFollowUp named followUp 0..1 MS and
     EndoscopyReportFindingsResponse named findingsResponse 0..1 and
     EndoscopyReportConclusionResponse named conclusionResponse 0..1
 

@@ -86,6 +86,12 @@
 
 入院時の持参薬は薬剤ごとに MedicationStatement([FC_BroughtMedication](StructureDefinition-fc-brought-medication.html))で持ち、登録(`brought-medication-info`)→ 薬剤部の鑑別(`brought-medication-identification`、Task `brought-med-review`)→ 医師の判断(`brought-medication-decision`、statusReason = 継続 / 休止 / 中止)の順に拡張が増えます。鑑別が終わると入院の主治医宛(主治医がいなければ宛先なし)に `brought-med-identified` 通知が作られます。持参薬の `doseQuantity` は 1 回量で、処方(内服は 1 日量)と意味が違います。継続で処方を起こすときは、内服(頓用以外)の用量を 1 回量 × 1 日の服用回数にします。「継続」は処方区分 brought の院内処方を同じ transaction で作ります。
 
+### 特定抗菌薬の届出と警告の確認
+
+- 薬剤マスタ(backend)の抗菌薬区分が届出制・許可制の薬剤を含む処方・注射を登録すると、同じ transaction で依頼医宛に特定抗菌薬の届出の通知([FC_AntimicrobialNotificationTask](StructureDefinition-fc-antimicrobial-notification-task.html))を作ります。処方は 1 オーダーに 1 件、注射は同じ束(requisition)に 1 件。抗菌薬区分と DDD は backend のマスタにだけあり、FHIR には書きません。
+- 届出書はテンプレート AST_NOTIFY_01(`http://fhir-client.local/Questionnaire/ast-notify-01`)の QuestionnaireResponse で、`basedOn` = オーダー。保存と同じ transaction で通知の input に届出書を足し、届出制は completed、許可制は AST(CareTeam の区分 `ast`)の構成員の許可で completed になります。AST の回診記録はチーム依頼の回診記録([チーム医療](care-team.html))と同じで、テンプレート AST_ROUND_01 をチームの回診テンプレートに設定して使います。
+- 処方・注射などの登録画面の警告(アレルギー・重複・相互作用・用量・特定抗菌薬、CDS Hooks のカード)のうち確認を要するものは、理由を選んで登録すると警告の確認の来歴([FC_AdvisoryOverrideProvenance](StructureDefinition-fc-advisory-override-provenance.html))が同じ transaction に付きます([通知 Task と Provenance](notifications.html))。CDS Hooks に渡す未保存の処方(status = draft の MedicationRequest)は上流サーバーには書きません。
+
 ### 化学療法レジメン
 
 レジメンの定義は backend のマスタ(PlanDefinition は無し)で、適用は `intent = plan` の ServiceRequest([FC_RegimenOrder](StructureDefinition-fc-regimen-order.html))です。
@@ -107,5 +113,6 @@
 - 疑義照会: [照会](Task-example-rx-inquiry-task.html) / [回答の通知](Task-example-rx-inquiry-answered-task.html) / [処方変更待ちの調剤 Task](Task-example-rx-dispense-task-on-hold.html)
 - インスリン: [薬剤行(血糖スケール)](MedicationRequest-example-insulin-medication-request.html) / [施用](MedicationAdministration-example-insulin-medication-administration.html) / [血糖値](Observation-example-capillary-glucose-observation.html)
 - ロット番号: [施用](MedicationAdministration-example-lot-medication-administration.html)
+- 特定抗菌薬: [届出の通知](Task-example-antimicrobial-notification-task.html) / [警告の確認の来歴](Provenance-example-advisory-override-provenance.html)
 - [持参薬](MedicationStatement-example-brought-medication.html) / [鑑別 Task](Task-example-brought-med-review-task.html)
 - [レジメン適用](ServiceRequest-example-regimen-order.html) / [有害事象](Observation-example-adverse-event-observation.html)

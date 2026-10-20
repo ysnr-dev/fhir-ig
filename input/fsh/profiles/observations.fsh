@@ -61,8 +61,9 @@ Id: fc-vital-observation
 Title: "バイタル測定"
 Description: """バイタル。1 回の測定で入力した項目を identifier(vital-entry の uuid)で束ねる。編集は古い Observation を削除して作り直す。
 
-- category = vital-signs。code = LOINC: 85354-9 血圧パネル(component 8480-6 収縮期 / 8462-4 拡張期、mm[Hg])、8310-5 体温(Cel)、8867-4 脈拍(/min)、2708-6 SpO2(%)、9279-1 呼吸数(/min)、8302-2 身長(cm)、29463-7 体重(kg)、39156-5 BMI(kg/m2)。
+- category = vital-signs。code = LOINC: 85354-9 血圧パネル(component 8480-6 収縮期 / 8462-4 拡張期、mm[Hg])、8310-5 体温(Cel)、8867-4 脈拍(/min)、2708-6 SpO2(%)、9279-1 呼吸数(/min)、8302-2 身長(cm)、29463-7 体重(kg)、39156-5 BMI(kg/m2)、3151-8 酸素流量(L/min、0 は室内気)。同じ測定の意識(JCS)は FC_JcsObservation、早期警告スコアは FC_EarlyWarningObservation で、同じ identifier を持つ。
 - observation-problem = 対象のプロブレム。order-department = 記録した診療科(編集では元の値を引き継ぐ)。
+- 測定の Observation は fullUrl(urn:uuid)付きで POST する(NEWS2 の derivedFrom が同じ transaction の測定を指す)。
 - 入院患者一覧の経過表一括入力は、患者ごとに 1 回の測定として書き、encounter = 入院、performer = 測定者(ログイン中の医療従事者)を持つ(プロブレム・診療科は持たない)。体重だけを入れたときは、その患者の最新の身長で BMI も書く(身長の Observation は同じ測定に無い)。
 - アプリは meta.profile を付けないが、上流サーバーは読み出し時に JP_Observation_Common を付ける(category の system は HL7 observation-category)。"""
 * insert FCMeta
@@ -84,11 +85,126 @@ Description: """バイタル。1 回の測定で入力した項目を identifier
     ObservationProblem named problem 0..1 and
     OrderDepartment named orderDepartment 0..1
 
+Profile: FC_JcsObservation
+Parent: Observation
+Id: fc-jcs-observation
+Title: "意識レベル(JCS)"
+Description: """バイタル測定で入力した意識レベル(JCS)。同じ測定の他の項目と同じ identifier(vital-entry)・category・subject・encounter・performer・拡張を持つ。
+
+- code = 看護観察 MEDIS 31001657「意識評価(JCS)」+ vital-measure#jcs(LOINC に JCS は無い)、text = 意識(JCS)。MEDIS を持つので、看護指示の観察として記録した JCS と経過表の同じ行に並ぶ。
+- valueCodeableConcept = jcs(code = JCS の数値、display = I-1 などの表記)、text = 表記。"""
+* insert FCMeta
+* status = #final
+* subject only Reference(FC_Patient)
+* identifier 1..1
+* identifier.system = "http://fhir-client.local/vital-entry"
+* category 1..1
+* category = $obs-category#vital-signs
+* code.coding ^slicing.discriminator[0].type = #value
+* code.coding ^slicing.discriminator[0].path = "system"
+* code.coding ^slicing.rules = #open
+* code.coding contains
+    medis 1..1 and
+    measure 1..1
+* code.coding[medis].system = $medis-nursing-observation
+* code.coding[medis].code = #31001657
+* code.coding[measure].system = "http://fhir-client.local/CodeSystem/vital-measure"
+* code.coding[measure].code = #jcs
+* code.text 1..1
+* value[x] only CodeableConcept
+* valueCodeableConcept 1..1
+* valueCodeableConcept.coding 1..1
+* valueCodeableConcept from JcsVS (required)
+* encounter 0..1 MS
+* encounter only Reference(FC_InpatientEncounter)
+* performer 0..1 MS
+* performer only Reference(FC_Practitioner)
+* extension contains
+    ObservationProblem named problem 0..1 and
+    OrderDepartment named orderDepartment 0..1
+
+Profile: FC_EarlyWarningObservation
+Parent: Observation
+Id: fc-early-warning-observation
+Title: "早期警告スコア(NEWS2)"
+Description: """測定セットから算出した NEWS2(RCP 2017)。施設設定で早期警告を有効にしているとき、測定の transaction に派生の Observation として同梱する(病棟一覧・患者帯が 1 本の検索で最新の点数を引けるように)。qSOFA は表示時に計算し、保存しない。
+
+- identifier・category・subject・encounter・effectiveDateTime・performer・拡張は、同じ測定の最初の Observation をそのまま写す。
+- code = early-warning-score#news2、valueInteger = 合計点、interpretation = early-warning-band(低 / 低〜中 / 中 / 高)。
+- derivedFrom = 同じ transaction で POST する測定の Observation(fullUrl の urn:uuid。保存後はサーバーが Observation/{id} に書き換える)。
+- component は 7 項目(呼吸数 9279-1 / SpO2 2708-6 / 酸素 3151-8 / 収縮期血圧 8480-6 / 脈拍 8867-4 / 意識 vital-measure#jcs / 体温 8310-5)。測った項目は valueInteger = 点数(0〜3)、測っていない項目は dataAbsentReason = not-performed(合計は暫定)。意識は JCS を ACVPU に写し、A 以外を 3 点とする。SpO2 は注意区分 spo2-scale2 の患者でスケール 2 を使う。
+- 測定に呼吸数・SpO2・酸素流量・収縮期血圧・脈拍・JCS・体温のどれも無ければ作らない。測定セットは保存のたびに作り直す(DELETE + POST)ので NEWS2 も作り直す。
+- 入院中で区分が施設設定の下限以上なら、同じ transaction で早期警告の通知(FC_EwsAlertTask)を出す。"""
+* insert FCMeta
+* status = #final
+* subject only Reference(FC_Patient)
+* identifier 1..1
+* identifier.system = "http://fhir-client.local/vital-entry"
+* category 1..1
+* category = $obs-category#vital-signs
+* code.coding 1..1
+* code = EarlyWarningScoreCS#news2
+* code.text 1..1
+* effective[x] only dateTime
+* value[x] only integer
+* valueInteger 1..1
+* interpretation 1..1
+* interpretation.coding 1..1
+* interpretation from EarlyWarningBandVS (required)
+* derivedFrom 1..* MS
+* derivedFrom only Reference(FC_VitalObservation or FC_JcsObservation)
+* component 7..7
+* component.code.coding 1..1
+* component.value[x] only integer
+* component.dataAbsentReason = $data-absent-reason#not-performed
+* encounter 0..1 MS
+* encounter only Reference(FC_InpatientEncounter)
+* performer 0..1 MS
+* performer only Reference(FC_Practitioner)
+* extension contains
+    ObservationProblem named problem 0..1 and
+    OrderDepartment named orderDepartment 0..1
+
+Profile: FC_OralExamObservation
+Parent: Observation
+Id: fc-oral-exam-observation
+Title: "口腔診査情報"
+Description: """歯科の口腔診査情報(日本歯科医師会 口腔診査情報標準規格 JDAOES 準拠)。1 回の診査を、同じ identifier(oral-exam-snapshot の uuid)を持つ複数の Observation に分けて書く。子同士は参照を持たず、identifier と歯の鍵(歯種 + TB-3 + TB-4 + TB-5)で結び付く。
+
+- code = oral-exam: snapshot 見出し(1 件)/ tooth 歯(記録のある歯 × 併存グループ)/ tooth-content 現在歯の内容(併存レコードごと)/ mouth 口腔全体(KS・KK・SI・SK の行ごと)。text = 種類名。
+- category = exam。effectiveDateTime = 診査日(日付のみ)。performer = 記録した医療従事者(ログイン中の医療従事者があるときだけ。編集では元の値を引き継ぐ)。encounter は持たない。
+- component.code = jdaoes-item(項目名からハイフンを除いたコード)。値は valueCodeableConcept(JDAS の各表の OID、または MEDIS 標準歯式 urn:oid:1.2.392.200119.4.1401)/ valueString(製品名・特記事項などの自由記載)/ valueDateTime(年月日)。値のある項目だけを書く。
+- 見出し: NS2 入力種別(常に)、NS3 最新初診年月日・NS4 最終診療年月日(入力があるとき)、note = メモ(あるとき)。
+- 歯: bodySite = 歯種(MEDIS 標準歯式 4 桁、text = 右上6 などの略記)。TB3 状態・TB4 部分(常に)、TB5 併存グループ(同じ歯に 2 つ以上のとき)、TD2 歯の基本状態(常に)、TD3 歯科健診記号、TM2〜TM12 欠損歯の内容、TE2〜TE6 製品識別・特記事項、TE8 当該歯の入力・更新年月日(前回から変わった歯だけ新しい日付)、TF2 + TF3〜TF28 標準プロファイル 26 項目(歯の状態から導出)。
+- 現在歯の内容: bodySite は親の歯と同じ。TB3・TB4(・TB5)と、TP2 併存レコード連番(2 行以上のとき)、TP3〜TP34。
+- 口腔全体: bodySite を持たない。歯式の項目(KS4・KK9・SI5・SI8・SK4)は歯 1 本ごとに 1 つの component(MEDIS 標準歯式 6 桁)。
+- 保存は 1 つの transaction: 編集では前回の子をすべて DELETE、見出しを POST(fullUrl = urn:uuid)/ PUT(If-Match)、子をすべて POST(fullUrl = urn:uuid)。"""
+* insert FCMeta
+* status = #final
+* subject only Reference(FC_Patient)
+* identifier 1..1
+* identifier.system = "http://fhir-client.local/oral-exam-snapshot"
+* category 1..1
+* category = $obs-category#exam
+* code.coding 1..1
+* code from OralExamVS (required)
+* code.text 1..1
+* effective[x] 1..1
+* effective[x] only dateTime
+* performer 0..1 MS
+* performer only Reference(FC_Practitioner)
+* encounter 0..0
+* value[x] 0..0
+* component 1..* MS
+* component.code.coding 1..1
+* component.code.coding.system = "http://fhir-client.local/CodeSystem/jdaoes-item"
+* component.value[x] only CodeableConcept or string or dateTime
+
 Profile: FC_NursingObservation
 Parent: Observation
 Id: fc-nursing-observation
 Title: "看護観察 記録"
-Description: "看護観察の指示に対する記録。category[0] = order-type#nursing のみ。code = 指示の MEDIS coding(master-nursingObservationKeyCode)に、対応があれば LOINC のバイタルコードを添える(31000001 SpO2 / 31001368 体温 / 31001390 脈拍 / 31001369 呼吸数 / 31000296 体重 / 31000298 身長 / 31002365 血圧、31000303 血糖値 → 41653-7 簡易血糖)。value = valueQuantity(LOINC に対応するバイタルだけ UCUM の system / code を持ち、他は unit 文字列のみ)/ valueCodeableConcept(nursing-observation-result + text)/ component(2 数値型。code.text のみ)/ valueString。マスタに無い自由記載の指示の記録は code.text のみ + valueString。basedOn = 看護指示、encounter、performer。identifier = nursing-perform-entry。"
+Description: "看護観察の指示に対する記録。category[0] = order-type#nursing のみ。code = 指示の MEDIS coding(master-nursingObservationKeyCode)に、対応があれば LOINC のバイタルコードを添える(31000001 SpO2 / 31001368 体温 / 31001390 脈拍 / 31001369 呼吸数 / 31000296 体重 / 31000298 身長 / 31002365 血圧、31000303 血糖値 → 41653-7 簡易血糖 / 31006122 酸素流量 → 3151-8)。value = valueQuantity(LOINC に対応するバイタルだけ UCUM の system / code を持ち、他は unit 文字列のみ)/ valueCodeableConcept(nursing-observation-result + text)/ component(2 数値型。code.text のみ)/ valueString。マスタに無い自由記載の指示の記録は code.text のみ + valueString。basedOn = 看護指示、encounter、performer。identifier = nursing-perform-entry。"
 * insert FCMeta
 * subject only Reference(FC_Patient)
 * identifier.system = "http://fhir-client.local/nursing-perform-entry"

@@ -128,6 +128,13 @@ Title: "バイタル測定の入力単位"
 Description: "1 回の測定で入力したバイタル Observation を束ねる identifier の system。値は uuid。"
 * insert FCNamingSystem(VitalEntry, http://fhir-client.local/vital-entry)
 
+Instance: ns-oral-exam-snapshot
+InstanceOf: NamingSystem
+Usage: #definition
+Title: "口腔診査情報の入力単位"
+Description: "1 回の口腔診査で書く Observation(見出し・歯・現在歯の内容・口腔全体)を束ねる identifier の system。値は uuid。"
+* insert FCNamingSystem(OralExamSnapshot, http://fhir-client.local/oral-exam-snapshot)
+
 Instance: ns-nursing-perform-entry
 InstanceOf: NamingSystem
 Usage: #definition

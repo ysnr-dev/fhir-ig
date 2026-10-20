@@ -157,6 +157,7 @@ Description: """テンプレートの記入。アプリは meta.profile に JASP
 - basedOn = 関連するオーダー(放射線治療の週次診察など)。
 - encounter = 回答が属する入院(看護プロファイル。施設設定で並べたテンプレートの区画ごとに 1 入院 1 件で、書き直しは同じ回答の更新)。encounter を持つ回答は入院単位の書類として扱い、カルテの時系列には出さない。更新では保存済みの値を引き継ぐ。
 - questionnaire-response-problem = 対象プロブレム。order-department = 記録した診療科(カルテ・テンプレートの記入で付く。更新では元の値を引き継ぐ)。item の questionnaire-response-annotated-image = シェーマに書き込んだ画像(Binary)。
+- Web 問診の取り込み: intake-source(valueCode = patient)を先頭に付け、authored = 患者が答えた日時、status = completed(既定)。
 - 診療記録のセクション、オーダーの検査目的・特別指示・臨床情報・術前指示・依頼目的、読影レポート、栄養指導記録、パスの評価から参照される。"""
 * insert FCMeta
 * subject only Reference(FC_Patient)
@@ -165,6 +166,7 @@ Description: """テンプレートの記入。アプリは meta.profile に JASP
 * encounter 0..1 MS
 * encounter only Reference(FC_InpatientEncounter)
 * extension contains
+    IntakeSource named intakeSource 0..1 and
     QuestionnaireResponseProblem named problem 0..1 and
     OrderDepartment named orderDepartment 0..1
 * item.extension contains QuestionnaireResponseAnnotatedImage named annotatedImage 0..1

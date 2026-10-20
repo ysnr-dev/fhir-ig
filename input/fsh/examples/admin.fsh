@@ -366,3 +366,17 @@ Description: "入院予定の例(救急外来から)"
 * extension[ambulance].valueBoolean = true
 * extension[priorHomeCare].valueCode = #0
 * extension[originEmergency].valueReference = Reference(Encounter/example-emergency-encounter)
+
+Instance: example-advisory-override-provenance
+InstanceOf: FC_AdvisoryOverrideProvenance
+Usage: #example
+Title: "警告の確認の来歴の例"
+Description: "処方の相互作用の警告を、理由を添えて確認し登録したときの来歴。オーダーの来歴とは別の 1 件。"
+* target[0] = Reference(ServiceRequest/example-prescription-order)
+* target[1] = Reference(MedicationRequest/example-prescription-medication-request)
+* recorded = "2026-04-01T09:00:00+09:00"
+* activity = ProvenanceActivityCS#override "警告の確認"
+* reason.coding = AdvisoryOverrideReasonCS#monitored "モニタリングしながら使用"
+* reason.text = "相互作用: ワーファリン錠1mg と併用注意（INR を週 1 回確認）"
+* agent.type = $provenance-participant-type#enterer
+* agent.who = Reference(Practitioner/example-practitioner) "山田 一郎"

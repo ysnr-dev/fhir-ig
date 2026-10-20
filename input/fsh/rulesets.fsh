@@ -22,3 +22,14 @@ RuleSet: AllOf(cs)
 * insert FCMeta
 * ^description = "CodeSystem {cs} のすべてのコード。"
 * include codes from system {cs}
+
+// 所見レポートのフォロー推奨(推奨と期限の複合拡張)。
+RuleSet: FollowUpExtension
+* insert FCMeta
+* extension contains
+    recommendation 1..1 and
+    due 1..1
+* extension[recommendation].value[x] only string
+* extension[recommendation] ^short = "推奨の内容"
+* extension[due].value[x] only date
+* extension[due] ^short = "期限"

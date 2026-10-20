@@ -59,7 +59,10 @@
 | 血液型 | [FC_BloodTypeObservation](StructureDefinition-fc-blood-type-observation.html) | LOINC 883-9(ABO)/ 10331-7(RhD) | `transfusion-abo` / `transfusion-rhd`、method = 情報源 |
 | 妊娠・授乳 | [FC_PregnancyObservation](StructureDefinition-fc-pregnancy-observation.html) | LOINC 82810-3 / 63895-7 | SNOMED CT、component 11778-8 分娩予定日 |
 | 感染症(手入力) | [FC_InfectionObservation](StructureDefinition-fc-infection-observation.html) | `infection-type` + LOINC | `infection-result`、method = 情報源 |
-| バイタル | [FC_VitalObservation](StructureDefinition-fc-vital-observation.html) | LOINC(85354-9 血圧、8310-5 体温、8867-4 脈拍、2708-6 SpO2、9279-1 呼吸数、8302-2 身長、29463-7 体重、39156-5 BMI) | Quantity(UCUM)、identifier = vital-entry、`observation-problem`、記録した診療科 `order-department`。病棟の経過表一括入力は encounter = 入院・performer = 測定者を持ち、体重だけのときは最新の身長で BMI も書く |
+| バイタル | [FC_VitalObservation](StructureDefinition-fc-vital-observation.html) | LOINC(85354-9 血圧、8310-5 体温、8867-4 脈拍、2708-6 SpO2、9279-1 呼吸数、8302-2 身長、29463-7 体重、39156-5 BMI、3151-8 酸素流量) | Quantity(UCUM)、identifier = vital-entry、`observation-problem`、記録した診療科 `order-department`。病棟の経過表一括入力は encounter = 入院・performer = 測定者を持ち、体重だけのときは最新の身長で BMI も書く |
+| 意識(JCS) | [FC_JcsObservation](StructureDefinition-fc-jcs-observation.html) | MEDIS 31001657 意識評価(JCS)+ `vital-measure#jcs` | `jcs`(0 / I-1 〜 III-300)。バイタルと同じ identifier |
+| 早期警告スコア | [FC_EarlyWarningObservation](StructureDefinition-fc-early-warning-observation.html) | `early-warning-score#news2` | valueInteger = 合計、interpretation = `early-warning-band`、component = 7 項目の点数(測っていない項目は dataAbsentReason)、derivedFrom = 同じ測定の Observation。施設設定で有効なときだけ測定の transaction に同梱し、入院中で区分が下限以上なら早期警告の通知を出す |
+| 口腔診査情報 | [FC_OralExamObservation](StructureDefinition-fc-oral-exam-observation.html) | `oral-exam`(snapshot / tooth / tooth-content / mouth) | component = JDAOES の項目(`jdaoes-item`)。identifier = oral-exam-snapshot で 1 回の診査を束ね、歯は bodySite = MEDIS 標準歯式、category = exam |
 | 有害事象(CTCAE) | [FC_AdverseEventObservation](StructureDefinition-fc-adverse-event-observation.html) | text(CTCAE 用語) | valueInteger = Grade、category = 本 IG の `observation-category#adverse-event`、`treatment-context` |
 | テンプレート抽出 | [FC_ExtractedObservation](StructureDefinition-fc-extracted-observation.html) | item.code(`observation-item` など) | derivedFrom = QuestionnaireResponse |
 
@@ -75,5 +78,5 @@
 ### 例
 
 - [診療記録](Composition-example-clinical-note.html) / [看護記録](Composition-example-nursing-clinical-note.html) / [研修医の記録(承認済)](Composition-example-countersign-clinical-note.html) / [退院時サマリー](Composition-example-discharge-summary.html) / [督促 Task](Task-example-document-due-task.html)
-- [血液型](Observation-example-blood-type-observation.html) / [妊娠](Observation-example-pregnancy-observation.html) / [感染症](Observation-example-infection-observation.html) / [バイタル](Observation-example-vital-observation.html) / [体重(経過表一括入力)](Observation-example-weight-observation.html)
+- [血液型](Observation-example-blood-type-observation.html) / [妊娠](Observation-example-pregnancy-observation.html) / [感染症](Observation-example-infection-observation.html) / [バイタル](Observation-example-vital-observation.html) / [体重(経過表一括入力)](Observation-example-weight-observation.html) / [JCS](Observation-example-jcs-observation.html) / [NEWS2](Observation-example-early-warning-observation.html) / [口腔診査情報(見出し)](Observation-example-oral-exam-snapshot.html) / [口腔診査情報(歯)](Observation-example-oral-exam-tooth.html)
 - [患者ファイル](DocumentReference-example-patient-file.html) / [文書作成で作った文書](DocumentReference-example-patient-document.html) / [DICOM スタディ](ImagingStudy-example-imaging-study.html)

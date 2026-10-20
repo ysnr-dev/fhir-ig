@@ -2,7 +2,7 @@
 
 NST・ICT・褥瘡対策・緩和ケアなどの組織的なチームは **CareTeam**([FC_CareTeam](StructureDefinition-fc-care-team.html))です。`subject` を持たないので患者コンパートメントには入りません。
 
-- `status`: active 有効 / inactive 無効。`category[0]` = チームの区分(`care-team-kind`: nst / ict / pressure-ulcer / palliative / dementia / rst / other)。`name` = チーム名。
+- `status`: active 有効 / inactive 無効。`category[0]` = チームの区分(`care-team-kind`: nst / ict / ast / pressure-ulcer / palliative / dementia / rst / other)。`name` = チーム名。
 - `participant`: `role` = `care-team-role`(lead リーダー / member 構成員)、`member` = Practitioner(display = 氏名)。
 - `managingOrganization` = 自院。`care-team-round-template` = 回診記録に挿入する既定テンプレート(Questionnaire の url、任意)。
 - 構成員の変更も CareTeam の PUT です(読んだ版を If-Match に添える)。

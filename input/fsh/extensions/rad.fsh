@@ -55,6 +55,13 @@ Context: DiagnosticReport
 * insert FCMeta
 * value[x] only string
 
+Extension: RadFollowUp
+Id: rad-follow-up
+Title: "フォロー推奨"
+Description: "フォロー推奨(推奨の内容と期限)。報告が確定(final / amended / corrected)していれば、依頼医宛のフォロー推奨 Task(followup-recommendation)が同じ transaction で作られる。"
+Context: DiagnosticReport
+* insert FollowUpExtension
+
 Extension: RadReportFindingsResponse
 Id: rad-report-findings-response
 Title: "所見テンプレートの記入"

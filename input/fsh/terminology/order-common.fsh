@@ -107,6 +107,9 @@ Description: "Task.code。部門進捗 Task(オーダーの部門側の進捗)�
 * #rx-inquiry "疑義照会"
 * #rx-inquiry-answered "疑義照会回答"
 * #meal-allergy-check "食事のアレルギー確認"
+* #ews-alert "早期警告"
+* #antimicrobial-notification "特定抗菌薬の届出"
+* #followup-recommendation "フォロー推奨"
 
 ValueSet: TaskCodeVS
 Id: task-code-vs
@@ -155,4 +158,39 @@ CodeSystem: PathwayCS
 Id: pathway
 Title: "クリニカルパス"
 Description: "code = パスコード。パス適用から出したオーダーのヘッダに付く pathway-order 拡張の valueCoding.system。"
+* insert MasterCS
+
+CodeSystem: FollowUpResolutionCS
+Id: followup-resolution
+Title: "フォロー推奨への対応"
+Description: "フォロー推奨 Task を対応済みにするときの対応の区分(Task.output「対応」)。"
+* insert EnumCS
+* #ordered "オーダー済"
+* #referred "他院へ依頼"
+* #declined "患者が希望せず"
+* #not-needed "不要と判断"
+
+ValueSet: FollowUpResolutionVS
+Id: followup-resolution-vs
+Title: "フォロー推奨への対応 ValueSet"
+Description: "フォロー推奨への対応 ValueSet。"
+* insert AllOf(FollowUpResolutionCS)
+
+CodeSystem: ProvenanceActivityCS
+Id: provenance-activity
+Title: "来歴の活動(独自)"
+Description: "v3-DataOperation に無い来歴の活動。override = オーダーの警告を理由を添えて確認し、そのまま登録した。"
+* insert EnumCS
+* #override "警告の確認"
+
+ValueSet: ProvenanceActivityVS
+Id: provenance-activity-vs
+Title: "来歴の活動(独自) ValueSet"
+Description: "来歴の活動(独自) ValueSet。"
+* insert AllOf(ProvenanceActivityCS)
+
+CodeSystem: AdvisoryOverrideReasonCS
+Id: advisory-override-reason
+Title: "警告を確認した理由"
+Description: "オーダーの警告を確認して登録したときの理由。backend のマスタ(advisory_override_reasons、管理画面「警告の集計と設定」で編集)で、seed は already-addressed 対応済み / not-applicable 該当しない / clinical-judgement 臨床判断で不要 / patient-informed 患者に説明済み / monitored モニタリングしながら使用 / same-as-before 前回も同じ処方で問題なし / benefit-outweighs-risk 有益性が危険性を上回る / other その他。"
 * insert MasterCS

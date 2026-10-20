@@ -113,3 +113,89 @@ Id: dpc-coding-timing-vs
 Title: "診断群分類を決めた時点 ValueSet"
 Description: "診断群分類を決めた時点 ValueSet。"
 * insert AllOf(DpcCodingTimingCS)
+
+CodeSystem: VitalMeasureCS
+Id: vital-measure
+Title: "バイタルの測定項目(LOINC に無いもの)"
+Description: "LOINC に対応の無いバイタルの測定項目。JCS は看護観察 MEDIS 31001657「意識評価(JCS)」と併記する。"
+* insert EnumCS
+* #jcs "JCS"
+
+ValueSet: VitalMeasureVS
+Id: vital-measure-vs
+Title: "バイタルの測定項目 ValueSet"
+Description: "バイタルの測定項目 ValueSet。"
+* insert AllOf(VitalMeasureCS)
+
+CodeSystem: JcsCS
+Id: jcs
+Title: "JCS(Japan Coma Scale)"
+Description: "意識レベル(JCS)の値。code は JCS の数値、display は桁付きの表記。"
+* insert EnumCS
+* #0 "0"
+* #1 "I-1"
+* #2 "I-2"
+* #3 "I-3"
+* #10 "II-10"
+* #20 "II-20"
+* #30 "II-30"
+* #100 "III-100"
+* #200 "III-200"
+* #300 "III-300"
+
+ValueSet: JcsVS
+Id: jcs-vs
+Title: "JCS ValueSet"
+Description: "JCS ValueSet。"
+* insert AllOf(JcsCS)
+
+CodeSystem: EarlyWarningScoreCS
+Id: early-warning-score
+Title: "早期警告スコア"
+Description: "測定セットから算出して残す早期警告スコアの種類。"
+* insert EnumCS
+* #news2 "NEWS2"
+
+ValueSet: EarlyWarningScoreVS
+Id: early-warning-score-vs
+Title: "早期警告スコア ValueSet"
+Description: "早期警告スコア ValueSet。"
+* insert AllOf(EarlyWarningScoreCS)
+
+CodeSystem: EarlyWarningBandCS
+Id: early-warning-band
+Title: "早期警告スコアの区分"
+Description: "NEWS2 の臨床リスク区分(RCP 2017)。low = 合計 0〜4、low-medium = 合計 0〜4 で単項目 3 点あり、medium = 合計 5〜6、high = 合計 7 以上。"
+* insert EnumCS
+* #low "低"
+* #low-medium "低〜中"
+* #medium "中"
+* #high "高"
+
+ValueSet: EarlyWarningBandVS
+Id: early-warning-band-vs
+Title: "早期警告スコアの区分 ValueSet"
+Description: "早期警告スコアの区分 ValueSet。"
+* insert AllOf(EarlyWarningBandCS)
+
+CodeSystem: OralExamCS
+Id: oral-exam
+Title: "口腔診査情報の種類"
+Description: "口腔診査情報(JDAOES 準拠)の Observation.code。1 回の診査を見出し・歯・現在歯の内容・口腔全体の Observation に分けて書く。"
+* insert EnumCS
+* #snapshot "口腔診査情報"
+* #tooth "歯の診査情報"
+* #tooth-content "現在歯の内容"
+* #mouth "口腔全体の診査情報"
+
+ValueSet: OralExamVS
+Id: oral-exam-vs
+Title: "口腔診査情報の種類 ValueSet"
+Description: "口腔診査情報の種類 ValueSet。"
+* insert AllOf(OralExamCS)
+
+CodeSystem: JdaoesItemCS
+Id: jdaoes-item
+Title: "口腔診査情報の項目(JDAOES)"
+Description: "口腔診査情報の Observation.component.code。日本歯科医師会の口腔診査情報標準規格(JDAOES、表 0003)の項目で、code は項目名からハイフンを除いたもの(TP-11 → TP11)。display はコード表マスタ(backend の oral_exam_codes)の項目名で、マスタに無い自由記載・歯式の項目では項目名(TE-3 など)のまま。値のコード表は JDAS の各表の OID(urn:oid:1.2.392.200354.1.2.…)と MEDIS 標準歯式(urn:oid:1.2.392.200119.4.1401)。"
+* insert MasterCS

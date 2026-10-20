@@ -793,3 +793,106 @@ Description: "重篤化リスクが高い食物アレルギーを登録したと
 * input[order].valueString = "糖尿病食 1600kcal 4/1 夕〜"
 * input[startDate].type.text = "開始日"
 * input[startDate].valueDate = "2026-04-01"
+
+Instance: example-ews-alert-task
+InstanceOf: FC_EwsAlertTask
+Usage: #example
+Title: "早期警告 通知の例"
+Description: "病棟の経過表一括入力で NEWS2 が中になり、入院の主治医に出た通知。"
+* status = #requested
+* intent = #filler-order
+* priority = #urgent
+* code = $task-code#ews-alert "早期警告"
+* code.text = "早期警告"
+* focus = Reference(Observation/example-early-warning-observation)
+* for = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* requester = Reference(Practitioner/example-nurse)
+* requester.display = "看護 花子"
+* authoredOn = "2026-04-02T06:05:00+09:00"
+* lastModified = "2026-04-02T06:05:00+09:00"
+* description = "NEWS2 5点(中) 呼吸数 3・SpO2 1・体温 1 欠測: 酸素"
+* input[total].type.text = "合計"
+* input[total].valueInteger = 5
+* input[band].type.text = "区分"
+* input[band].valueCode = #medium
+* input[items].type.text = "項目"
+* input[items].valueString = "呼吸数 3・SpO2 1・体温 1"
+* input[missing].type.text = "欠測"
+* input[missing].valueString = "酸素"
+* input[measuredAt].type.text = "測定日時"
+* input[measuredAt].valueDateTime = "2026-04-02T06:00:00+09:00"
+
+Instance: example-antimicrobial-notification-task
+InstanceOf: FC_AntimicrobialNotificationTask
+Usage: #example
+Title: "特定抗菌薬の届出 通知の例(許可制・届出書提出済み)"
+Description: "許可制の抗菌薬を含む注射の束に出た届出の通知。届出書を提出し、AST の許可待ち(requested のまま、input に届出書)。"
+* status = #requested
+* intent = #filler-order
+* priority = #urgent
+* code = $task-code#antimicrobial-notification "特定抗菌薬の届出"
+* code.text = "特定抗菌薬の届出"
+* focus = Reference(ServiceRequest/example-injection-order)
+* for = Reference(Patient/example-patient)
+* encounter = Reference(Encounter/example-encounter)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* requester = Reference(Practitioner/example-practitioner)
+* requester.display = "山田 一郎"
+* basedOn = Reference(ServiceRequest/example-injection-order)
+* authoredOn = "2026-04-01T10:00:00+09:00"
+* lastModified = "2026-04-01T10:00:00+09:00"
+* description = "特定抗菌薬(許可制) メロペネム点滴静注用0.5g"
+* input[category].type.text = "区分"
+* input[category].valueCode = #approve
+* input[medicines].type.text = "薬剤"
+* input[medicines].valueString = "メロペネム点滴静注用0.5g"
+* input[orderKind].type.text = "種別"
+* input[orderKind].valueString = "注射"
+* input[startDate].type.text = "開始日"
+* input[startDate].valueDate = "2026-04-01"
+* input[series].type.text = "束"
+* input[series].valueString = "7f6e5d4c-3b2a-4190-8f7e-6d5c4b3a2918"
+* input[form].type.text = "届出書"
+* input[form].valueReference = Reference(QuestionnaireResponse/example-questionnaire-response)
+
+Instance: example-followup-recommendation-task
+InstanceOf: FC_FollowUpRecommendationTask
+Usage: #example
+Title: "フォロー推奨 通知の例(対応済み)"
+Description: "読影レポートのフォロー推奨。依頼医がオーダーを出して対応済みにした。"
+* status = #completed
+* intent = #filler-order
+* priority = #routine
+* code = $task-code#followup-recommendation "フォロー推奨"
+* code.text = "フォロー推奨"
+* focus = Reference(DiagnosticReport/example-rad-diagnostic-report)
+* for = Reference(Patient/example-patient)
+* owner = Reference(Practitioner/example-practitioner)
+* owner.display = "山田 一郎"
+* basedOn = Reference(ServiceRequest/example-rad-order-header)
+* authoredOn = "2026-04-03T15:00:00+09:00"
+* lastModified = "2026-04-05T09:00:00+09:00"
+* description = "2026-04-03 胸部 CT 3 か月後に胸部 CT で再評価 期限 2026-07-03"
+* restriction.period.end = "2026-07-03"
+* executionPeriod.start = "2026-04-03T15:00:00+09:00"
+* executionPeriod.end = "2026-04-05T09:00:00+09:00"
+* note.authorReference = Reference(Practitioner/example-practitioner) "山田 一郎"
+* note.time = "2026-04-05T09:00:00+09:00"
+* note.text = "フォロー推奨に対応しました。"
+* input[kind].type.text = "種別"
+* input[kind].valueString = "rad"
+* input[examDate].type.text = "検査日"
+* input[examDate].valueDate = "2026-04-03"
+* input[examContent].type.text = "検査内容"
+* input[examContent].valueString = "胸部 CT"
+* input[recommendation].type.text = "推奨"
+* input[recommendation].valueString = "3 か月後に胸部 CT で再評価"
+* output[resolution].type.text = "対応"
+* output[resolution].valueCodeableConcept = FollowUpResolutionCS#ordered "オーダー済"
+* output[resolution].valueCodeableConcept.text = "オーダー済"
+* output[order].type.text = "対応オーダー"
+* output[order].valueReference = Reference(ServiceRequest/example-rad-order-header) "胸部 CT 2026-07-01"

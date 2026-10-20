@@ -97,6 +97,13 @@ Context: DiagnosticReport
 * insert FCMeta
 * value[x] only string
 
+Extension: PhysioFollowUp
+Id: physio-follow-up
+Title: "フォロー推奨"
+Description: "フォロー推奨(推奨の内容と期限)。報告が確定(final / amended / corrected)していれば、依頼医宛のフォロー推奨 Task(followup-recommendation)が同じ transaction で作られる。"
+Context: DiagnosticReport
+* insert FollowUpExtension
+
 Extension: PhysioReportFindingsResponse
 Id: physio-report-findings-response
 Title: "所見テンプレートの記入(生理検査)"
@@ -137,6 +144,13 @@ Description: "重要所見の要点。付くと endoscopy-critical-finding 通�
 Context: DiagnosticReport
 * insert FCMeta
 * value[x] only string
+
+Extension: EndoscopyFollowUp
+Id: endoscopy-follow-up
+Title: "フォロー推奨"
+Description: "フォロー推奨(推奨の内容と期限)。報告が確定(final / amended / corrected)していれば、依頼医宛のフォロー推奨 Task(followup-recommendation)が同じ transaction で作られる。"
+Context: DiagnosticReport
+* insert FollowUpExtension
 
 Extension: EndoscopyReportFindingsResponse
 Id: endoscopy-report-findings-response

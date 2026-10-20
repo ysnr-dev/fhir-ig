@@ -562,3 +562,133 @@ Description: "入院患者一覧の経過表一括入力で書いた体重。enc
 * effectiveDateTime = "2026-04-05T06:00:00+09:00"
 * performer = Reference(Practitioner/example-nurse)
 * valueQuantity = 61.2 'kg' "kg"
+
+Instance: example-jcs-observation
+InstanceOf: FC_JcsObservation
+Usage: #example
+Title: "意識レベル(JCS)の例"
+Description: "バイタル測定で入力した JCS。同じ測定の血圧と同じ identifier を持つ。"
+* status = #final
+* identifier.system = "http://fhir-client.local/vital-entry"
+* identifier.value = "5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d"
+* category = $obs-category#vital-signs
+* code.coding[medis] = $medis-nursing-observation#31001657 "意識評価(JCS)"
+* code.coding[measure] = VitalMeasureCS#jcs "JCS"
+* code.text = "意識(JCS)"
+* subject = Reference(Patient/example-patient)
+* effectiveDateTime = "2026-04-01T21:00:00Z"
+* valueCodeableConcept = JcsCS#1 "I-1"
+* valueCodeableConcept.text = "I-1"
+* extension[problem].valueReference = Reference(Condition/example-condition)
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
+
+Instance: example-early-warning-observation
+InstanceOf: FC_EarlyWarningObservation
+Usage: #example
+Title: "早期警告スコア(NEWS2)の例"
+Description: "血圧と JCS だけを入れた測定から算出した NEWS2。測っていない 5 項目は dataAbsentReason を持ち、合計は暫定。"
+* status = #final
+* identifier.system = "http://fhir-client.local/vital-entry"
+* identifier.value = "5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d"
+* category = $obs-category#vital-signs
+* code = EarlyWarningScoreCS#news2 "NEWS2"
+* code.text = "NEWS2"
+* subject = Reference(Patient/example-patient)
+* effectiveDateTime = "2026-04-01T21:00:00Z"
+* valueInteger = 3
+* interpretation = EarlyWarningBandCS#low-medium "低〜中"
+* derivedFrom[0] = Reference(Observation/example-vital-observation)
+* derivedFrom[1] = Reference(Observation/example-jcs-observation)
+* component[0].code = $loinc#9279-1 "Respiratory rate"
+* component[0].dataAbsentReason = $data-absent-reason#not-performed
+* component[1].code = $loinc#2708-6 "Oxygen saturation in Arterial blood"
+* component[1].dataAbsentReason = $data-absent-reason#not-performed
+* component[2].code = $loinc#3151-8 "Inhaled oxygen flow rate"
+* component[2].dataAbsentReason = $data-absent-reason#not-performed
+* component[3].code = $loinc#8480-6 "Systolic blood pressure"
+* component[3].valueInteger = 0
+* component[4].code = $loinc#8867-4 "Heart rate"
+* component[4].dataAbsentReason = $data-absent-reason#not-performed
+* component[5].code = VitalMeasureCS#jcs "JCS"
+* component[5].valueInteger = 3
+* component[6].code = $loinc#8310-5 "Body temperature"
+* component[6].dataAbsentReason = $data-absent-reason#not-performed
+* extension[problem].valueReference = Reference(Condition/example-condition)
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
+
+Instance: example-oral-exam-snapshot
+InstanceOf: FC_OralExamObservation
+Usage: #example
+Title: "口腔診査情報(見出し)の例"
+Description: "1 回の口腔診査の見出し。入力種別・最新初診年月日・最終診療年月日とメモ。"
+* status = #final
+* identifier.system = "http://fhir-client.local/oral-exam-snapshot"
+* identifier.value = "3e2d1c0b-9a8f-4e7d-8c6b-5a4f3e2d1c0b"
+* category = $obs-category#exam "Exam"
+* code = OralExamCS#snapshot "口腔診査情報"
+* code.text = "口腔診査情報"
+* subject = Reference(Patient/example-patient)
+* effectiveDateTime = "2026-04-01"
+* performer = Reference(Practitioner/example-practitioner) "山田 一郎"
+* component[0].code = JdaoesItemCS#NS2 "入力種別"
+* component[0].valueCodeableConcept = urn:oid:1.2.392.200354.1.2.1.4.2#01 "初診時口腔診査"
+* component[1].code = JdaoesItemCS#NS3 "最新初診年月日"
+* component[1].valueDateTime = "2026-04-01"
+* component[2].code = JdaoesItemCS#NS4 "最終診療年月日"
+* component[2].valueDateTime = "2026-04-01"
+* note.text = "初診時の診査"
+
+Instance: example-oral-exam-tooth
+InstanceOf: FC_OralExamObservation
+Usage: #example
+Title: "口腔診査情報(歯)の例"
+Description: "見出しと同じ identifier を持つ歯 1 本の記録。健全歯なので標準プロファイルの TF-4 が導出される。"
+* status = #final
+* identifier.system = "http://fhir-client.local/oral-exam-snapshot"
+* identifier.value = "3e2d1c0b-9a8f-4e7d-8c6b-5a4f3e2d1c0b"
+* category = $obs-category#exam "Exam"
+* code = OralExamCS#tooth "歯の診査情報"
+* code.text = "歯の診査情報"
+* subject = Reference(Patient/example-patient)
+* effectiveDateTime = "2026-04-01"
+* performer = Reference(Practitioner/example-practitioner) "山田 一郎"
+* bodySite = urn:oid:1.2.392.200119.4.1401#1016 "右側上顎第１大臼歯"
+* bodySite.text = "右上6"
+* component[0].code = JdaoesItemCS#TB3 "状態コード"
+* component[0].valueCodeableConcept = urn:oid:1.2.392.200119.4.1401#0 "現存歯"
+* component[1].code = JdaoesItemCS#TB4 "部分コード"
+* component[1].valueCodeableConcept = urn:oid:1.2.392.200119.4.1401#0 "部分指定なし"
+* component[2].code = JdaoesItemCS#TD2 "歯の基本状態"
+* component[2].valueCodeableConcept = urn:oid:1.2.392.200354.1.2.1.5.2.2#02 "現在歯【健全歯／】（治療痕なし）"
+* component[3].code = JdaoesItemCS#TD3 "歯科健診記号"
+* component[3].valueCodeableConcept = urn:oid:1.2.392.200354.1.2.1.5.2.3#01 "／（現在歯、または健全歯）"
+* component[4].code = JdaoesItemCS#TE8 "当該歯情報入力・更新年月日"
+* component[4].valueDateTime = "2026-04-01"
+* component[5].code = JdaoesItemCS#TF2 "標準プロファイル26項目の情報の有無"
+* component[5].valueCodeableConcept = urn:oid:1.2.392.200354.1.2.2.3#01 "あり（標準プロファイル26項目の情報あり）"
+* component[6].code = JdaoesItemCS#TF4 "健全歯・Ｓｏｕ"
+* component[6].valueCodeableConcept = urn:oid:1.2.392.200354.1.2.1.5.6.4#01 "健全歯・Ｓｏｕ"
+
+Instance: example-intake-questionnaire-response
+InstanceOf: FC_QuestionnaireResponse
+Usage: #example
+Title: "Web 問診の取り込みの例"
+Description: "患者が Web 問診で答えた回答を職員が確認して取り込んだ記入。intake-source = patient、authored = 患者が答えた日時。"
+* identifier.value = "1311234567^00000001^c2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f"
+* questionnaire = "http://fhir-client.local/Questionnaire/intake-general-01|1.0.0"
+* status = #completed
+* subject = Reference(Patient/example-patient)
+* authored = "2026-04-02T08:40:00+09:00"
+* contained[0] = example-questionnaire-response-practitioner
+* author = Reference(example-questionnaire-response-practitioner)
+* item[0].linkId = "grp-chief"
+* item[0].item[0].linkId = "chief"
+* item[0].item[0].answer.valueString = "咳と微熱"
+* item[0].item[1].linkId = "onset"
+* item[0].item[1].answer.valueCoding.code = #days
+* item[0].item[1].answer.valueCoding.display = "2〜3 日前"
+* extension[intakeSource].valueCode = #patient
+* extension[orderDepartment].valueReference = Reference(Organization/example-department)
+* extension[orderDepartment].valueReference.display = "内科"
