@@ -85,7 +85,7 @@ Java 17 以上・jekyll・sushi がある環境では `./_build.sh` を直接実
 
 ビルドが失敗するのは SUSHI のエラーと IG Publisher の異常終了だけで、IG Publisher の QA のエラー・警告では失敗しません。
 QA に残るエラーは、アプリ側の既知の非準拠(`known-issues.md` に記載: 処方・注射ヘッダの prr-1、jpfhir-terminology に無い MEDIS コード、
-テンプレートの questionnaire-itemControl の system が HL7 の正式な URL と違う)と、院内マスタ由来コードへの narrative リンクだけです。
+テンプレートの questionnaire-itemControl の system が HL7 の正式な URL と違う、様式テンプレートの Questionnaire の url が `{canonical}/Questionnaire/{id}` の形でない)と、院内マスタ由来コードへの narrative リンクだけです。
 
 ## 書き方の規約
 

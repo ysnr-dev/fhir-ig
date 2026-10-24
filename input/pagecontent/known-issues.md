@@ -23,6 +23,7 @@ fhir-client の出力のうち、FHIR や JP Core の作法から外れている
 | 単一ヘッダの Bundle の fullUrl | 単一ヘッダの transaction でも fullUrl が必須。漏れると来歴とパスの参照が付かない。 | |
 | 処方の用量(doseQuantity)の意味 | 内服(頓用以外)は 1 日量、頓用は 1 回量、外用などは全量。JP Core の処方は 1 回量を基本にしている。持参薬(MedicationStatement)の doseQuantity は 1 回量。 | 読む側は用法コードで意味を判定する。 |
 | questionnaire-itemControl の system | アプリと同梱テンプレートは `http://hl7.org/fhir/CodeSystem/questionnaire-item-control` を使う。HL7 の正式な system は `http://hl7.org/fhir/questionnaire-item-control`。 | 例の検証で未知の CodeSystem の警告になる。 |
+| 様式テンプレートの Questionnaire の url | 様式テンプレートから生成した Questionnaire の url は `http://fhir-client.local/Questionnaire/document-form/{テンプレートの code}` で、`{canonical}/Questionnaire/{id}` の形にならない(id は上流が振る UUID)。 | 例の検証で Resource id/url mismatch のエラーになる。 |
 | questionnaire-unit の code | system は UCUM(`http://unitsofmeasure.org`)固定のまま、code に「回」「本/日」など UCUM でない単位文字列を入れる。 | UCUM として解釈できない code がある。 |
 | 看護計画の達成度の display | 看護計画の目標(Goal.achievementStatus)と目標の評価(Observation.valueCodeableConcept)は HL7 の `goal-achievement` に日本語の display(達成 / 改善 / 変化なし / 悪化 / 未達成)を書く。 | 例の検証で display 不一致の警告になる。 |
 | ePath に無いタスク分類 | クリニカルパスのタスク分類(小)に、ePath の EPathTaskCategoryLv2CS に無い `EGMG`(服薬指導)を同じ system で書く。 | ePath の CodeSystem としては未知のコード。 |

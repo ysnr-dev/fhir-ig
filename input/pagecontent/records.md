@@ -72,6 +72,7 @@
 
 - 患者ファイル: [FC_PatientFile](StructureDefinition-fc-patient-file.html)(DocumentReference)+ Binary。category = ファイル分類(`file-category`、code = UUID)。
 - 文書作成(Word / Excel の文書テンプレートへの差し込み)で作った文書も同じ FC_PatientFile で、`type` = 元の文書テンプレート(`document-template`、code = backend の document_templates の UUID、display / text = テンプレート名)を持ちます。文書テンプレートの本体は backend のマスタにあり、FHIR には持ちません。
+- 様式テンプレート(PDF / 画像の様式に入力欄を配置したもの)で作った文書は、表示用 PDF の FC_PatientFile に `context.related` = 入力値の回答([FC_DocumentFormResponse](StructureDefinition-fc-document-form-response.html))を持ちます。回答・Binary・DocumentReference を 1 つの transaction で作り、再編集は回答と DocumentReference の If-Match 付き PUT + 新しい Binary、削除は回答と DocumentReference を一緒に消します(Binary は残す)。Questionnaire の生成は [Questionnaire](questionnaire.html) を参照。
 - 本体の差し替えは、新しい Binary を作り、同じ id の DocumentReference の `content[0].attachment`(contentType / url / size、拡張子が変われば title)だけを同じ transaction で替えます。元の Binary は消しません(旧版は `_history` から辿れます)。
 - DICOM: backend が取り込み、[FC_ImagingStudy](StructureDefinition-fc-imaging-study.html)を identifier(`urn:dicom:uid`)で条件付き PUT。`imaging-source` に元施設・元患者。DICOM の実体は FHIR には持ちません。
 
@@ -79,4 +80,4 @@
 
 - [診療記録](Composition-example-clinical-note.html) / [看護記録](Composition-example-nursing-clinical-note.html) / [研修医の記録(承認済)](Composition-example-countersign-clinical-note.html) / [退院時サマリー](Composition-example-discharge-summary.html) / [督促 Task](Task-example-document-due-task.html)
 - [血液型](Observation-example-blood-type-observation.html) / [妊娠](Observation-example-pregnancy-observation.html) / [感染症](Observation-example-infection-observation.html) / [バイタル](Observation-example-vital-observation.html) / [体重(経過表一括入力)](Observation-example-weight-observation.html) / [JCS](Observation-example-jcs-observation.html) / [NEWS2](Observation-example-early-warning-observation.html) / [口腔診査情報(見出し)](Observation-example-oral-exam-snapshot.html) / [口腔診査情報(歯)](Observation-example-oral-exam-tooth.html)
-- [患者ファイル](DocumentReference-example-patient-file.html) / [文書作成で作った文書](DocumentReference-example-patient-document.html) / [DICOM スタディ](ImagingStudy-example-imaging-study.html)
+- [患者ファイル](DocumentReference-example-patient-file.html) / [文書作成で作った文書](DocumentReference-example-patient-document.html) / [様式テンプレートで作った文書](DocumentReference-example-document-form-file.html) / [DICOM スタディ](ImagingStudy-example-imaging-study.html)

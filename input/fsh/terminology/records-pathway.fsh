@@ -53,6 +53,35 @@ Title: "テンプレート分類(院内マスタ)"
 Description: "code = backend の questionnaire_categories の UUID。Questionnaire の questionnaire-template-category 拡張。"
 * insert MasterCS
 
+CodeSystem: QuestionnaireKindCS
+Id: questionnaire-kind
+Title: "テンプレートの種類"
+Description: "Questionnaire.code に付け、通常のテンプレートと分けて扱う種類。document-form は様式テンプレートから生成した Questionnaire で、テンプレートの選択には出さない(検索で `code:not` に指定して除く)。"
+* insert EnumCS
+* #document-form "様式テンプレート"
+
+ValueSet: QuestionnaireKindVS
+Id: questionnaire-kind-vs
+Title: "テンプレートの種類 ValueSet"
+Description: "テンプレートの種類 ValueSet。"
+* insert AllOf(QuestionnaireKindCS)
+
+ValueSet: DocumentFormItemTypeVS
+Id: document-form-item-type-vs
+Title: "様式テンプレートの項目の種類"
+Description: "様式テンプレートから生成した Questionnaire.item.type。"
+* insert FCMeta
+* http://hl7.org/fhir/item-type#string
+* http://hl7.org/fhir/item-type#text
+* http://hl7.org/fhir/item-type#date
+* http://hl7.org/fhir/item-type#choice
+
+CodeSystem: DocumentFormOptionCS
+Id: document-form-option
+Title: "様式テンプレートの選択肢"
+Description: "様式テンプレートから生成した Questionnaire の answerOption。code = `{項目の linkId}-{1 からの連番}`、display = 選択肢の文字列(チェックボックスは項目名)。テンプレートごとに生成するので、コードは IG に収載しない。"
+* insert MasterCS
+
 CodeSystem: CarePlanTypeCS
 Id: care-plan-type
 Title: "CarePlan の種類"

@@ -69,6 +69,22 @@ Context: Questionnaire.item, Questionnaire.item.item
 * insert FCMeta
 * value[x] only boolean
 
+Extension: QuestionnaireDocumentForm
+Id: questionnaire-document-form
+Title: "様式テンプレート"
+Description: "様式テンプレートから生成した Questionnaire の元のテンプレート。valueString = backend の document_templates の code(UUID)。"
+Context: Questionnaire
+* insert FCMeta
+* value[x] only string
+
+Extension: QuestionnaireResponseDocument
+Id: questionnaire-response-document
+Title: "様式文書"
+Description: "様式テンプレートで作った文書の回答から、その文書(DocumentReference)を指す。逆向きは DocumentReference.context.related。"
+Context: QuestionnaireResponse
+* insert FCMeta
+* value[x] only Reference(DocumentReference)
+
 Extension: QuestionnaireResponseProblem
 Id: questionnaire-response-problem
 Title: "記入の対象プロブレム"

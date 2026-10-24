@@ -31,8 +31,17 @@
 
 QR は診療記録のセクション、オーダーの拡張、読影レポート、栄養指導の実施記録、パスの評価などから参照されます。どこからも参照されない QR だけがカルテの時系列に単独のカードとして出ます。
 
+### 様式テンプレート
+
+文書作成の様式テンプレート(PDF / 画像の様式に入力欄を配置したもの。配置は backend のマスタが持つ)は、回答を QR に保存するため、項目の配置から Questionnaire([FC_DocumentFormQuestionnaire](StructureDefinition-fc-document-form-questionnaire.html))を機械的に生成します。
+
+- `url` = `http://fhir-client.local/Questionnaire/document-form/{テンプレートの code}`、`version` = "1" から始まる整数。項目の増減・種類・ラベル・選択肢が変わったときだけ版を上げ、新しい版を新しいリソースとして作ります(旧版は既存の回答が指すので残します)。
+- `code` = `questionnaire-kind#document-form` で、通常のテンプレートの選択には出しません(検索で `code:not` に指定して除く)。`questionnaire-document-form` 拡張 = テンプレートの code。
+- 項目はすべて最上位に並べ、1 行 string / 複数行 text / 日付 date / 選択 choice(drop-down)/ チェックボックス choice(check-box、選択肢 1 つ)。選択肢は `document-form-option`(code = `{linkId}-{連番}`)。
+- 回答([FC_DocumentFormResponse](StructureDefinition-fc-document-form-response.html))は値のある項目だけを持ち、`questionnaire-response-document` 拡張で表示用 PDF の DocumentReference を指します。DocumentReference の `context.related` が回答を指し、両方を 1 つの transaction で作ります([患者ファイルと画像](records.html))。カルテの時系列では回答を「文書作成」のカードとして出します。
+
 ### 例
 
-- [テンプレート](Questionnaire-social-01.html)
-- [記入](QuestionnaireResponse-example-questionnaire-response.html) / [看護プロファイルの記入](QuestionnaireResponse-example-nursing-profile-response.html) / [Web 問診の取り込み](QuestionnaireResponse-example-intake-questionnaire-response.html)
+- [テンプレート](Questionnaire-social-01.html) / [様式テンプレート](Questionnaire-example-document-form-questionnaire.html)
+- [記入](QuestionnaireResponse-example-questionnaire-response.html) / [看護プロファイルの記入](QuestionnaireResponse-example-nursing-profile-response.html) / [Web 問診の取り込み](QuestionnaireResponse-example-intake-questionnaire-response.html) / [様式文書の回答](QuestionnaireResponse-example-document-form-response.html)
 - [抽出した Observation](Observation-example-extracted-observation.html)

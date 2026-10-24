@@ -356,6 +356,95 @@ Description: "文書作成で作った文書の例"
 * content.attachment.title = "診断書.docx"
 * content.attachment.size = 23456
 
+Instance: example-document-form-questionnaire
+InstanceOf: FC_DocumentFormQuestionnaire
+Usage: #example
+Title: "様式テンプレートの Questionnaire の例"
+Description: "様式テンプレートの Questionnaire の例"
+* url = "http://fhir-client.local/Questionnaire/document-form/0d4b7c2e-6a1f-4e3b-9c58-2f7a1d6e8b90"
+* version = "1"
+* name = "DF0d4b7c2e6a1f"
+* title = "手術同意書"
+* status = #active
+* subjectType = #Patient
+* code = http://fhir-client.local/CodeSystem/questionnaire-kind#document-form
+* extension[documentForm].valueString = "0d4b7c2e-6a1f-4e3b-9c58-2f7a1d6e8b90"
+* item[0].linkId = "f_700b4b3c"
+* item[0].text = "患者氏名"
+* item[0].type = #string
+* item[0].extension[0].url = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression"
+* item[0].extension[0].valueExpression.language = #text/fhirpath
+* item[0].extension[0].valueExpression.expression = "%patient.name.where(extension.where(value = 'SYL').empty()).select(family + ' ' + given.first()).first()"
+* item[1].linkId = "f_459125db"
+* item[1].text = "予定術式"
+* item[1].type = #text
+* item[2].linkId = "f_2c8e1a07"
+* item[2].text = "麻酔方法"
+* item[2].type = #choice
+* item[2].extension[0].url = "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl"
+* item[2].extension[0].valueCodeableConcept = http://hl7.org/fhir/CodeSystem/questionnaire-item-control#drop-down
+* item[2].answerOption[0].valueCoding = http://fhir-client.local/CodeSystem/document-form-option#f_2c8e1a07-1 "全身麻酔"
+* item[2].answerOption[1].valueCoding = http://fhir-client.local/CodeSystem/document-form-option#f_2c8e1a07-2 "局所麻酔"
+* item[3].linkId = "f_33fb91cb"
+* item[3].text = "同意"
+* item[3].type = #choice
+* item[3].extension[0].url = "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl"
+* item[3].extension[0].valueCodeableConcept = http://hl7.org/fhir/CodeSystem/questionnaire-item-control#check-box
+* item[3].answerOption[0].valueCoding = http://fhir-client.local/CodeSystem/document-form-option#f_33fb91cb-1 "同意"
+* item[4].linkId = "f_8895fa0d"
+* item[4].text = "説明年月日"
+* item[4].type = #date
+* item[4].required = true
+* item[4].extension[0].url = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression"
+* item[4].extension[0].valueExpression.language = #text/fhirpath
+* item[4].extension[0].valueExpression.expression = "%today"
+
+Instance: example-document-form-response
+InstanceOf: FC_DocumentFormResponse
+Usage: #example
+Title: "様式文書の回答の例"
+Description: "様式文書の回答の例(予定術式は空のため item に無い)"
+* identifier.value = "1311234567^00000001^5e7a9c3b-2d1f-4a8e-b6c4-9f0e1d2c3b4a"
+* questionnaire = "http://fhir-client.local/Questionnaire/document-form/0d4b7c2e-6a1f-4e3b-9c58-2f7a1d6e8b90|1"
+* status = #completed
+* subject = Reference(Patient/example-patient)
+* authored = "2026-04-05T11:20:00+09:00"
+* contained[0] = example-questionnaire-response-practitioner
+* author = Reference(example-questionnaire-response-practitioner)
+* extension[document].valueReference = Reference(DocumentReference/example-document-form-file)
+* item[0].linkId = "f_700b4b3c"
+* item[0].text = "患者氏名"
+* item[0].answer.valueString = "テスト 太郎"
+* item[1].linkId = "f_2c8e1a07"
+* item[1].text = "麻酔方法"
+* item[1].answer.valueCoding = http://fhir-client.local/CodeSystem/document-form-option#f_2c8e1a07-1 "全身麻酔"
+* item[2].linkId = "f_33fb91cb"
+* item[2].text = "同意"
+* item[2].answer.valueCoding = http://fhir-client.local/CodeSystem/document-form-option#f_33fb91cb-1 "同意"
+* item[3].linkId = "f_8895fa0d"
+* item[3].text = "説明年月日"
+* item[3].answer.valueDate = "2026-04-05"
+
+Instance: example-document-form-file
+InstanceOf: FC_PatientFile
+Usage: #example
+Title: "様式テンプレートで作った文書の例"
+Description: "様式テンプレートで作った文書の例"
+* status = #current
+* type = http://fhir-client.local/CodeSystem/document-template#0d4b7c2e-6a1f-4e3b-9c58-2f7a1d6e8b90 "手術同意書"
+* type.text = "手術同意書"
+* subject = Reference(Patient/example-patient)
+* date = "2026-04-05T00:00:00+09:00"
+* category = http://fhir-client.local/CodeSystem/file-category#5c2d7e1f-8a3b-4d6c-9e0f-1a2b3c4d5e6f "診断書・証明書"
+* category.text = "診断書・証明書"
+* author = Reference(Practitioner/example-practitioner)
+* author.display = "山田 一郎"
+* content.attachment.contentType = #application/pdf
+* content.attachment.url = "Binary/example-document-form-binary"
+* content.attachment.title = "手術同意書.pdf"
+* content.attachment.size = 135442
+* context.related = Reference(QuestionnaireResponse/example-document-form-response)
+
 Instance: example-dpc-form1-response
 InstanceOf: FC_DpcForm1Response
 Usage: #example

@@ -211,6 +211,39 @@ Description: """入院の診断群分類(14 桁)を決めた記録。入院 1 �
 * item 1..*
 * item.linkId ^short = "dpc-code / edition / timing / bundled / days / points / icd10 / branch / note"
 
+Profile: FC_DocumentFormQuestionnaire
+Parent: FC_Questionnaire
+Id: fc-document-form-questionnaire
+Title: "様式テンプレートの Questionnaire"
+Description: """様式テンプレート(PDF / 画像の様式に入力欄を配置したもの)の回答を保存するため、項目の配置から機械的に生成する Questionnaire。項目の定義は backend の様式テンプレートが正で、Questionnaire はその写し。
+
+- url = `http://fhir-client.local/Questionnaire/document-form/{テンプレートの code}`。version = \"1\" から始まる整数。項目の増減・種類・ラベル・選択肢が変わったときだけ版を上げ、新しい版を新しいリソースとして POST する(旧版は既存の回答が指すので残す)。
+- name = `DF` + code(UUID)のハイフンを除いた先頭 12 文字。title = テンプレート名。status = active。subjectType = Patient。
+- code = questionnaire-kind#document-form(テンプレートの選択には出さない)。questionnaire-document-form = テンプレートの code。
+- item はすべて最上位に並べ、linkId = 項目の id。type: 1 行 string / 複数行 text / 日付 date / 選択 choice(itemControl = drop-down)/ チェックボックス choice(itemControl = check-box、項目名を display にした選択肢 1 つ)。選択肢は document-form-option。required は必須の項目だけ。初期値の式があれば sdc-questionnaire-initialExpression。"""
+* url ^short = "http://fhir-client.local/Questionnaire/document-form/{テンプレートの code}"
+* code 1..1
+* code = http://fhir-client.local/CodeSystem/questionnaire-kind#document-form
+* extension contains QuestionnaireDocumentForm named documentForm 1..1
+* item.type from DocumentFormItemTypeVS (required)
+
+Profile: FC_DocumentFormResponse
+Parent: FC_QuestionnaireResponse
+Id: fc-document-form-response
+Title: "様式文書の回答"
+Description: """様式テンプレートで作った文書の入力値。表示用 PDF の DocumentReference([FC_PatientFile](StructureDefinition-fc-patient-file.html))と組で作る。
+
+- questionnaire = 様式テンプレートの Questionnaire の canonical(`url|version`)。status = completed。
+- item は値のある項目だけを、Questionnaire と同じ並びで最上位に置く(linkId と text は Questionnaire の項目と同じ)。1 行・複数行は valueString、日付は valueDate、選択とチェックボックスは選んだ answerOption の valueCoding。
+- questionnaire-response-document = 組の DocumentReference。DocumentReference.context.related から回答を指す。
+- 新規は回答 → Binary(PDF)→ DocumentReference を 1 つの transaction で POST する(互いを urn:uuid で指す)。再編集は回答と DocumentReference をそれぞれ If-Match 付きの PUT にし、PDF は新しい Binary にして DocumentReference の attachment を向け替える。削除は回答と DocumentReference を同じ transaction で消し、Binary は旧版が参照するので残す。
+- identifier・contained Practitioner・meta.profile はテンプレートの記入と同じ(order-department は付けない)。カルテの時系列では「文書作成」のカードとして出す。"""
+* questionnaire ^short = "http://fhir-client.local/Questionnaire/document-form/{テンプレートの code}|{version}"
+* status = #completed
+* subject 1..1
+* extension contains QuestionnaireResponseDocument named document 1..1
+* extension[document].valueReference only Reference(FC_PatientFile)
+
 Profile: FC_PatientFile
 Parent: DocumentReference
 Id: fc-patient-file
@@ -221,6 +254,7 @@ Description: """患者に取り込んだファイル(画像・PDF など)と、�
 - content[0].attachment = {contentType, url = Binary/{id}, title, size}。title はダウンロード時のファイル名になる。
 - category = ファイル分類(file-category、code = UUID、display / text = 分類名。分類を選ばなければ無し)。author = 職員。
 - 文書作成で作ったものは type = 元の文書テンプレート(document-template、code = UUID、display / text = テンプレート名)。
+- 様式テンプレートで作った文書は、表示用 PDF(application/pdf)の DocumentReference に加え context.related = 入力値の回答([FC_DocumentFormResponse](StructureDefinition-fc-document-form-response.html))を持つ。回答と同じ transaction で作り、再編集では date も替える。
 - 本体の差し替えは、新しい Binary を作り、同じ id の DocumentReference の attachment(contentType / url / size、拡張子が変われば title)だけを同じ transaction で替える。元の Binary は消さない(旧版は _history から辿れる)。"""
 * insert FCMeta
 * type.coding.system = "http://fhir-client.local/CodeSystem/document-template"
@@ -235,6 +269,9 @@ Description: """患者に取り込んだファイル(画像・PDF など)と、�
 * category 0..1 MS
 * category.coding.system = "http://fhir-client.local/CodeSystem/file-category"
 * author only Reference(FC_Practitioner)
+* context.related 0..1 MS
+* context.related only Reference(FC_DocumentFormResponse)
+* context.related ^short = "様式テンプレートで作った文書の回答"
 
 Profile: FC_ImagingStudy
 Parent: $JP_ImagingStudy_Radiology
